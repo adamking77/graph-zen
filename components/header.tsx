@@ -19,11 +19,6 @@ export function Header() {
           
         </div>
         
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-medium">A</span>
-          </div>
-        </div>
       </div>
     </header>
   )

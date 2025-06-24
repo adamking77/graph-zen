@@ -5,8 +5,10 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "dev:8080": "next dev -p 8080",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "start:8080": "next start -p 8080"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
