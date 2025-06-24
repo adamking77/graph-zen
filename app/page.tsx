@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChartEditor } from "@/components/chart-editor"
 import { ChartPreview } from "@/components/chart-preview"
 import { ExportPanel } from "@/components/export-panel"
@@ -21,6 +21,7 @@ export interface ChartConfig {
 }
 
 export default function ChartGeneratorPage() {
+  const [isEmbedMode, setIsEmbedMode] = useState(false)
   const [config, setConfig] = useState<ChartConfig>({
     title: "Revenue (€) projections for GraphZen",
     subtitle: "Revenue by year for each scenario",
@@ -55,6 +56,36 @@ export default function ChartGeneratorPage() {
 
   const [showExport, setShowExport] = useState(false)
 
+  // Handle URL parameters for sharing and embedding
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const embedMode = urlParams.get('embed') === 'true'
+    const configParam = urlParams.get('config')
+    
+    setIsEmbedMode(embedMode)
+    
+    if (configParam) {
+      try {
+        const decodedConfig = JSON.parse(decodeURIComponent(escape(atob(configParam))))
+        if (decodedConfig && typeof decodedConfig === 'object') {
+          setConfig(decodedConfig)
+        }
+      } catch (error) {
+        console.warn('Failed to decode shared chart config:', error)
+      }
+    }
+  }, [])
+
+  // Embed mode - simplified layout
+  if (isEmbedMode) {
+    return (
+      <div className="min-h-screen bg-[#0d0d0d] text-white">
+        <ChartPreview config={config} />
+      </div>
+    )
+  }
+
+  // Normal mode - full interface
   return (
     <div className="min-h-screen bg-[#0d0d0d] text-white">
       <Header />

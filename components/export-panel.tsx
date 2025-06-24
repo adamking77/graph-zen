@@ -16,32 +16,40 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
   const [copied, setCopied] = useState(false)
 
   const generateEmbedCode = () => {
-    return `<div style="width: 100%; height: 400px; background: #1a1a1a; border-radius: 8px; padding: 32px;">
-  <h2 style="color: white; font-size: 24px; margin-bottom: 8px;">${config.title}</h2>
-  <p style="color: #9ca3af; font-size: 14px; margin-bottom: 24px;">${config.subtitle}</p>
-  <!-- Chart data: ${JSON.stringify(config.data)} -->
-  <!-- Chart type: ${config.type} -->
-  <!-- Generated with Chart Generator -->
-</div>`
+    const embedUrl = generateEmbedLink()
+    return `<iframe 
+  src="${embedUrl}"
+  width="800" 
+  height="600" 
+  frameborder="0" 
+  style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"
+  title="${config.title} - Created with GraphZen">
+</iframe>`
+  }
+
+  const getBaseUrl = () => {
+    // Use environment variable in production, localhost in development
+    return process.env.NEXT_PUBLIC_BASE_URL || 
+           (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
   }
 
   const generateEmbedLink = () => {
     try {
       const encodedConfig = btoa(unescape(encodeURIComponent(JSON.stringify(config))))
-      return `https://chart-generator.app/embed/${encodedConfig}`
+      return `${getBaseUrl()}?embed=true&config=${encodedConfig}`
     } catch (error) {
       console.warn('Failed to encode config for embed link:', error)
-      return `https://chart-generator.app/embed/error`
+      return `${getBaseUrl()}?embed=true&error=encoding`
     }
   }
 
   const generateShareableLink = () => {
     try {
       const encodedConfig = btoa(unescape(encodeURIComponent(JSON.stringify(config))))
-      return `https://chart-generator.app/chart/${encodedConfig}`
+      return `${getBaseUrl()}?config=${encodedConfig}`
     } catch (error) {
       console.warn('Failed to encode config for shareable link:', error)
-      return `https://chart-generator.app/chart/error`
+      return `${getBaseUrl()}?error=encoding`
     }
   }
 
