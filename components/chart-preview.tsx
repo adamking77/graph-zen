@@ -175,7 +175,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     }}
                   >
                     {showDataLabels && (
-                      <div className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${isDark ? 'bg-black/50 text-white' : 'bg-white/90 text-gray-900'} text-xs font-medium tracking-wide px-2 py-1 rounded`}>
+                      <div className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'bg-gray-900/90 text-white border border-gray-700/50' : 'bg-white/95 text-gray-800 border border-gray-200/50'} text-sm font-light tracking-wide px-3 py-2 rounded-lg shadow-sm backdrop-blur-sm`}>
                         {showPercentages ? formatPercentage(item.value, totalValue) : formatNumber(item.value)}
                       </div>
                     )}
@@ -189,7 +189,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         {config.theme?.showGridLines !== false && (
           <div className="flex items-center gap-6 mt-8">
             <div className="w-44"></div>
-            <div className={`flex-1 flex justify-between text-xs font-light ${isDark ? 'text-gray-500' : 'text-gray-500'} px-2 tracking-wider`}>
+            <div className={`flex-1 flex justify-between text-xs font-light ${isDark ? 'text-gray-400' : 'text-gray-500'} px-2 tracking-widest opacity-70`}>
               <span>0</span>
               <span>{formatNumber(maxValue * 0.2)}</span>
               <span>{formatNumber(maxValue * 0.4)}</span>
@@ -220,7 +220,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const showPercentages = config.theme?.showPercentages || false
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div className={`relative h-64 ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-8`}>
           <div className="flex items-end justify-center gap-4 h-full">
             {sortedData.map((item, index) => {
@@ -238,7 +238,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       }}
                     >
                       {showDataLabels && (
-                        <div className={`${isDark ? 'bg-black/50 text-white' : 'bg-white/90 text-gray-900'} text-xs font-medium tracking-wide px-2 py-1 rounded`}>
+                        <div className={`${isDark ? 'bg-gray-900/90 text-white border border-gray-700/50' : 'bg-white/95 text-gray-800 border border-gray-200/50'} text-sm font-light tracking-wide px-3 py-2 rounded-lg shadow-sm backdrop-blur-sm`}>
                           {showPercentages ? formatPercentage(item.value, totalValue) : formatNumber(item.value)}
                         </div>
                       )}
@@ -250,16 +250,16 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           </div>
         </div>
         
-        <div className={`flex justify-between text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} px-6`}>
+        <div className={`flex justify-between text-sm font-light ${isDark ? 'text-gray-300' : 'text-gray-600'} px-8 mt-6`}>
           {sortedData.map((item, index) => (
-            <span key={index} className="text-center max-w-20 truncate">
+            <span key={index} className="text-center max-w-24 truncate tracking-wide">
               {item.scenario}
             </span>
           ))}
         </div>
         
-        <div className="text-center">
-          <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Revenue (€)</span>
+        <div className="text-center mt-4">
+          <span className={`text-sm font-light tracking-widest uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'} opacity-60`}>Revenue (€)</span>
         </div>
       </div>
     )
@@ -298,13 +298,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             })}
           </svg>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-5">
           {config.data.map((item, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: colors[index % colors.length] }} />
-              <span className={`${isDark ? 'text-white' : 'text-gray-900'} text-sm font-medium`}>
-                {item.scenario}: {formatNumber(item.value)}
-              </span>
+            <div key={index} className="flex items-center gap-4 group">
+              <div className="w-5 h-5 rounded-lg shadow-sm" style={{ backgroundColor: colors[index % colors.length] }} />
+              <div className="flex-1">
+                <span className={`${isDark ? 'text-white' : 'text-gray-900'} text-sm font-light tracking-wide`}>
+                  {item.scenario}
+                </span>
+                <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs font-light tracking-wider mt-1`}>
+                  {formatNumber(item.value)}
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -359,13 +364,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             </div>
           </div>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-5">
           {config.data.map((item, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: colors[index % colors.length] }} />
-              <span className={`${isDark ? 'text-white' : 'text-gray-900'} text-sm font-medium`}>
-                {item.scenario}: {formatNumber(item.value)}
-              </span>
+            <div key={index} className="flex items-center gap-4 group">
+              <div className="w-5 h-5 rounded-lg shadow-sm" style={{ backgroundColor: colors[index % colors.length] }} />
+              <div className="flex-1">
+                <span className={`${isDark ? 'text-white' : 'text-gray-900'} text-sm font-light tracking-wide`}>
+                  {item.scenario}
+                </span>
+                <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs font-light tracking-wider mt-1`}>
+                  {formatNumber(item.value)}
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -383,7 +393,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const primaryColor = colors[0]
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div className={`relative h-64 ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-8`}>
           <svg viewBox="0 0 400 200" className="w-full h-full">
             <defs>
@@ -471,7 +481,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div className={`relative h-64 ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-8`}>
           <svg viewBox="0 0 400 200" className="w-full h-full">
             <defs>
