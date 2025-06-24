@@ -13,7 +13,7 @@ export function Header() {
               </svg>
             </div>
             <div>
-              <h1 className="text-lg font-light text-white tracking-wide">GraphZen</h1>
+              <h1 className="text-2xl font-extralight text-white tracking-widest">GraphZen</h1>
             </div>
           </div>
           

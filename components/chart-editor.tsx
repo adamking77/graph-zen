@@ -260,7 +260,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                   }`}
                 >
                   <Icon className="w-3 h-3" />
-                  <span className="font-light tracking-wide">{type.label}</span>
+                  <span className="font-extralight tracking-widest">{type.label}</span>
                 </button>
               )
             })}
@@ -270,7 +270,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
         {/* Data Points */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-white text-sm font-light tracking-wide flex items-center gap-2">
+            <h3 className="text-white text-sm font-extralight tracking-widest flex items-center gap-2">
               <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
               Selected the top 3 scenarios by revenue
             </h3>
@@ -321,7 +321,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
 
         {/* Import Data Section */}
         <div className="space-y-3">
-          <h3 className="text-white text-sm font-light tracking-wide flex items-center gap-2">
+          <h3 className="text-white text-sm font-extralight tracking-widest flex items-center gap-2">
             <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
             Import Data
           </h3>
@@ -424,7 +424,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <FileText className="w-5 h-5 text-purple-400" />
-                  <h3 className="text-white text-lg font-light tracking-wide">Data Preview</h3>
+                  <h3 className="text-white text-lg font-extralight tracking-widest">Data Preview</h3>
                   <span className="bg-purple-600/20 text-purple-300 px-2 py-1 rounded text-sm">
                     {previewData.length} rows found
                   </span>
