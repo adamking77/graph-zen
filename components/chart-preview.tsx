@@ -167,15 +167,16 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               <div className="flex-1 relative">
                 <div className={`h-10 ${isDark ? 'bg-gray-800/30' : 'bg-gray-200/50'} rounded-lg overflow-hidden`}>
                   <div
-                    className="h-full bg-gradient-to-r rounded-lg transition-all duration-1200 ease-out flex items-center justify-end pr-4 relative hover:brightness-110"
+                    className="h-full bg-gradient-to-r rounded-lg transition-all duration-1200 ease-out flex items-center justify-end pr-4 relative hover:brightness-110 hover:scale-105 hover:shadow-lg cursor-pointer group animate-in"
                     style={{
                       width: `${percentage}%`,
                       minWidth: percentage > 0 ? "80px" : "0px",
-                      background: `linear-gradient(to right, ${colors[index % colors.length]}, ${colors[index % colors.length]}dd)`
+                      background: `linear-gradient(to right, ${colors[index % colors.length]}, ${colors[index % colors.length]}dd)`,
+                      animationDelay: `${index * 150}ms`
                     }}
                   >
                     {showDataLabels && (
-                      <div className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'bg-gray-900/90 text-white border border-gray-700/50' : 'bg-white/95 text-gray-800 border border-gray-200/50'} text-sm font-light tracking-wide px-3 py-2 rounded-lg shadow-sm backdrop-blur-sm`}>
+                      <div className={`absolute right-4 top-1/2 transform -translate-y-1/2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md ${isDark ? 'bg-gray-900/90 text-white border border-gray-700/50' : 'bg-white/95 text-gray-800 border border-gray-200/50'} text-sm font-light tracking-wide px-3 py-2 rounded-lg shadow-sm backdrop-blur-sm`}>
                         {showPercentages ? formatPercentage(item.value, totalValue) : formatNumber(item.value)}
                       </div>
                     )}
@@ -292,7 +293,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   key={index}
                   d={`M 100 100 L ${x1} ${y1} A 80 80 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                   fill={colors[index % colors.length]}
-                  className="transition-all duration-500 hover:opacity-80"
+                  className="transition-all duration-500 hover:opacity-80 hover:brightness-110 cursor-pointer animate-in"
+                  style={{ animationDelay: `${index * 200}ms` }}
                 />
               )
             })}
@@ -300,13 +302,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         </div>
         <div className="space-y-5">
           {config.data.map((item, index) => (
-            <div key={index} className="flex items-center gap-4 group">
-              <div className="w-5 h-5 rounded-lg shadow-sm" style={{ backgroundColor: colors[index % colors.length] }} />
+            <div key={index} className="flex items-center gap-4 group hover:bg-gray-800/20 rounded-lg p-2 -m-2 transition-all duration-300 cursor-pointer animate-in" style={{ animationDelay: `${index * 100}ms` }}>
+              <div className="w-5 h-5 rounded-lg shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style={{ backgroundColor: colors[index % colors.length] }} />
               <div className="flex-1">
-                <span className={`${isDark ? 'text-white' : 'text-gray-900'} text-sm font-light tracking-wide`}>
+                <span className={`${isDark ? 'text-white' : 'text-gray-900'} text-sm font-light tracking-wide transition-all duration-300 group-hover:text-white`}>
                   {item.scenario}
                 </span>
-                <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs font-light tracking-wider mt-1`}>
+                <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs font-light tracking-wider mt-1 transition-all duration-300 group-hover:text-gray-300`}>
                   {formatNumber(item.value)}
                 </div>
               </div>
@@ -352,7 +354,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   key={index}
                   d={`M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x4} ${y4} Z`}
                   fill={colors[index % colors.length]}
-                  className="transition-all duration-500 hover:opacity-80"
+                  className="transition-all duration-500 hover:opacity-80 hover:brightness-110 cursor-pointer animate-in"
+                  style={{ animationDelay: `${index * 200}ms` }}
                 />
               )
             })}
@@ -366,13 +369,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         </div>
         <div className="space-y-5">
           {config.data.map((item, index) => (
-            <div key={index} className="flex items-center gap-4 group">
-              <div className="w-5 h-5 rounded-lg shadow-sm" style={{ backgroundColor: colors[index % colors.length] }} />
+            <div key={index} className="flex items-center gap-4 group hover:bg-gray-800/20 rounded-lg p-2 -m-2 transition-all duration-300 cursor-pointer animate-in" style={{ animationDelay: `${index * 100}ms` }}>
+              <div className="w-5 h-5 rounded-lg shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style={{ backgroundColor: colors[index % colors.length] }} />
               <div className="flex-1">
-                <span className={`${isDark ? 'text-white' : 'text-gray-900'} text-sm font-light tracking-wide`}>
+                <span className={`${isDark ? 'text-white' : 'text-gray-900'} text-sm font-light tracking-wide transition-all duration-300 group-hover:text-white`}>
                   {item.scenario}
                 </span>
-                <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs font-light tracking-wider mt-1`}>
+                <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs font-light tracking-wider mt-1 transition-all duration-300 group-hover:text-gray-300`}>
                   {formatNumber(item.value)}
                 </div>
               </div>
@@ -416,7 +419,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 })
                 .join(" ")} L ${config.data.length === 1 ? 200 : 400} 200 L 0 200 Z`}
               fill="url(#lineGradient)"
-              className="transition-all duration-1000"
+              className="transition-all duration-1000 animate-in"
+              style={{ animationDelay: '200ms' }}
             />
 
             <path
@@ -430,7 +434,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               fill="none"
               stroke={primaryColor}
               strokeWidth="3"
-              className="transition-all duration-1000"
+              className="transition-all duration-1000 animate-in hover:brightness-110"
+              style={{ animationDelay: '400ms' }}
             />
 
             {config.data.map((item, index) => {
@@ -445,7 +450,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     fill={colors[1] || primaryColor}
                     stroke={isDark ? "#ffffff" : "#374151"}
                     strokeWidth="2"
-                    className="transition-all duration-500"
+                    className="transition-all duration-500 hover:r-8 hover:brightness-110 cursor-pointer animate-in"
+                    style={{ animationDelay: `${600 + index * 150}ms` }}
                   />
                   <text
                     x={x}
@@ -510,7 +516,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   height={height}
                   fill={colors[index % colors.length]}
                   opacity="0.7"
-                  className="transition-all duration-1000 ease-out"
+                  className="transition-all duration-1000 ease-out hover:opacity-90 hover:brightness-110 cursor-pointer animate-in"
+                  style={{ animationDelay: `${index * 150}ms` }}
                 />
               )
             })}
@@ -526,7 +533,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               fill="none"
               stroke={colors[0]}
               strokeWidth="3"
-              className="transition-all duration-1000"
+              className="transition-all duration-1000 animate-in hover:brightness-110"
+              style={{ animationDelay: '600ms' }}
             />
 
             {config.data.map((item, index) => {
@@ -541,7 +549,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     fill={isDark ? "#ffffff" : "#ffffff"}
                     stroke={colors[0]}
                     strokeWidth="2"
-                    className="transition-all duration-500"
+                    className="transition-all duration-500 hover:r-7 hover:brightness-110 cursor-pointer animate-in"
+                    style={{ animationDelay: `${800 + index * 150}ms` }}
                   />
                   <text
                     x={x}
