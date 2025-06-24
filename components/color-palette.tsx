@@ -35,99 +35,99 @@ interface ColorPaletteProps {
 }
 
 const colorPalettes: ColorPalette[] = [
-  // Monochrome - Professional, single-color families
+  // Monochrome - Professional, muted single-color families
   {
-    id: 'monochrome-blue',
-    name: 'Classic Blue',
-    colors: ['#3B82F6', '#60A5FA', '#93C5FD'],
+    id: 'slate-professional',
+    name: 'Slate',
+    colors: ['#475569', '#64748B', '#94A3B8', '#CBD5E1'],
     type: 'monochrome'
   },
   {
-    id: 'corporate-blue',
+    id: 'steel-blue',
+    name: 'Steel Blue',
+    colors: ['#334155', '#475569', '#64748B', '#94A3B8'],
+    type: 'monochrome'
+  },
+  {
+    id: 'charcoal',
+    name: 'Charcoal',
+    colors: ['#374151', '#4B5563', '#6B7280', '#9CA3AF'],
+    type: 'monochrome'
+  },
+  {
+    id: 'sage-green',
+    name: 'Sage',
+    colors: ['#4B5563', '#6B7280', '#9CA3AF', '#D1D5DB'],
+    type: 'monochrome'
+  },
+  {
+    id: 'warm-gray',
+    name: 'Warm Gray',
+    colors: ['#57534E', '#78716C', '#A8A29E', '#D6D3D1'],
+    type: 'monochrome'
+  },
+  {
+    id: 'cool-gray',
+    name: 'Cool Gray',
+    colors: ['#4C5C68', '#5F7682', '#7A8B94', '#9EAAB2'],
+    type: 'monochrome'
+  },
+  
+  // Colorful - Sophisticated, muted multi-color themes
+  {
+    id: 'dashboard-pro',
+    name: 'Dashboard Pro', 
+    colors: ['#6366F1', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B'],
+    type: 'colorful'
+  },
+  {
+    id: 'modern-muted',
+    name: 'Modern Muted',
+    colors: ['#7C3AED', '#0891B2', '#059669', '#D97706', '#DC2626'],
+    type: 'colorful'
+  },
+  {
+    id: 'sophisticated',
+    name: 'Sophisticated',
+    colors: ['#5B21B6', '#1E40AF', '#075985', '#065F46', '#92400E'],
+    type: 'colorful'
+  },
+  {
+    id: 'corporate-refined',
     name: 'Corporate',
-    colors: ['#1E40AF', '#3B82F6', '#60A5FA', '#93C5FD'],
-    type: 'monochrome'
-  },
-  {
-    id: 'startup-purple',
-    name: 'Professional',
-    colors: ['#7C3AED', '#8B5CF6', '#A78BFA', '#C4B5FD'],
-    type: 'monochrome'
-  },
-  {
-    id: 'monochrome-green',
-    name: 'Fresh Green',
-    colors: ['#166534', '#16A34A', '#4ADE80', '#86EFAC'],
-    type: 'monochrome'
-  },
-  {
-    id: 'monochrome-yellow',
-    name: 'Golden Yellow',
-    colors: ['#A16207', '#CA8A04', '#EAB308', '#FDE047'],
-    type: 'monochrome'
-  },
-  {
-    id: 'monochrome-orange',
-    name: 'Warm Orange',
-    colors: ['#C2410C', '#EA580C', '#F97316', '#FB923C'],
-    type: 'monochrome'
-  },
-  
-  // Colorful - Vibrant, multi-color themes
-  {
-    id: 'colorful-rainbow',
-    name: 'Rainbow', 
-    colors: ['#8B5CF6', '#06D6A0', '#FFD23F', '#FF6B6B', '#4ECDC4'],
+    colors: ['#4338CA', '#0369A1', '#047857', '#B45309', '#B91C1C'],
     type: 'colorful'
   },
   {
-    id: 'ocean-breeze',
-    name: 'Ocean',
-    colors: ['#0891B2', '#06B6D4', '#22D3EE', '#67E8F9'],
-    type: 'colorful'
-  },
-  {
-    id: 'forest-green',
-    name: 'Forest',
-    colors: ['#15803D', '#22C55E', '#4ADE80', '#86EFAC'],
-    type: 'colorful'
-  },
-  {
-    id: 'autumn-colors',
-    name: 'Autumn',
-    colors: ['#B45309', '#D97706', '#F59E0B', '#FBBF24'],
-    type: 'colorful'
-  },
-  {
-    id: 'berry-mix',
-    name: 'Berry',
-    colors: ['#BE185D', '#EC4899', '#F472B6', '#F9A8D4'],
+    id: 'data-viz',
+    name: 'Data Viz',
+    colors: ['#6366F1', '#EC4899', '#06B6D4', '#10B981', '#F59E0B'],
     type: 'colorful'
   },
   
-  // Neon - Bright, high-contrast, energetic
+  // Neon - Refined bright colors for dark themes
   {
-    id: 'neon-bright',
+    id: 'electric-refined',
     name: 'Electric',
-    colors: ['#FF3366', '#33FF66', '#3366FF', '#FF33FF', '#66FF33'],
+    colors: ['#8B5CF6', '#06D6A0', '#FFD23F', '#FF6B6B', '#4ECDC4'],
     type: 'neon'
   },
   {
-    id: 'sunset-warm',
-    name: 'Sunset',
-    colors: ['#DC2626', '#F97316', '#FACC15', '#FDE047'],
+    id: 'cyber-muted',
+    name: 'Cyber',
+    colors: ['#A855F7', '#22D3EE', '#FDE047', '#FB7185', '#34D399'],
     type: 'neon'
   },
   {
-    id: 'neon-cyberpunk',
-    name: 'Cyberpunk',
-    colors: ['#FF00FF', '#00FFFF', '#FFFF00', '#FF0080', '#8000FF'],
+    id: 'synthwave',
+    name: 'Synthwave',
+    colors: ['#C084FC', '#38BDF8', '#FACC15', '#F87171', '#4ADE80'],
     type: 'neon'
   },
   {
-    id: 'neon-Miami',
-    name: 'Miami Vice',
-    colors: ['#FF1493', '#00CED1', '#FFD700', '#FF4500', '#9400D3'],
+    id: 'neon-professional',
+    name: 'Neon Pro',
+    colors: ['#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EF4444'],
     type: 'neon'
   }
 ]

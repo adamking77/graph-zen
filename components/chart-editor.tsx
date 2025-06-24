@@ -562,12 +562,11 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
         <div>
           <ColorPalette 
             theme={config.theme || {
-              mode: 'dark',
               palette: {
-                id: 'colorful-rainbow',
-                name: 'Colorful',
-                colors: ['#8B5CF6', '#06D6A0', '#FFD23F', '#FF6B6B', '#4ECDC4'],
-                type: 'preset'
+                id: 'dashboard-pro',
+                name: 'Dashboard Pro',
+                colors: ['#6366F1', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B'],
+                type: 'colorful'
               },
               borderStyle: 'none',
               cornerStyle: 'rounded',

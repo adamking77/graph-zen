@@ -150,7 +150,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const sortedData = sortData(config.data)
     const maxValue = Math.max(...sortedData.map((d) => d.value))
     const totalValue = sortedData.reduce((sum, d) => sum + d.value, 0)
-    const colors = config.theme?.palette.colors || ["#8b5cf6", "#a855f7", "#c084fc", "#d8b4fe", "#e9d5ff"]
+    const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     const showDataLabels = config.theme?.showDataLabels !== false
     const showPercentages = config.theme?.showPercentages || false
 
@@ -215,7 +215,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const sortedData = sortData(config.data)
     const maxValue = Math.max(...sortedData.map((d) => d.value))
     const totalValue = sortedData.reduce((sum, d) => sum + d.value, 0)
-    const colors = config.theme?.palette.colors || ["#8b5cf6", "#a855f7", "#c084fc", "#d8b4fe", "#e9d5ff"]
+    const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     const showDataLabels = config.theme?.showDataLabels !== false
     const showPercentages = config.theme?.showPercentages || false
 
@@ -269,7 +269,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     if (config.data.length === 0) return null
 
     const total = config.data.reduce((sum, item) => sum + item.value, 0)
-    const colors = config.theme?.palette.colors || ["#8b5cf6", "#a855f7", "#c084fc", "#d8b4fe", "#e9d5ff", "#f3e8ff"]
+    const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"]
 
     return (
       <div className="flex items-center justify-center space-x-12">
@@ -316,7 +316,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     if (config.data.length === 0) return null
 
     const total = config.data.reduce((sum, item) => sum + item.value, 0)
-    const colors = config.theme?.palette.colors || ["#8b5cf6", "#a855f7", "#c084fc", "#d8b4fe", "#e9d5ff", "#f3e8ff"]
+    const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"]
 
     return (
       <div className="flex items-center justify-center space-x-12">
@@ -379,7 +379,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const maxValue = Math.max(...config.data.map((d) => d.value))
     const minValue = Math.min(...config.data.map((d) => d.value))
     const range = maxValue - minValue || 1
-    const colors = config.theme?.palette.colors || ["#8b5cf6", "#a855f7", "#c084fc", "#d8b4fe", "#e9d5ff"]
+    const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     const primaryColor = colors[0]
 
     return (
@@ -468,7 +468,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const maxValue = Math.max(...config.data.map((d) => d.value))
     const minValue = Math.min(...config.data.map((d) => d.value))
     const range = maxValue - minValue || 1
-    const colors = config.theme?.palette.colors || ["#8b5cf6", "#a855f7", "#c084fc", "#d8b4fe", "#e9d5ff"]
+    const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
 
     return (
       <div className="space-y-6">
@@ -595,7 +595,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           {/* Color Theme Indicator */}
           <div className="flex items-center gap-2 px-3 py-2 bg-gray-800/50 rounded-lg border border-gray-700/50">
             <div className="flex gap-1">
-              {(config.theme?.palette.colors || ['#8b5cf6', '#a855f7', '#c084fc']).slice(0, 3).map((color, index) => (
+              {(config.theme?.palette.colors || ['#6366F1', '#8B5CF6', '#06B6D4']).slice(0, 3).map((color, index) => (
                 <div
                   key={index}
                   className="w-3 h-3 rounded-full"
