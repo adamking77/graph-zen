@@ -218,7 +218,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
         <div className="space-y-4">
           <div className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-2">Chart Title</label>
+              <label className="block text-xs font-light text-gray-400 mb-2 tracking-wide">Chart Title</label>
               <input
                 type="text"
                 value={config.title}
@@ -230,7 +230,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-400 mb-2">Subtitle</label>
+              <label className="block text-xs font-light text-gray-400 mb-2 tracking-wide">Subtitle</label>
               <input
                 type="text"
                 value={config.subtitle}
@@ -260,7 +260,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                   }`}
                 >
                   <Icon className="w-3 h-3" />
-                  <span className="font-medium">{type.label}</span>
+                  <span className="font-light tracking-wide">{type.label}</span>
                 </button>
               )
             })}
@@ -270,7 +270,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
         {/* Data Points */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-white text-sm font-normal flex items-center gap-2">
+            <h3 className="text-white text-sm font-light tracking-wide flex items-center gap-2">
               <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
               Selected the top 3 scenarios by revenue
             </h3>
@@ -303,7 +303,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                     className="w-20 bg-gray-800/50 border border-gray-700/50 rounded px-2 py-1 text-xs text-white placeholder-gray-400 focus:ring-1 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
                     suppressHydrationWarning
                   />
-                  <span className="text-xs text-purple-300 font-medium w-8 text-center">{formatNumber(item.value)}</span>
+                  <span className="text-xs text-purple-300 font-light w-8 text-center tracking-wide">{formatNumber(item.value)}</span>
                   <Button
                     onClick={() => removeDataItem(index)}
                     size="sm"
@@ -321,7 +321,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
 
         {/* Import Data Section */}
         <div className="space-y-3">
-          <h3 className="text-white text-sm font-normal flex items-center gap-2">
+          <h3 className="text-white text-sm font-light tracking-wide flex items-center gap-2">
             <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
             Import Data
           </h3>
@@ -424,7 +424,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <FileText className="w-5 h-5 text-purple-400" />
-                  <h3 className="text-white text-lg font-medium">Data Preview</h3>
+                  <h3 className="text-white text-lg font-light tracking-wide">Data Preview</h3>
                   <span className="bg-purple-600/20 text-purple-300 px-2 py-1 rounded text-sm">
                     {previewData.length} rows found
                   </span>
@@ -471,7 +471,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
               <div className="flex-1 overflow-auto mb-4">
                 <div className="bg-gray-800/30 border border-gray-700/50 rounded-lg overflow-hidden">
                   <div className="bg-gray-800/50 px-4 py-3 border-b border-gray-700/50">
-                    <div className="grid grid-cols-12 gap-4 text-xs font-medium text-gray-400">
+                    <div className="grid grid-cols-12 gap-4 text-xs font-light text-gray-400 tracking-wide">
                       <div className="col-span-5">Scenario</div>
                       <div className="col-span-4">Value</div>
                       <div className="col-span-3">Status</div>

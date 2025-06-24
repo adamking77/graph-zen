@@ -175,7 +175,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     }}
                   >
                     {showDataLabels && (
-                      <div className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${isDark ? 'bg-black/50 text-white' : 'bg-white/90 text-gray-900'} text-xs font-semibold px-2 py-1 rounded`}>
+                      <div className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${isDark ? 'bg-black/50 text-white' : 'bg-white/90 text-gray-900'} text-xs font-medium tracking-wide px-2 py-1 rounded`}>
                         {showPercentages ? formatPercentage(item.value, totalValue) : formatNumber(item.value)}
                       </div>
                     )}
@@ -189,7 +189,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         {config.theme?.showGridLines !== false && (
           <div className="flex items-center gap-6 mt-8">
             <div className="w-44"></div>
-            <div className={`flex-1 flex justify-between text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} px-2`}>
+            <div className={`flex-1 flex justify-between text-xs font-light ${isDark ? 'text-gray-500' : 'text-gray-500'} px-2 tracking-wider`}>
               <span>0</span>
               <span>{formatNumber(maxValue * 0.2)}</span>
               <span>{formatNumber(maxValue * 0.4)}</span>
@@ -202,7 +202,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         <div className="flex items-center gap-6">
           <div className="w-44"></div>
           <div className="flex-1 text-center">
-            <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Revenue (€)</span>
+            <span className={`text-xs font-light tracking-wide ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Revenue (€)</span>
           </div>
         </div>
       </div>
@@ -221,7 +221,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
     return (
       <div className="space-y-6">
-        <div className={`relative h-64 ${isDark ? 'bg-gray-800/20' : 'bg-gray-100/50'} rounded-lg p-6`}>
+        <div className={`relative h-64 ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-8`}>
           <div className="flex items-end justify-center gap-4 h-full">
             {sortedData.map((item, index) => {
               const percentage = (item.value / maxValue) * 100
@@ -238,7 +238,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       }}
                     >
                       {showDataLabels && (
-                        <div className={`${isDark ? 'bg-black/50 text-white' : 'bg-white/90 text-gray-900'} text-xs font-semibold px-2 py-1 rounded`}>
+                        <div className={`${isDark ? 'bg-black/50 text-white' : 'bg-white/90 text-gray-900'} text-xs font-medium tracking-wide px-2 py-1 rounded`}>
                           {showPercentages ? formatPercentage(item.value, totalValue) : formatNumber(item.value)}
                         </div>
                       )}
@@ -384,7 +384,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
     return (
       <div className="space-y-6">
-        <div className={`relative h-64 ${isDark ? 'bg-gray-800/20' : 'bg-gray-100/50'} rounded-lg p-6`}>
+        <div className={`relative h-64 ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-8`}>
           <svg viewBox="0 0 400 200" className="w-full h-full">
             <defs>
               <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -394,7 +394,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             </defs>
             
             {config.theme?.showGridLines !== false && [0, 1, 2, 3, 4].map((i) => (
-              <line key={i} x1="0" y1={i * 50} x2="400" y2={i * 50} stroke={isDark ? "#374151" : "#D1D5DB"} strokeWidth="1" opacity="0.3" />
+              <line key={i} x1="0" y1={i * 50} x2="400" y2={i * 50} stroke={isDark ? "#374151" : "#E5E7EB"} strokeWidth="0.5" opacity="0.2" />
             ))}
 
             <path
@@ -472,7 +472,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
     return (
       <div className="space-y-6">
-        <div className={`relative h-64 ${isDark ? 'bg-gray-800/20' : 'bg-gray-100/50'} rounded-lg p-6`}>
+        <div className={`relative h-64 ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-8`}>
           <svg viewBox="0 0 400 200" className="w-full h-full">
             <defs>
               <linearGradient id="comboGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -482,7 +482,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             </defs>
             
             {config.theme?.showGridLines !== false && [0, 1, 2, 3, 4].map((i) => (
-              <line key={i} x1="0" y1={i * 50} x2="400" y2={i * 50} stroke={isDark ? "#374151" : "#D1D5DB"} strokeWidth="1" opacity="0.3" />
+              <line key={i} x1="0" y1={i * 50} x2="400" y2={i * 50} stroke={isDark ? "#374151" : "#E5E7EB"} strokeWidth="0.5" opacity="0.2" />
             ))}
 
             {config.data.map((item, index) => {
@@ -610,7 +610,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       </div>
 
       {/* Chart Area */}
-      <div className="flex-1 p-8 overflow-auto">
+      <div className="flex-1 p-12 overflow-auto">
         {needsGradientBorder ? (
           <div className={`h-full min-h-[500px] p-0.5 ${getCornerStyle()} transition-all duration-300`} style={getGradientBorderStyle()}>
             <div ref={chartRef} className={`h-full ${getBackgroundStyle()} ${getCornerStyle()} shadow-sm`}>
@@ -618,11 +618,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 <div className={`h-full w-full ${getChartPadding()}`}>
                   <div className="h-full flex flex-col">
                     {/* Chart Title and Subtitle */}
-                    <div className="mb-8">
-                      <h1 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
+                    <div className="mb-10">
+                      <h1 className={`text-2xl font-light tracking-tight ${isDark ? 'text-white' : 'text-gray-900'} mb-2 leading-tight`}>
                         {config.title}
                       </h1>
-                      <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className={`text-sm font-light ${isDark ? 'text-gray-400' : 'text-gray-600'} leading-relaxed`}>
                         {config.subtitle}
                       </p>
                     </div>
@@ -641,8 +641,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-300 mb-2">No data to display</h3>
-                    <p className="text-sm text-gray-500">Add some data points to see your chart</p>
+                    <h3 className="text-lg font-light text-gray-300 mb-2 tracking-wide">No data to display</h3>
+                    <p className="text-sm font-light text-gray-500 leading-relaxed">Add some data points to see your chart</p>
                   </div>
                 </div>
               )}
