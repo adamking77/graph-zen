@@ -4,7 +4,7 @@ import { useState } from "react"
 import type { ChartConfig } from "@/app/page"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { X, Download, Copy, Code } from "lucide-react"
+import { X, Download, Copy, Code, Link, Share } from "lucide-react"
 
 interface ExportPanelProps {
   config: ChartConfig
@@ -12,7 +12,7 @@ interface ExportPanelProps {
 }
 
 export function ExportPanel({ config, onClose }: ExportPanelProps) {
-  const [activeTab, setActiveTab] = useState<"png" | "svg" | "embed">("png")
+  const [activeTab, setActiveTab] = useState<"png" | "svg" | "embed" | "link">("png")
   const [copied, setCopied] = useState(false)
 
   const generateEmbedCode = () => {
@@ -20,8 +20,29 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
   <h2 style="color: white; font-size: 24px; margin-bottom: 8px;">${config.title}</h2>
   <p style="color: #9ca3af; font-size: 14px; margin-bottom: 24px;">${config.subtitle}</p>
   <!-- Chart data: ${JSON.stringify(config.data)} -->
+  <!-- Chart type: ${config.type} -->
   <!-- Generated with Chart Generator -->
 </div>`
+  }
+
+  const generateEmbedLink = () => {
+    try {
+      const encodedConfig = btoa(unescape(encodeURIComponent(JSON.stringify(config))))
+      return `https://chart-generator.app/embed/${encodedConfig}`
+    } catch (error) {
+      console.warn('Failed to encode config for embed link:', error)
+      return `https://chart-generator.app/embed/error`
+    }
+  }
+
+  const generateShareableLink = () => {
+    try {
+      const encodedConfig = btoa(unescape(encodeURIComponent(JSON.stringify(config))))
+      return `https://chart-generator.app/chart/${encodedConfig}`
+    } catch (error) {
+      console.warn('Failed to encode config for shareable link:', error)
+      return `https://chart-generator.app/chart/error`
+    }
   }
 
   const copyToClipboard = async (text: string) => {
@@ -56,15 +77,15 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex space-x-1 bg-gray-700 rounded-lg p-1">
-            {(["png", "svg", "embed"] as const).map((tab) => (
+            {(["png", "svg", "embed", "link"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   activeTab === tab ? "bg-purple-600 text-white" : "text-gray-300 hover:text-white hover:bg-gray-600"
                 }`}
               >
-                {tab.toUpperCase()}
+                {tab === "link" ? "SHARE" : tab.toUpperCase()}
               </button>
             ))}
           </div>
@@ -127,6 +148,65 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
                   <li>• The chart will display with your data</li>
                   <li>• Customize the styling as needed</li>
                 </ul>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "link" && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Shareable Link</label>
+                <div className="relative">
+                  <input
+                    value={generateShareableLink()}
+                    readOnly
+                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm pr-20"
+                  />
+                  <Button
+                    onClick={() => copyToClipboard(generateShareableLink())}
+                    size="sm"
+                    className="absolute top-1 right-1 bg-purple-600 hover:bg-purple-700"
+                  >
+                    <Copy className="w-4 h-4 mr-1" />
+                    {copied ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Embed Link</label>
+                <div className="relative">
+                  <input
+                    value={generateEmbedLink()}
+                    readOnly
+                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm pr-20"
+                  />
+                  <Button
+                    onClick={() => copyToClipboard(generateEmbedLink())}
+                    size="sm"
+                    className="absolute top-1 right-1 bg-purple-600 hover:bg-purple-700"
+                  >
+                    <Copy className="w-4 h-4 mr-1" />
+                    {copied ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-700 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Share className="w-4 h-4 text-purple-400" />
+                    <h4 className="text-white font-medium">Shareable Link</h4>
+                  </div>
+                  <p className="text-gray-300 text-sm">Direct link to view and edit the chart</p>
+                </div>
+                <div className="bg-gray-700 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Link className="w-4 h-4 text-purple-400" />
+                    <h4 className="text-white font-medium">Embed Link</h4>
+                  </div>
+                  <p className="text-gray-300 text-sm">Direct link for embedding in iframes</p>
+                </div>
               </div>
             </div>
           )}
