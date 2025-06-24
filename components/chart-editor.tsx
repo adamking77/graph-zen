@@ -577,25 +577,6 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
           />
         </div>
 
-        {/* Suggestions */}
-        <div className="bg-gray-900/30 border border-gray-800/30 rounded-lg p-3">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-5 h-5 bg-purple-600 rounded flex items-center justify-center">
-              <span className="text-white text-xs">✨</span>
-            </div>
-            <span className="text-white text-sm font-medium">Suggestions</span>
-          </div>
-          
-          <button className="w-full text-left p-3 bg-gray-800/30 hover:bg-gray-700/30 rounded-lg border border-gray-700/30 hover:border-gray-600/50 transition-all duration-200 hover:shadow-sm">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-              <span className="text-white text-sm font-medium">Show me</span>
-            </div>
-            <p className="text-gray-400 text-xs ml-4">
-              Add trend lines or comparison data to enhance your visualization
-            </p>
-          </button>
-        </div>
       </div>
     </div>
   )
