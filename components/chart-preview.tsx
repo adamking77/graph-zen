@@ -107,6 +107,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     switch (bgType) {
       case 'black': return 'bg-black'
       case 'white': return 'bg-white'
+      case 'midnight': return 'bg-[#1A1B3A]'
       case 'none': return 'bg-transparent'
       default: return 'bg-black'
     }

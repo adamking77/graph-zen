@@ -17,7 +17,7 @@ export interface ColorTheme {
   borderStyle: 'none' | 'gradient' | 'solid'
   borderColor?: string
   cornerStyle: 'rounded' | 'sharp'
-  background: 'black' | 'white' | 'none'
+  background: 'black' | 'white' | 'midnight' | 'none'
   // Style options
   sortHighToLow?: boolean
   showDataLabels?: boolean
@@ -359,10 +359,11 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
         {/* Chart Background */}
         <div>
           <h3 className="text-white text-sm font-normal mb-3">Chart background</h3>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {[
               { id: 'black', label: 'Black', color: '#000000' },
               { id: 'white', label: 'White', color: '#FFFFFF' },
+              { id: 'midnight', label: 'Midnight', color: '#1A1B3A' },
               { id: 'none', label: 'None', color: 'transparent' }
             ].map((bg) => (
               <button
