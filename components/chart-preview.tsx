@@ -423,7 +423,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium group-hover:text-white transition-colors`}>
+                    <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium ${isDark ? 'group-hover:text-white' : 'group-hover:text-gray-900'} transition-colors`}>
                       {item.scenario}
                     </span>
                     <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm font-mono`}>
@@ -571,7 +571,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium group-hover:text-white transition-colors`}>
+                    <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium ${isDark ? 'group-hover:text-white' : 'group-hover:text-gray-900'} transition-colors`}>
                       {item.scenario}
                     </span>
                     <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm font-mono`}>
