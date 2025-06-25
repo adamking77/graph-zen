@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Plus, Trash2, BarChart3, TrendingUp, PieChart, Upload, FileText, X, AlertTriangle, CheckCircle } from "lucide-react"
 import { ColorPalette, type ColorTheme } from "@/components/color-palette"
 import { SizeSelector } from "@/components/size-selector"
+import { DataEditorDialog } from "@/components/data-editor-dialog"
 
 interface PreviewDataItem {
   scenario: string
@@ -275,46 +276,37 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
               <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
               Chart Data
             </h3>
-            <Button onClick={addDataItem} size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-2">
-              <Plus className="w-3 h-3 mr-1" />
-              Add
-            </Button>
+            <DataEditorDialog config={config} onConfigChange={onChange}>
+              <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-2">
+                <Plus className="w-3 h-3 mr-1" />
+                Edit Data
+              </Button>
+            </DataEditorDialog>
           </div>
           
           <div className="bg-gray-900/30 border border-gray-800/30 rounded-lg p-3">
             <div className="space-y-2">
-              {config.data.map((item, index) => (
+              <div className="text-xs text-gray-400 mb-2">
+                {config.data.length} data {config.data.length === 1 ? 'point' : 'points'}
+              </div>
+              {config.data.slice(0, 3).map((item, index) => (
                 <div
                   key={index}
                   className="flex gap-2 items-center p-2 bg-gray-800/30 rounded border border-gray-700/30"
                 >
-                  <input
-                    type="text"
-                    value={item.scenario}
-                    onChange={(e) => updateDataItem(index, { scenario: e.target.value })}
-                    placeholder="Scenario name"
-                    className="flex-1 bg-gray-800/50 border border-gray-700/50 rounded px-2 py-1 text-xs text-white placeholder-gray-400 focus:ring-1 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
-                    suppressHydrationWarning
-                  />
-                  <input
-                    type="number"
-                    value={item.value}
-                    onChange={(e) => updateDataItem(index, { value: Number.parseInt(e.target.value) || 0 })}
-                    placeholder="Value"
-                    className="w-20 bg-gray-800/50 border border-gray-700/50 rounded px-2 py-1 text-xs text-white placeholder-gray-400 focus:ring-1 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
-                    suppressHydrationWarning
-                  />
-                  <span className="text-xs text-purple-300 font-light w-8 text-center tracking-wide">{formatNumber(item.value)}</span>
-                  <Button
-                    onClick={() => removeDataItem(index)}
-                    size="sm"
-                    variant="outline"
-                    className="bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20 hover:border-red-500/30 h-6 w-6 p-0"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
+                  <div className="flex-1 text-xs text-white truncate">
+                    {item.scenario}
+                  </div>
+                  <div className="text-xs text-purple-300 font-light text-right">
+                    {formatNumber(item.value)}
+                  </div>
                 </div>
               ))}
+              {config.data.length > 3 && (
+                <div className="text-xs text-gray-400 text-center py-1">
+                  +{config.data.length - 3} more items...
+                </div>
+              )}
             </div>
           </div>
         </div>
