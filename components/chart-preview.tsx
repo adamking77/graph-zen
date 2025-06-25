@@ -138,6 +138,31 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   const showPercentages = config.theme?.showPercentages || false
   const showGridLines = config.theme?.showGridLines !== false
 
+  // Data label styling system
+  const getDataLabelStyle = (value: number, color: string, position: 'inside' | 'outside' = 'inside') => {
+    const isLightColor = isColorLight(color)
+    const textColor = position === 'inside' 
+      ? (isLightColor ? '#1f2937' : '#ffffff')
+      : (isDark ? '#f3f4f6' : '#1f2937')
+    
+    return {
+      className: "text-xs font-medium",
+      style: { 
+        color: textColor
+      }
+    }
+  }
+
+  // Helper to determine if color is light
+  const isColorLight = (color: string) => {
+    const hex = color.replace('#', '')
+    const r = parseInt(hex.substr(0, 2), 16)
+    const g = parseInt(hex.substr(2, 2), 16)  
+    const b = parseInt(hex.substr(4, 2), 16)
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000
+    return brightness > 128
+  }
+
   const renderHorizontalBarChart = () => {
     if (config.data.length === 0) return null
 
@@ -180,11 +205,19 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     }}
                     onMouseLeave={() => setTooltip(null)}
                   >
-                    {showDataLabels && (
-                      <div className={`${isDark ? 'bg-gray-900/90 text-white' : 'bg-white/95 text-gray-800'} text-xs font-medium px-2 py-1 rounded shadow-sm`}>
-                        {showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)}
-                      </div>
-                    )}
+                    {showDataLabels && (() => {
+                      const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                      const labelStyle = getDataLabelStyle(item.value, color, percentage > 30 ? 'inside' : 'outside')
+                      
+                      return (
+                        <div 
+                          className={labelStyle.className}
+                          style={labelStyle.style}
+                        >
+                          {labelValue}
+                        </div>
+                      )
+                    })()}
                   </div>
                 </div>
               </div>
@@ -239,11 +272,19 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   }}
                   onMouseLeave={() => setTooltip(null)}
                 >
-                  {showDataLabels && (
-                    <div className={`${isDark ? 'bg-gray-900/90 text-white' : 'bg-white/95 text-gray-800'} text-xs font-medium px-2 py-1 rounded shadow-sm`}>
-                      {showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)}
-                    </div>
-                  )}
+                  {showDataLabels && (() => {
+                    const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                    const labelStyle = getDataLabelStyle(item.value, color, barHeight > 40 ? 'inside' : 'outside')
+                    
+                    return (
+                      <div 
+                        className={labelStyle.className}
+                        style={labelStyle.style}
+                      >
+                        {labelValue}
+                      </div>
+                    )
+                  })()}
                 </div>
               </div>
             )
@@ -321,6 +362,26 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       setTooltip(null)
                     }}
                   />
+                  {showDataLabels && angle > 30 && (() => {
+                    const midAngle = startAngle + angle / 2 - 90
+                    const midAngleRad = (midAngle * Math.PI) / 180
+                    const labelRadius = 45
+                    const labelX = 100 + labelRadius * Math.cos(midAngleRad)
+                    const labelY = 100 + labelRadius * Math.sin(midAngleRad)
+                    const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
+                    const labelStyle = getDataLabelStyle(item.value, color, 'inside')
+                    
+                    return (
+                      <foreignObject x={labelX - 25} y={labelY - 10} width="50" height="20">
+                        <div 
+                          className={`${labelStyle.className} text-center w-full`}
+                          style={labelStyle.style}
+                        >
+                          {labelValue}
+                        </div>
+                      </foreignObject>
+                    )
+                  })()}
                 </g>
               )
             })}
@@ -444,6 +505,26 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       setTooltip(null)
                     }}
                   />
+                  {showDataLabels && angle > 25 && (() => {
+                    const midAngle = startAngle + angle / 2 - 90
+                    const midAngleRad = (midAngle * Math.PI) / 180
+                    const labelRadius = (outerRadius + innerRadius) / 2
+                    const labelX = centerX + labelRadius * Math.cos(midAngleRad)
+                    const labelY = centerY + labelRadius * Math.sin(midAngleRad)
+                    const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
+                    const labelStyle = getDataLabelStyle(item.value, color, 'inside')
+                    
+                    return (
+                      <foreignObject x={labelX - 30} y={labelY - 10} width="60" height="20">
+                        <div 
+                          className={`${labelStyle.className} text-center w-full`}
+                          style={labelStyle.style}
+                        >
+                          {labelValue}
+                        </div>
+                      </foreignObject>
+                    )
+                  })()}
                 </g>
               )
             })}
@@ -641,6 +722,22 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   fill="white"
                   className="pointer-events-none"
                 />
+                {showDataLabels && (() => {
+                  const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
+                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                  const labelStyle = getDataLabelStyle(item.value, primaryColor, 'outside')
+                  
+                  return (
+                    <foreignObject x={x - 30} y={y - 35} width="60" height="25">
+                      <div 
+                        className={`${labelStyle.className} text-center w-full`}
+                        style={labelStyle.style}
+                      >
+                        {labelValue}
+                      </div>
+                    </foreignObject>
+                  )
+                })()}
               </g>
             ))}
 
@@ -862,6 +959,22 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   }}
                   onMouseLeave={() => setTooltip(null)}
                 />
+                {showDataLabels && (() => {
+                  const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
+                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                  const labelStyle = getDataLabelStyle(item.value, primaryColor, barHeight > 40 ? 'inside' : 'outside')
+                  
+                  return (
+                    <foreignObject x={x - 30} y={barHeight > 40 ? y + barHeight - 25 : y - 30} width="60" height="25">
+                      <div 
+                        className={`${labelStyle.className} text-center w-full`}
+                        style={labelStyle.style}
+                      >
+                        {labelValue}
+                      </div>
+                    </foreignObject>
+                  )
+                })()}
               </g>
             ))}
 
@@ -912,6 +1025,22 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   fill="white"
                   className="pointer-events-none"
                 />
+                {showDataLabels && (() => {
+                  const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
+                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                  const labelStyle = getDataLabelStyle(item.value, lineColor, 'outside')
+                  
+                  return (
+                    <foreignObject x={x - 30} y={y - 50} width="60" height="25">
+                      <div 
+                        className={`${labelStyle.className} text-center w-full`}
+                        style={labelStyle.style}
+                      >
+                        {labelValue}
+                      </div>
+                    </foreignObject>
+                  )
+                })()}
               </g>
             ))}
 
