@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import type { ChartConfig } from "@/app/page"
+import type { ChartConfig, ChartData } from "@/app/page"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface TooltipData {
@@ -82,19 +82,36 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   // Helper function to get border style
   const getBorderStyle = () => {
     const borderType = config.theme?.borderStyle || 'none'
+    const borderColor = config.theme?.borderColor || '#6B7280'
     switch (borderType) {
       case 'solid': return `border-2`
-      case 'gradient': return 'border-2 border-transparent bg-clip-padding'
+      case 'gradient': return `border-2 border-transparent bg-gradient-to-r bg-clip-border`
       case 'none': return ''
       default: return ''
     }
   }
   
-  // Get border color for solid borders
-  const getBorderColor = () => {
+  // Get border color for solid borders and gradient background for gradient borders
+  const getBorderStyles = () => {
     const borderType = config.theme?.borderStyle || 'none'
     const borderColor = config.theme?.borderColor || '#6B7280'
-    return borderType === 'solid' ? { borderColor } : {}
+    
+    if (borderType === 'solid') {
+      return { borderColor }
+    } else if (borderType === 'gradient') {
+      // Create gradient background using the selected border color
+      // Generate a lighter variant for the gradient effect
+      const lighterColor = borderColor + '80' // Add transparency
+      return { 
+        backgroundImage: `linear-gradient(135deg, ${borderColor}, ${lighterColor})`
+      }
+    }
+    return {}
+  }
+  
+  // Get gradient border padding (matches border-2 thickness)
+  const getGradientPadding = () => {
+    return { padding: '2px' } // Match border-2 thickness
   }
   
   // Get dynamic padding based on border presence
@@ -1175,37 +1192,76 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       
       {/* Chart Area */}
       <div className="flex-1 p-6 overflow-hidden flex items-center justify-center">
-        <div 
-          ref={chartRef} 
-          className={`${getBackgroundStyle()} ${getCornerStyle()} ${getBorderStyle()} shadow-sm transition-all duration-300`} 
-          style={{
-            ...getBorderColor(),
-            aspectRatio: `${dimensions.width} / ${dimensions.height}`,
-            width: 'min(100%, 90vh * ' + (dimensions.width / dimensions.height) + ')',
-            height: 'min(100%, 90vw * ' + (dimensions.height / dimensions.width) + ')',
-            maxWidth: '95%',
-            maxHeight: '95%'
-          }}
-        >
-          <div className={`h-full w-full ${getChartPadding()}`}>
-            <div className="h-full flex flex-col">
-              {/* Chart Title and Subtitle */}
-              <div className="mb-8">
-                <h1 className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
-                  {config.title}
-                </h1>
-                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {config.subtitle}
-                </p>
-              </div>
-              
-              {/* Chart Content */}
-              <div className="flex-1">
-                {renderChart()}
+        {config.theme?.borderStyle === 'gradient' ? (
+          <div 
+            className={`${getCornerStyle()} shadow-sm transition-all duration-300`}
+            style={{
+              ...getBorderStyles(),
+              ...getGradientPadding(),
+              aspectRatio: `${dimensions.width} / ${dimensions.height}`,
+              width: 'min(100%, 90vh * ' + (dimensions.width / dimensions.height) + ')',
+              height: 'min(100%, 90vw * ' + (dimensions.height / dimensions.width) + ')',
+              maxWidth: '93%',
+              maxHeight: '93%'
+            }}
+          >
+            <div 
+              ref={chartRef} 
+              className={`${getBackgroundStyle()} ${getCornerStyle()} w-full h-full`}
+            >
+              <div className={`h-full w-full ${getChartPadding()}`}>
+                <div className="h-full flex flex-col">
+                  {/* Chart Title and Subtitle */}
+                  <div className="mb-8">
+                    <h1 className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
+                      {config.title}
+                    </h1>
+                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {config.subtitle}
+                    </p>
+                  </div>
+                  
+                  {/* Chart Content */}
+                  <div className="flex-1">
+                    {renderChart()}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div 
+            ref={chartRef} 
+            className={`${getBackgroundStyle()} ${getCornerStyle()} ${getBorderStyle()} shadow-sm transition-all duration-300`} 
+            style={{
+              ...getBorderStyles(),
+              aspectRatio: `${dimensions.width} / ${dimensions.height}`,
+              width: 'min(100%, 90vh * ' + (dimensions.width / dimensions.height) + ')',
+              height: 'min(100%, 90vw * ' + (dimensions.height / dimensions.width) + ')',
+              maxWidth: '95%',
+              maxHeight: '95%'
+            }}
+          >
+            <div className={`h-full w-full ${getChartPadding()}`}>
+              <div className="h-full flex flex-col">
+                {/* Chart Title and Subtitle */}
+                <div className="mb-8">
+                  <h1 className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
+                    {config.title}
+                  </h1>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {config.subtitle}
+                  </p>
+                </div>
+                
+                {/* Chart Content */}
+                <div className="flex-1">
+                  {renderChart()}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
