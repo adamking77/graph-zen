@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2, BarChart3, TrendingUp, PieChart, Upload, FileText, X, AlertTriangle, CheckCircle } from "lucide-react"
 import { ColorPalette, type ColorTheme } from "@/components/color-palette"
+import { SizeSelector } from "@/components/size-selector"
 
 interface PreviewDataItem {
   scenario: string
@@ -272,7 +273,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
           <div className="flex items-center justify-between">
             <h3 className="text-white text-sm font-light tracking-wide flex items-center gap-2">
               <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
-              Selected the top 3 scenarios by revenue
+              Chart Data
             </h3>
             <Button onClick={addDataItem} size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-2">
               <Plus className="w-3 h-3 mr-1" />
@@ -557,6 +558,14 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
             </div>
           </div>
         )}
+
+        {/* Size Selector */}
+        <div>
+          <SizeSelector 
+            value={config.dimensions || { width: 1920, height: 1080, preset: 'Google Slides / PowerPoint', aspectRatio: '16:9' }}
+            onChange={(dimensions) => updateConfig({ dimensions })}
+          />
+        </div>
 
         {/* Color Palette */}
         <div>

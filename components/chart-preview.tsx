@@ -57,6 +57,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   const chartRef = useRef<HTMLDivElement>(null)
   const isDark = config.theme?.background !== 'white'
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
+  const [renderKey, setRenderKey] = useState(0)
+  
+  // Get chart dimensions
+  const dimensions = config.dimensions || { width: 1920, height: 1080, preset: 'Google Slides / PowerPoint', aspectRatio: '16:9' }
   
   // Helper function to get background style
   const getBackgroundStyle = () => {
@@ -78,7 +82,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   // Helper function to get border style
   const getBorderStyle = () => {
     const borderType = config.theme?.borderStyle || 'none'
-    const borderColor = config.theme?.borderColor || '#6B7280'
     switch (borderType) {
       case 'solid': return `border-2`
       case 'gradient': return 'border-2 border-transparent bg-clip-padding'
@@ -94,101 +97,46 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return borderType === 'solid' ? { borderColor } : {}
   }
   
-  // For gradient borders, we need a wrapper
-  const needsGradientBorder = config.theme?.borderStyle === 'gradient'
-  
   // Get dynamic padding based on border presence
   const getChartPadding = () => {
     const hasBorder = config.theme?.borderStyle !== 'none'
     return hasBorder ? 'p-6' : 'p-4'
   }
-  
-  // Get gradient border style based on selected color
-  const getGradientBorderStyle = () => {
-    const borderColor = config.theme?.borderColor || '#8B5CF6'
-    // Create a more sophisticated gradient with the selected color
-    // Convert hex to variations for a richer gradient
-    const variations = getColorVariations(borderColor)
-    return {
-      background: `linear-gradient(45deg, ${variations.dark}, ${borderColor}, ${variations.light})`
-    }
-  }
-  
-  // Helper to create color variations
-  const getColorVariations = (color: string) => {
-    // For common colors, provide predefined variations
-    const colorMap: { [key: string]: { dark: string, light: string } } = {
-      '#6B7280': { dark: '#374151', light: '#D1D5DB' }, // Gray
-      '#8B5CF6': { dark: '#7C3AED', light: '#C4B5FD' }, // Purple
-      '#06D6A0': { dark: '#047857', light: '#A7F3D0' }, // Teal
-      '#FFD23F': { dark: '#D97706', light: '#FEF3C7' }, // Yellow
-      '#FF6B6B': { dark: '#DC2626', light: '#FECACA' }, // Red
-      '#4ECDC4': { dark: '#0891B2', light: '#A7F3D0' }, // Cyan
-      '#FFFFFF': { dark: '#D1D5DB', light: '#F9FAFB' }, // White
-      '#000000': { dark: '#111827', light: '#6B7280' }  // Black
-    }
-    
-    return colorMap[color] || { 
-      dark: color + '99', 
-      light: color + '40' 
-    }
-  }
 
   const formatNumber = (value: number): string => {
     const abbreviation = config.theme?.abbreviation || 'auto'
-    const decimalPlaces = config.theme?.decimalPlaces || 'auto'
-    const fixedCount = config.theme?.fixedDecimalCount || 0
-    
-    let formattedValue: string
     
     switch (abbreviation) {
       case 'none':
-        formattedValue = value.toString()
-        break
+        return value.toString()
       case 'k':
-        formattedValue = (value / 1000).toString() + 'k'
-        break
+        return (value / 1000).toString() + 'k'
       case 'm':
-        formattedValue = (value / 1000000).toString() + 'M'
-        break
+        return (value / 1000000).toString() + 'M'
       case 'auto':
       default:
         if (value >= 1000000) {
-          formattedValue = (value / 1000000).toFixed(1) + "M"
+          return (value / 1000000).toFixed(1) + "M"
         } else if (value >= 1000) {
-          formattedValue = (value / 1000).toFixed(0) + "k"
+          return (value / 1000).toFixed(0) + "k"
         } else {
-          formattedValue = value.toString()
+          return value.toString()
         }
     }
-    
-    // Apply decimal places if fixed
-    if (decimalPlaces === 'fixed' && abbreviation !== 'auto') {
-      const numberPart = parseFloat(formattedValue.replace(/[kM]/g, ''))
-      const suffix = formattedValue.match(/[kM]/)?.[0] || ''
-      formattedValue = numberPart.toFixed(fixedCount) + suffix
-    }
-    
-    return formattedValue
   }
 
-  const formatPercentage = (value: number, total: number): string => {
-    const percentage = (value / total) * 100
-    const decimalPlaces = config.theme?.decimalPlaces || 'auto'
-    const fixedCount = config.theme?.fixedDecimalCount || 0
-    
-    if (decimalPlaces === 'fixed') {
-      return percentage.toFixed(fixedCount) + '%'
-    }
-    return percentage.toFixed(1) + '%'
-  }
-
-  const sortData = (data: any[]) => {
+  // Sort data function
+  const sortData = (data: ChartData[]) => {
     if (config.theme?.sortHighToLow) {
       return [...data].sort((a, b) => b.value - a.value)
     }
     return data
   }
+
+  // Style options
+  const showDataLabels = config.theme?.showDataLabels !== false
+  const showPercentages = config.theme?.showPercentages || false
+  const showGridLines = config.theme?.showGridLines !== false
 
   const renderHorizontalBarChart = () => {
     if (config.data.length === 0) return null
@@ -197,22 +145,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const maxValue = Math.max(...sortedData.map((d) => d.value))
     const totalValue = sortedData.reduce((sum, d) => sum + d.value, 0)
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
-    const showDataLabels = config.theme?.showDataLabels !== false
-    const showPercentages = config.theme?.showPercentages || false
 
     return (
-      <>
-        <style jsx>{`
-          @keyframes barGrow {
-            from { width: 0%; }
-            to { width: var(--target-width); }
-          }
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-        `}</style>
-        <div className="space-y-6">
+      <div className="flex items-center justify-center h-full">
+        <div className="w-full max-w-4xl space-y-4">
           {sortedData.map((item, index) => {
             const percentage = (item.value / maxValue) * 100
             const color = colors[index % colors.length]
@@ -220,75 +156,43 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             return (
               <div key={index} className="flex items-center gap-4 group">
                 <div className="w-32 text-right">
-                  <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-xs font-medium`}>{item.scenario}</span>
+                  <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium`}>{item.scenario}</span>
                 </div>
                 <div className="flex-1 relative">
-                  <div className={`h-8 ${isDark ? 'bg-gray-800/30' : 'bg-gray-200/40'} rounded-sm overflow-hidden`}>
-                    <div
-                      className="h-full rounded-sm transition-all duration-200 ease-out flex items-center justify-end pr-3 relative cursor-pointer"
-                      style={{
-                        '--target-width': `${percentage}%`,
-                        width: '0%',
-                        background: `linear-gradient(90deg, ${color}e6, ${color})`,
-                        boxShadow: `0 2px 4px ${color}20`,
-                        animation: `barGrow 800ms ease-out ${index * 100}ms forwards`
-                      } as any}
-                      onMouseEnter={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect()
-                        setTooltip({
-                          x: rect.right,
-                          y: rect.top + rect.height / 2,
-                          label: item.scenario,
-                          value: item.value,
-                          percentage: (item.value / totalValue) * 100,
-                          color: color
-                        })
-                        e.currentTarget.style.transform = 'scaleY(1.05)'
-                        e.currentTarget.style.filter = 'brightness(1.15)'
-                        e.currentTarget.style.boxShadow = `0 4px 12px ${color}40`
-                      }}
-                      onMouseLeave={(e) => {
-                        setTooltip(null)
-                        e.currentTarget.style.transform = 'scaleY(1)'
-                        e.currentTarget.style.filter = 'brightness(1)'
-                        e.currentTarget.style.boxShadow = `0 2px 4px ${color}20`
-                      }}
-                      onMouseMove={(e) => {
-                        if (tooltip) {
-                          const rect = e.currentTarget.getBoundingClientRect()
-                          setTooltip(prev => prev ? {
-                            ...prev,
-                            x: rect.right,
-                            y: rect.top + rect.height / 2
-                          } : null)
-                        }
-                      }}
-                    >
-                      {showDataLabels && (
-                        <div className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${isDark ? 'bg-gray-900/90 text-white' : 'bg-white/95 text-gray-800'} text-xs font-medium px-2 py-1 rounded shadow-sm opacity-0`}
-                             style={{ animation: `fadeIn 300ms ease-out ${800 + index * 100}ms forwards` }}>
-                          {showPercentages ? formatPercentage(item.value, totalValue) : formatNumber(item.value)}
-                        </div>
-                      )}
-                    </div>
+                <div className={`h-8 ${isDark ? 'bg-gray-800/30' : 'bg-gray-200/40'} rounded-sm overflow-hidden`}>
+                  <div
+                    className="h-full rounded-sm transition-all duration-200 ease-out flex items-center justify-end pr-3 relative cursor-pointer"
+                    style={{
+                      width: `${percentage}%`,
+                      background: `linear-gradient(90deg, ${color}e6, ${color})`,
+                      boxShadow: `0 2px 4px ${color}20`
+                    }}
+                    onMouseEnter={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect()
+                      setTooltip({
+                        x: rect.right,
+                        y: rect.top + rect.height / 2,
+                        label: item.scenario,
+                        value: item.value,
+                        percentage: (item.value / totalValue) * 100,
+                        color: color
+                      })
+                    }}
+                    onMouseLeave={() => setTooltip(null)}
+                  >
+                    {showDataLabels && (
+                      <div className={`${isDark ? 'bg-gray-900/90 text-white' : 'bg-white/95 text-gray-800'} text-xs font-medium px-2 py-1 rounded shadow-sm`}>
+                        {showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            )
-          })}
-
-          {config.theme?.showGridLines !== false && (
-            <div className="flex items-center gap-4 mt-6 opacity-50">
-              <div className="w-32"></div>
-              <div className={`flex-1 flex justify-between text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'} px-1`}>
-                <span>0</span>
-                <span>{formatNumber(maxValue * 0.5)}</span>
-                <span>{formatNumber(maxValue)}</span>
-              </div>
             </div>
-          )}
+          )
+        })}
         </div>
-      </>
+      </div>
     )
   }
 
@@ -299,95 +203,60 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const maxValue = Math.max(...sortedData.map((d) => d.value))
     const totalValue = sortedData.reduce((sum, d) => sum + d.value, 0)
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
-    const showDataLabels = config.theme?.showDataLabels !== false
-    const showPercentages = config.theme?.showPercentages || false
+
+    // Use container dimensions dynamically
+    const containerHeight = chartRef.current?.clientHeight || 600
+    const maxBarHeight = Math.max(containerHeight * 0.5, 200)
+    const barWidth = 32 // Narrow width to match horizontal bar chart consistency
 
     return (
-      <>
-        <style jsx>{`
-          @keyframes barGrowUp {
-            from { height: 0px; }
-            to { height: var(--target-height); }
-          }
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-        `}</style>
-        <div className="space-y-10">
-          <div className={`relative h-96 ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-12`}>
-            <div className="flex items-end justify-center gap-12 h-full">
-              {sortedData.map((item, index) => {
-                const percentage = (item.value / maxValue) * 100
-                const barHeight = Math.max((percentage / 100) * 280, 15)
-                const color = colors[index % colors.length]
-                
-                return (
-                  <div key={index} className="flex flex-col items-center gap-3 group">
-                    <div className="relative flex items-end justify-center">
-                      <div
-                        className="w-8 rounded-t cursor-pointer transition-all duration-200"
-                        style={{
-                          '--target-height': `${barHeight}px`,
-                          height: '0px',
-                          background: `linear-gradient(180deg, ${color}f0, ${color})`,
-                          boxShadow: `0 2px 8px ${color}25`,
-                          animation: `barGrowUp 800ms ease-out ${index * 100}ms forwards`
-                        } as any}
-                        onMouseEnter={(e) => {
-                          const rect = e.currentTarget.getBoundingClientRect()
-                          setTooltip({
-                            x: rect.left + rect.width / 2,
-                            y: rect.top,
-                            label: item.scenario,
-                            value: item.value,
-                            percentage: (item.value / totalValue) * 100,
-                            color: color
-                          })
-                          e.currentTarget.style.transform = 'scale(1.05)'
-                          e.currentTarget.style.filter = 'brightness(1.15)'
-                          e.currentTarget.style.boxShadow = `0 4px 16px ${color}40`
-                        }}
-                        onMouseLeave={(e) => {
-                          setTooltip(null)
-                          e.currentTarget.style.transform = 'scale(1)'
-                          e.currentTarget.style.filter = 'brightness(1)'
-                          e.currentTarget.style.boxShadow = `0 2px 8px ${color}25`
-                        }}
-                        onMouseMove={(e) => {
-                          if (tooltip) {
-                            const rect = e.currentTarget.getBoundingClientRect()
-                            setTooltip(prev => prev ? {
-                              ...prev,
-                              x: rect.left + rect.width / 2,
-                              y: rect.top
-                            } : null)
-                          }
-                        }}
-                      >
-                        {showDataLabels && (
-                          <div className={`absolute -top-10 left-1/2 transform -translate-x-1/2 ${isDark ? 'bg-gray-900/90 text-white' : 'bg-white/95 text-gray-800'} text-xs font-medium px-2 py-1 rounded shadow-sm whitespace-nowrap opacity-0`}
-                               style={{ animation: `fadeIn 300ms ease-out ${800 + index * 100}ms forwards` }}>
-                            {showPercentages ? formatPercentage(item.value, totalValue) : formatNumber(item.value)}
-                          </div>
-                        )}
-                      </div>
+      <div className="h-full flex flex-col justify-center">
+        <div className="flex items-end justify-center gap-12">
+          {sortedData.map((item, index) => {
+            const percentage = (item.value / maxValue) * 100
+            const barHeight = Math.max((percentage / 100) * maxBarHeight, 15)
+            const color = colors[index % colors.length]
+            
+            return (
+              <div key={index} className="flex flex-col items-center gap-2">
+                <div
+                  className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2"
+                  style={{
+                    width: `${barWidth}px`,
+                    height: `${barHeight}px`,
+                    background: `linear-gradient(180deg, ${color}f0, ${color})`,
+                    boxShadow: `0 2px 8px ${color}25`
+                  }}
+                  onMouseEnter={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect()
+                    setTooltip({
+                      x: rect.left + rect.width / 2,
+                      y: rect.top,
+                      label: item.scenario,
+                      value: item.value,
+                      color: color
+                    })
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
+                >
+                  {showDataLabels && (
+                    <div className={`${isDark ? 'bg-gray-900/90 text-white' : 'bg-white/95 text-gray-800'} text-xs font-medium px-2 py-1 rounded shadow-sm`}>
+                      {showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)}
                     </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-          
-          <div className={`flex justify-between text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'} px-12`}>
-            {sortedData.map((item, index) => (
-              <span key={index} className="text-center max-w-28 truncate">
-                {item.scenario}
-              </span>
-            ))}
-          </div>
+                  )}
+                </div>
+              </div>
+            )
+          })}
         </div>
-      </>
+        <div className="flex justify-center gap-12 mt-2">
+          {sortedData.map((item, index) => (
+            <span key={index} className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} text-center max-w-20 truncate`}>
+              {item.scenario}
+            </span>
+          ))}
+        </div>
+      </div>
     )
   }
 
@@ -398,49 +267,46 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"]
 
     return (
-      <>
-        <style jsx>{`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes scaleIn {
-            from { 
-              opacity: 0;
-              transform: scale(0);
-            }
-            to { 
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-        `}</style>
-        <div className="flex items-center justify-center space-x-12">
-          <div className="relative w-96 h-96">
-            <svg viewBox="0 0 200 200" className="w-full h-full">
-              {config.data.map((item, index) => {
-                const angle = (item.value / total) * 360
-                const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
-                const color = colors[index % colors.length]
+      <div className="flex items-center justify-center gap-8 h-full">
+        <div className="relative w-64 h-64">
+          <svg viewBox="0 0 200 200" className="w-full h-full transform rotate-0">
+            <defs>
+              {colors.map((color, i) => (
+                <linearGradient key={i} id={`pieGradient${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={color} />
+                  <stop offset="100%" stopColor={color} stopOpacity="0.7" />
+                </linearGradient>
+              ))}
+              <filter id="pieShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.2"/>
+              </filter>
+            </defs>
+            {config.data.map((item, index) => {
+              const angle = (item.value / total) * 360
+              const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
+              const color = colors[index % colors.length]
 
-                const x1 = 100 + 70 * Math.cos(((startAngle - 90) * Math.PI) / 180)
-                const y1 = 100 + 70 * Math.sin(((startAngle - 90) * Math.PI) / 180)
-                const x2 = 100 + 70 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
-                const y2 = 100 + 70 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
+              const x1 = 100 + 70 * Math.cos(((startAngle - 90) * Math.PI) / 180)
+              const y1 = 100 + 70 * Math.sin(((startAngle - 90) * Math.PI) / 180)
+              const x2 = 100 + 70 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
+              const y2 = 100 + 70 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
 
-                const largeArcFlag = angle > 180 ? 1 : 0
+              const largeArcFlag = angle > 180 ? 1 : 0
 
-                return (
+              return (
+                <g key={index}>
                   <path
-                    key={index}
                     d={`M 100 100 L ${x1} ${y1} A 70 70 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
-                    fill={color}
-                    className="transition-all duration-200 cursor-pointer"
-                    style={{ 
+                    fill={`url(#pieGradient${index % colors.length})`}
+                    filter="url(#pieShadow)"
+                    className="cursor-pointer transition-all duration-300 hover:opacity-90"
+                    style={{
                       transformOrigin: '100px 100px',
-                      animation: `scaleIn 400ms ease-out ${index * 150}ms both`
+                      transform: 'scale(1)',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                     }}
                     onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.03)'
                       setTooltip({
                         x: e.clientX,
                         y: e.clientY,
@@ -449,57 +315,47 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         percentage: (item.value / total) * 100,
                         color: color
                       })
-                      e.currentTarget.style.transform = 'scale(1.05)'
-                      e.currentTarget.style.filter = `brightness(1.15) drop-shadow(0 4px 12px ${color}60)`
                     }}
                     onMouseLeave={(e) => {
-                      setTooltip(null)
                       e.currentTarget.style.transform = 'scale(1)'
-                      e.currentTarget.style.filter = 'brightness(1)'
-                    }}
-                    onMouseMove={(e) => {
-                      if (tooltip) {
-                        setTooltip(prev => prev ? {
-                          ...prev,
-                          x: e.clientX,
-                          y: e.clientY
-                        } : null)
-                      }
+                      setTooltip(null)
                     }}
                   />
-                )
-              })}
-            </svg>
-          </div>
-          <div className="space-y-3">
-            {config.data.map((item, index) => {
-              const percentage = ((item.value / total) * 100).toFixed(1)
-              return (
-                <div key={index} className="flex items-center gap-3 group cursor-pointer opacity-0" 
-                     style={{ animation: `fadeIn 300ms ease-out ${600 + index * 150}ms forwards` }}>
-                  <div 
-                    className="w-3 h-3 rounded transition-all duration-200 group-hover:scale-110" 
-                    style={{ backgroundColor: colors[index % colors.length] }} 
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-xs font-medium`}>
-                        {item.scenario}
-                      </span>
-                      <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs font-semibold`}>
-                        {percentage}%
-                      </span>
-                    </div>
-                    <div className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs mt-0.5`}>
-                      {formatNumber(item.value)}
-                    </div>
-                  </div>
-                </div>
+                </g>
               )
             })}
-          </div>
+          </svg>
         </div>
-      </>
+        <div className="space-y-3">
+          {config.data.map((item, index) => {
+            const percentage = ((item.value / total) * 100).toFixed(1)
+            return (
+              <div key={index} className="flex items-center gap-3 group cursor-pointer">
+                <div 
+                  className="w-4 h-4 rounded-full shadow-sm transition-all duration-200 group-hover:scale-110" 
+                  style={{ 
+                    background: `linear-gradient(135deg, ${colors[index % colors.length]}ff, ${colors[index % colors.length]}cc)`,
+                    boxShadow: `0 2px 4px ${colors[index % colors.length]}40`
+                  }} 
+                />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium group-hover:text-white transition-colors`}>
+                      {item.scenario}
+                    </span>
+                    <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm font-mono`}>
+                      {percentage}%
+                    </span>
+                  </div>
+                  <div className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs font-medium`}>
+                    {formatNumber(item.value)}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     )
   }
 
@@ -510,50 +366,70 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"]
 
     return (
-      <>
-        <style jsx>{`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes scaleIn {
-            from { 
-              opacity: 0;
-              transform: scale(0);
-            }
-            to { 
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-        `}</style>
-        <div className="flex items-center justify-center space-x-12">
-          <div className="relative w-96 h-96">
-            <div className="absolute inset-0 grid grid-cols-1 grid-rows-1">
-              {config.data.map((item, index) => {
-                const angle = (item.value / total) * 360
-                const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
-                const color = colors[index % colors.length]
-                const percentage = ((item.value / total) * 100).toFixed(1)
-                
-                // Calculate position for hover area
-                const midAngle = startAngle + angle / 2
-                const centerX = 50 + 25 * Math.cos(((midAngle - 90) * Math.PI) / 180)
-                const centerY = 50 + 25 * Math.sin(((midAngle - 90) * Math.PI) / 180)
-                
-                return (
-                  <div
-                    key={`hover-${index}`}
-                    className="absolute cursor-pointer"
+      <div className="flex items-center justify-center gap-8 h-full">
+        <div className="relative w-72 h-72">
+          <svg viewBox="0 0 200 200" className="w-full h-full">
+            <defs>
+              {colors.map((color, i) => (
+                <linearGradient key={i} id={`donutGradient${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={color} />
+                  <stop offset="100%" stopColor={color} stopOpacity="0.6" />
+                </linearGradient>
+              ))}
+              <filter id="donutShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="3" stdDeviation="6" floodOpacity="0.25"/>
+              </filter>
+            </defs>
+            {config.data.map((item, index) => {
+              const angle = (item.value / total) * 360
+              const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
+              const color = colors[index % colors.length]
+
+              const centerX = 100
+              const centerY = 100
+              const outerRadius = 80
+              const innerRadius = 45
+
+              // Calculate angles for the donut segments
+              const startAngleRad = ((startAngle - 90) * Math.PI) / 180
+              const endAngleRad = ((startAngle + angle - 90) * Math.PI) / 180
+
+              // Outer arc points
+              const x1 = centerX + outerRadius * Math.cos(startAngleRad)
+              const y1 = centerY + outerRadius * Math.sin(startAngleRad)
+              const x2 = centerX + outerRadius * Math.cos(endAngleRad)
+              const y2 = centerY + outerRadius * Math.sin(endAngleRad)
+
+              // Inner arc points
+              const x3 = centerX + innerRadius * Math.cos(endAngleRad)
+              const y3 = centerY + innerRadius * Math.sin(endAngleRad)
+              const x4 = centerX + innerRadius * Math.cos(startAngleRad)
+              const y4 = centerY + innerRadius * Math.sin(startAngleRad)
+
+              const largeArcFlag = angle > 180 ? 1 : 0
+
+              const pathData = [
+                `M ${x1} ${y1}`,
+                `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                `L ${x3} ${y3}`,
+                `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x4} ${y4}`,
+                'Z'
+              ].join(' ')
+
+              return (
+                <g key={index}>
+                  <path
+                    d={pathData}
+                    fill={`url(#donutGradient${index % colors.length})`}
+                    filter="url(#donutShadow)"
+                    className="cursor-pointer transition-all duration-500 hover:opacity-90"
                     style={{
-                      left: `${centerX - 10}%`,
-                      top: `${centerY - 10}%`,
-                      width: '20%',
-                      height: '20%',
-                      zIndex: 10
+                      transformOrigin: '100px 100px',
+                      transform: 'scale(1)',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
                     }}
                     onMouseEnter={(e) => {
-                      console.log('Donut hover area entered:', item.scenario)
+                      e.currentTarget.style.transform = 'scale(1.05)'
                       setTooltip({
                         x: e.clientX,
                         y: e.clientY,
@@ -563,95 +439,57 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         color: color
                       })
                     }}
-                    onMouseLeave={() => {
-                      console.log('Donut hover area left')
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)'
                       setTooltip(null)
                     }}
-                    onMouseMove={(e) => {
-                      if (tooltip) {
-                        setTooltip(prev => prev ? {
-                          ...prev,
-                          x: e.clientX,
-                          y: e.clientY
-                        } : null)
-                      }
-                    }}
                   />
-                )
-              })}
-            </div>
-            <svg viewBox="0 0 200 200" className="w-full h-full relative">
-              {config.data.map((item, index) => {
-                const angle = (item.value / total) * 360
-                const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
-                const color = colors[index % colors.length]
-
-                const outerRadius = 70
-                const innerRadius = 45
-                
-                const x1 = 100 + outerRadius * Math.cos(((startAngle - 90) * Math.PI) / 180)
-                const y1 = 100 + outerRadius * Math.sin(((startAngle - 90) * Math.PI) / 180)
-                const x2 = 100 + outerRadius * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
-                const y2 = 100 + outerRadius * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
-                
-                const x3 = 100 + innerRadius * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
-                const y3 = 100 + innerRadius * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
-                const x4 = 100 + innerRadius * Math.cos(((startAngle - 90) * Math.PI) / 180)
-                const y4 = 100 + innerRadius * Math.sin(((startAngle - 90) * Math.PI) / 180)
-
-                const largeArcFlag = angle > 180 ? 1 : 0
-
-                return (
-                  <path
-                    key={index}
-                    d={`M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x4} ${y4} Z`}
-                    fill={color}
-                    className="transition-all duration-200"
-                    style={{ 
-                      transformOrigin: '100px 100px',
-                      animation: `scaleIn 400ms ease-out ${index * 150}ms both`,
-                      pointerEvents: 'none'
-                    }}
-                  />
-                )
-              })}
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="text-center opacity-0" style={{ animation: `fadeIn 300ms ease-out ${config.data.length * 150 + 200}ms forwards` }}>
-                <div className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{formatNumber(total)}</div>
-                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Total</div>
-              </div>
-            </div>
-          </div>
-          <div className="space-y-3">
-            {config.data.map((item, index) => {
-              const percentage = ((item.value / total) * 100).toFixed(1)
-              return (
-                <div key={index} className="flex items-center gap-3 group cursor-pointer opacity-0" 
-                     style={{ animation: `fadeIn 300ms ease-out ${600 + index * 150}ms forwards` }}>
-                  <div 
-                    className="w-3 h-3 rounded transition-all duration-200 group-hover:scale-110" 
-                    style={{ backgroundColor: colors[index % colors.length] }} 
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-xs font-medium`}>
-                        {item.scenario}
-                      </span>
-                      <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs font-semibold`}>
-                        {percentage}%
-                      </span>
-                    </div>
-                    <div className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs mt-0.5`}>
-                      {formatNumber(item.value)}
-                    </div>
-                  </div>
-                </div>
+                </g>
               )
             })}
+          </svg>
+          
+          {/* Center content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              {formatNumber(total)}
+            </div>
+            <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Total
+            </div>
           </div>
         </div>
-      </>
+        
+        <div className="space-y-3">
+          {config.data.map((item, index) => {
+            const percentage = ((item.value / total) * 100).toFixed(1)
+            return (
+              <div key={index} className="flex items-center gap-3 group cursor-pointer">
+                <div 
+                  className="w-4 h-4 rounded-full shadow-sm transition-all duration-200 group-hover:scale-110" 
+                  style={{ 
+                    background: `linear-gradient(135deg, ${colors[index % colors.length]}, ${colors[index % colors.length]}cc)`,
+                    boxShadow: `0 2px 4px ${colors[index % colors.length]}40`
+                  }} 
+                />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium group-hover:text-white transition-colors`}>
+                      {item.scenario}
+                    </span>
+                    <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm font-mono`}>
+                      {percentage}%
+                    </span>
+                  </div>
+                  <div className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs font-medium`}>
+                    {formatNumber(item.value)}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     )
   }
 
@@ -659,143 +497,218 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     if (config.data.length === 0) return null
 
     const maxValue = Math.max(...config.data.map((d) => d.value))
-    const minValue = Math.min(...config.data.map((d) => d.value))
-    const range = maxValue - minValue || 1
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     const primaryColor = colors[0]
 
-    const pathData = config.data
-      .map((item, index) => {
-        const x = config.data.length === 1 ? 300 : 60 + (index / (config.data.length - 1)) * 480
-        const y = 60 + (1 - (item.value - minValue) / range) * 280
-        return `${index === 0 ? "M" : "L"} ${x} ${y}`
-      })
-      .join(" ")
+    // Use container dimensions dynamically
+    const containerWidth = chartRef.current?.clientWidth || 800
+    const containerHeight = chartRef.current?.clientHeight || 600
+    const chartWidth = Math.max(containerWidth * 0.85, 400)
+    const chartHeight = Math.max(containerHeight * 0.7, 300)
+    const padding = Math.max(chartWidth * 0.08, 40)
 
-    const pathLength = config.data.length * 200 // Increased path length for larger chart
+    const points = config.data.map((item, index) => {
+      const x = padding + (index / (config.data.length - 1)) * (chartWidth - 2 * padding)
+      const y = chartHeight - padding - ((item.value / maxValue) * (chartHeight - 2 * padding))
+      return { x, y, item, index }
+    })
+
+    // Create smooth curve path
+    const createSmoothPath = (points: { x: number; y: number }[]) => {
+      if (points.length < 2) return ""
+      
+      let path = `M ${points[0].x} ${points[0].y}`
+      
+      for (let i = 1; i < points.length; i++) {
+        const prev = points[i - 1]
+        const curr = points[i]
+        const next = points[i + 1]
+        
+        if (i === 1) {
+          const cp1x = prev.x + (curr.x - prev.x) * 0.3
+          const cp1y = prev.y
+          const cp2x = curr.x - (curr.x - prev.x) * 0.3
+          const cp2y = curr.y
+          path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`
+        } else {
+          const cp1x = prev.x + (curr.x - prev.x) * 0.3
+          const cp1y = prev.y + (curr.y - prev.y) * 0.3
+          const cp2x = curr.x - (curr.x - prev.x) * 0.3
+          const cp2y = curr.y - (curr.y - prev.y) * 0.3
+          path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`
+        }
+      }
+      
+      return path
+    }
+
+    const linePath = createSmoothPath(points)
+    const areaPath = linePath + ` L ${points[points.length - 1].x} ${chartHeight - padding} L ${points[0].x} ${chartHeight - padding} Z`
 
     return (
-      <div className="space-y-10">
-        <div className={`relative h-[500px] ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-16`}>
-          <svg viewBox="0 0 600 400" className="w-full h-full">
+      <div className="h-full flex flex-col">
+        <div className="flex-1 flex items-center justify-center">
+          <svg width={chartWidth} height={chartHeight} className="overflow-visible">
             <defs>
               <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor={primaryColor} stopOpacity="0.2"/>
-                <stop offset="100%" stopColor={primaryColor} stopOpacity="0"/>
+                <stop offset="0%" stopColor={primaryColor} stopOpacity="0.25" />
+                <stop offset="100%" stopColor={primaryColor} stopOpacity="0.02" />
               </linearGradient>
+              <linearGradient id="lineStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor={primaryColor} />
+                <stop offset="50%" stopColor={primaryColor} stopOpacity="0.8" />
+                <stop offset="100%" stopColor={primaryColor} />
+              </linearGradient>
+              <filter id="lineShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.2"/>
+              </filter>
             </defs>
-            
-            {config.theme?.showGridLines !== false && [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-              <line key={i} x1="30" y1={30 + i * 50} x2="570" y2={30 + i * 50} stroke={isDark ? "#374151" : "#E5E7EB"} strokeWidth="0.5" opacity="0.3" />
-            ))}
 
+            {/* Grid lines */}
+            <g opacity="0.1">
+              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                const y = chartHeight - padding - (ratio * (chartHeight - 2 * padding))
+                return (
+                  <line
+                    key={i}
+                    x1={padding}
+                    y1={y}
+                    x2={chartWidth - padding}
+                    y2={y}
+                    stroke={isDark ? "#fff" : "#000"}
+                    strokeWidth="1"
+                  />
+                )
+              })}
+            </g>
+
+            {/* Area under the curve */}
             <path
-              d={`${pathData} L 540 340 L 60 340 Z`}
+              d={areaPath}
               fill="url(#lineGradient)"
-              className="opacity-0"
-              style={{ animation: 'fadeIn 500ms ease-out 400ms forwards' }}
-            />
-
-            <path
-              d={pathData}
-              fill="none"
-              stroke={primaryColor}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeDasharray={pathLength}
-              strokeDashoffset={pathLength}
+              className="transition-all duration-700"
               style={{ 
-                animation: `drawLine 1000ms ease-out 200ms forwards`
+                opacity: 0.6,
+                animation: 'fadeInUp 1s ease-out'
               }}
             />
 
-            <style jsx>{`
-              @keyframes drawLine {
-                to {
-                  stroke-dashoffset: 0;
-                }
-              }
-              @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-              }
-              @keyframes popIn {
-                from { 
-                  opacity: 0;
-                  transform: scale(0);
-                }
-                to { 
-                  opacity: 1;
-                  transform: scale(1);
-                }
-              }
-            `}</style>
+            {/* Main line */}
+            <path
+              d={linePath}
+              fill="none"
+              stroke="url(#lineStroke)"
+              strokeWidth="3"
+              filter="url(#lineShadow)"
+              className="transition-all duration-700"
+              style={{
+                strokeLinecap: 'round',
+                strokeLinejoin: 'round',
+                strokeDasharray: '1000',
+                strokeDashoffset: '1000',
+                animation: 'drawLine 2s ease-out forwards'
+              }}
+            />
 
-            {config.data.map((item, index) => {
-              const x = config.data.length === 1 ? 300 : 60 + (index / (config.data.length - 1)) * 480
-              const y = 60 + (1 - (item.value - minValue) / range) * 280
-              return (
-                <g key={index}>
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r="4"
-                    fill={primaryColor}
-                    stroke="white"
-                    strokeWidth="2"
-                    className="cursor-pointer opacity-0"
-                    style={{ 
-                      animation: `popIn 300ms ease-out ${800 + index * 150}ms forwards`
-                    }}
-                    onMouseEnter={(e) => {
-                      setTooltip({
-                        x: x * (400 / 400) + 20, // Adjust for SVG scaling
-                        y: (y + 20) * (240 / 240) + 100, // Adjust for container position
-                        label: item.scenario,
-                        value: item.value,
-                        color: primaryColor
-                      })
-                      e.currentTarget.setAttribute('r', '7')
-                      e.currentTarget.style.filter = `brightness(1.2) drop-shadow(0 2px 8px ${primaryColor}60)`
-                    }}
-                    onMouseLeave={(e) => {
-                      setTooltip(null)
-                      e.currentTarget.setAttribute('r', '4')
-                      e.currentTarget.style.filter = 'brightness(1)'
-                    }}
-                    onMouseMove={(e) => {
-                      if (tooltip) {
-                        setTooltip(prev => prev ? {
-                          ...prev,
-                          x: e.clientX,
-                          y: e.clientY
-                        } : null)
-                      }
-                    }}
-                  />
+            {/* Data points */}
+            {points.map(({ x, y, item, index }) => (
+              <g key={index}>
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="6"
+                  fill={primaryColor}
+                  className="cursor-pointer transition-all duration-300 hover:r-8"
+                  style={{
+                    filter: `drop-shadow(0 2px 4px ${primaryColor}40)`,
+                    animation: `bounceIn 0.6s ease-out ${index * 0.1}s backwards`
+                  }}
+                  onMouseEnter={(e) => {
+                    setTooltip({
+                      x: e.clientX,
+                      y: e.clientY,
+                      label: item.scenario,
+                      value: item.value,
+                      color: primaryColor
+                    })
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
+                />
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="3"
+                  fill="white"
+                  className="pointer-events-none"
+                />
+              </g>
+            ))}
+
+            {/* Y-axis labels */}
+            <g>
+              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                const y = chartHeight - padding - (ratio * (chartHeight - 2 * padding))
+                const value = maxValue * ratio
+                return (
                   <text
-                    x={x}
-                    y={y - 12}
-                    textAnchor="middle"
-                    className={`${isDark ? 'fill-gray-300' : 'fill-gray-700'} text-xs font-medium opacity-0`}
-                    style={{ animation: `fadeIn 300ms ease-out ${1000 + index * 150}ms forwards` }}
+                    key={i}
+                    x={padding - 10}
+                    y={y + 5}
+                    textAnchor="end"
+                    className={`text-xs ${isDark ? 'fill-gray-400' : 'fill-gray-600'}`}
                   >
-                    {formatNumber(item.value)}
+                    {formatNumber(value)}
                   </text>
-                </g>
-              )
-            })}
+                )
+              })}
+            </g>
           </svg>
         </div>
 
-        <div className={`flex justify-between text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} px-6`}>
-          {config.data.map((item, index) => (
-            <span key={index} className="text-center max-w-20 truncate">
-              {item.scenario}
-            </span>
-          ))}
+        {/* X-axis labels */}
+        <div className="flex justify-center mt-2">
+          <div className="flex justify-between" style={{ width: `${chartWidth - 2 * padding}px` }}>
+            {config.data.map((item, index) => (
+              <span
+                key={index}
+                className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} text-center max-w-20 truncate`}
+              >
+                {item.scenario}
+              </span>
+            ))}
+          </div>
         </div>
+
+        <style jsx>{`
+          @keyframes drawLine {
+            to {
+              stroke-dashoffset: 0;
+            }
+          }
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 0.6;
+              transform: translateY(0);
+            }
+          }
+          @keyframes bounceIn {
+            0% {
+              transform: scale(0);
+              opacity: 0;
+            }
+            50% {
+              transform: scale(1.2);
+            }
+            100% {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+        `}</style>
       </div>
     )
   }
@@ -804,156 +717,312 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     if (config.data.length === 0) return null
 
     const maxValue = Math.max(...config.data.map((d) => d.value))
-    const minValue = Math.min(...config.data.map((d) => d.value))
-    const range = maxValue - minValue || 1
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
+    
+    // Smart color selection for maximum contrast
+    const primaryColor = colors[0]
+    
+    // Color contrast mapping for better visual distinction
+    const getContrastColor = (barColor: string, palette: string[]) => {
+      // Predefined contrasting color pairs
+      const contrastMap: Record<string, string> = {
+        "#6366F1": "#EF4444", // Blue → Red
+        "#8B5CF6": "#F59E0B", // Purple → Orange  
+        "#06B6D4": "#EC4899", // Cyan → Pink
+        "#10B981": "#F59E0B", // Green → Orange
+        "#F59E0B": "#6366F1", // Orange → Blue
+        "#EF4444": "#10B981", // Red → Green
+        "#EC4899": "#06B6D4", // Pink → Cyan
+        "#84CC16": "#8B5CF6", // Lime → Purple
+      }
+      
+      // Try to find a predefined contrast color
+      if (contrastMap[barColor]) {
+        return contrastMap[barColor]
+      }
+      
+      // If palette has enough colors, skip indices for visual separation
+      if (palette.length >= 5) {
+        return palette[4] // Use 5th color
+      } else if (palette.length >= 3) {
+        return palette[2] // Use 3rd color
+      } else if (palette.length >= 2) {
+        return palette[1] // Use 2nd color
+      }
+      
+      // Ultimate fallback - ensure it's different from bar color
+      return barColor === "#6366F1" ? "#EF4444" : "#6366F1"
+    }
+    
+    const lineColor = getContrastColor(primaryColor, colors)
+
+    // Use container dimensions dynamically
+    const containerWidth = chartRef.current?.clientWidth || 800
+    const containerHeight = chartRef.current?.clientHeight || 600
+    const chartWidth = Math.max(containerWidth * 0.85, 400)
+    const chartHeight = Math.max(containerHeight * 0.7, 300)
+    const padding = Math.max(chartWidth * 0.08, 40)
+    const barWidth = 32 // Narrow width to match horizontal and vertical bar chart consistency
+
+    // Calculate positions for both bars and line points
+    const barPositions = config.data.map((item, index) => {
+      const x = padding + (index + 0.5) * ((chartWidth - 2 * padding) / config.data.length)
+      const barHeight = (item.value / maxValue) * (chartHeight - 2 * padding)
+      const y = chartHeight - padding - barHeight
+      return { x, y, barHeight, item, index }
+    })
+
+    const linePoints = config.data.map((item, index) => {
+      const x = padding + (index + 0.5) * ((chartWidth - 2 * padding) / config.data.length)
+      const y = chartHeight - padding - ((item.value / maxValue) * (chartHeight - 2 * padding))
+      return { x, y, item, index }
+    })
+
+    // Create smooth curve path for line
+    const createSmoothPath = (points: { x: number; y: number }[]) => {
+      if (points.length < 2) return ""
+      
+      let path = `M ${points[0].x} ${points[0].y}`
+      
+      for (let i = 1; i < points.length; i++) {
+        const prev = points[i - 1]
+        const curr = points[i]
+        
+        const cp1x = prev.x + (curr.x - prev.x) * 0.3
+        const cp1y = prev.y
+        const cp2x = curr.x - (curr.x - prev.x) * 0.3
+        const cp2y = curr.y
+        path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`
+      }
+      
+      return path
+    }
+
+    const linePath = createSmoothPath(linePoints)
 
     return (
-      <div className="space-y-10">
-        <div className={`relative h-[500px] ${isDark ? 'bg-gray-800/10' : 'bg-gray-50/30'} rounded-xl p-16`}>
-          <svg viewBox="0 0 600 400" className="w-full h-full">
+      <div className="h-full flex flex-col">
+        <div className="flex-1 flex items-center justify-center">
+          <svg width={chartWidth} height={chartHeight} className="overflow-visible">
             <defs>
-              <linearGradient id="comboGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor={colors[0]} stopOpacity="0.2"/>
-                <stop offset="100%" stopColor={colors[0]} stopOpacity="0"/>
+              <linearGradient id="comboBarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor={primaryColor} />
+                <stop offset="100%" stopColor={primaryColor} stopOpacity="0.7" />
               </linearGradient>
+              <linearGradient id="comboLineStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor={lineColor} />
+                <stop offset="50%" stopColor={lineColor} stopOpacity="0.8" />
+                <stop offset="100%" stopColor={lineColor} />
+              </linearGradient>
+              <filter id="comboShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.2"/>
+              </filter>
             </defs>
-            
-            {config.theme?.showGridLines !== false && [0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-              <line key={i} x1="30" y1={30 + i * 50} x2="570" y2={30 + i * 50} stroke={isDark ? "#374151" : "#E5E7EB"} strokeWidth="0.5" opacity="0.3" />
+
+            {/* Grid lines */}
+            <g opacity="0.1">
+              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                const y = chartHeight - padding - (ratio * (chartHeight - 2 * padding))
+                return (
+                  <line
+                    key={i}
+                    x1={padding}
+                    y1={y}
+                    x2={chartWidth - padding}
+                    y2={y}
+                    stroke={isDark ? "#fff" : "#000"}
+                    strokeWidth="1"
+                  />
+                )
+              })}
+            </g>
+
+            {/* Bars */}
+            {barPositions.map(({ x, y, barHeight, item, index }) => (
+              <g key={`bar-${index}`}>
+                <rect
+                  x={x - barWidth / 2}
+                  y={y}
+                  width={barWidth}
+                  height={barHeight}
+                  fill="url(#comboBarGradient)"
+                  filter="url(#comboShadow)"
+                  className="cursor-pointer transition-all duration-300 hover:opacity-80"
+                  style={{
+                    animation: `slideUp 0.8s ease-out ${index * 0.1}s backwards`
+                  }}
+                  onMouseEnter={(e) => {
+                    setTooltip({
+                      x: e.clientX,
+                      y: e.clientY,
+                      label: `${item.scenario} (Bar)`,
+                      value: item.value,
+                      color: primaryColor
+                    })
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
+                />
+              </g>
             ))}
 
-            {config.data.map((item, index) => {
-              const barWidth = 32 // Match horizontal bar width (32px = w-8)
-              const spacing = 480 / config.data.length
-              const x = 60 + (index * spacing) + (spacing - barWidth) / 2
-              const percentage = ((item.value - minValue) / range) * 100
-              const height = (percentage / 100) * 280
-              
-              return (
-                <rect
-                  key={`bar-${index}`}
-                  x={x}
-                  y={340 - height}
-                  width={barWidth}
-                  height={height}
-                  fill={colors[index % colors.length]}
-                  opacity="0.7"
-                  className="transition-all duration-200 ease-out cursor-pointer animate-in"
-                  style={{ animationDelay: `${index * 150}ms` }}
-                  onMouseEnter={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect()
-                    setTooltip({
-                      x: rect.left + rect.width / 2,
-                      y: rect.top,
-                      label: item.scenario,
-                      value: item.value,
-                      color: colors[index % colors.length]
-                    })
-                    e.currentTarget.style.opacity = '0.9'
-                    e.currentTarget.style.filter = 'brightness(1.15)'
-                  }}
-                  onMouseLeave={(e) => {
-                    setTooltip(null)
-                    e.currentTarget.style.opacity = '0.7'
-                    e.currentTarget.style.filter = 'brightness(1)'
-                  }}
-                  onMouseMove={(e) => {
-                    if (tooltip) {
-                      setTooltip(prev => prev ? {
-                        ...prev,
-                        x: e.clientX,
-                        y: e.clientY
-                      } : null)
-                    }
-                  }}
-                />
-              )
-            })}
-
+            {/* Line */}
             <path
-              d={`${config.data
-                .map((item, index) => {
-                  const spacing = 480 / config.data.length
-                  const x = 60 + (index * spacing) + (spacing / 2)
-                  const y = 60 + (1 - (item.value - minValue) / range) * 280
-                  return `${index === 0 ? "M" : "L"} ${x} ${y}`
-                })
-                .join(" ")}`}
+              d={linePath}
               fill="none"
-              stroke={colors[0]}
+              stroke="url(#comboLineStroke)"
               strokeWidth="3"
-              className="transition-all duration-1000 animate-in hover:brightness-110"
-              style={{ animationDelay: '600ms' }}
+              className="transition-all duration-700"
+              style={{
+                strokeLinecap: 'round',
+                strokeLinejoin: 'round',
+                strokeDasharray: '1000',
+                strokeDashoffset: '1000',
+                animation: 'drawLine 2s ease-out 0.5s forwards'
+              }}
             />
 
-            {config.data.map((item, index) => {
-              const spacing = 480 / config.data.length
-              const x = 60 + (index * spacing) + (spacing / 2)
-              const y = 60 + (1 - (item.value - minValue) / range) * 280
-              return (
-                <g key={`point-${index}`}>
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r="5"
-                    fill={isDark ? "#ffffff" : "#ffffff"}
-                    stroke={colors[0]}
-                    strokeWidth="2"
-                    className="transition-all duration-200 cursor-pointer animate-in"
-                    style={{ animationDelay: `${800 + index * 150}ms` }}
-                    onMouseEnter={(e) => {
-                      setTooltip({
-                        x: e.clientX,
-                        y: e.clientY,
-                        label: item.scenario,
-                        value: item.value,
-                        color: colors[0]
-                      })
-                      e.currentTarget.setAttribute('r', '7')
-                      e.currentTarget.style.filter = `brightness(1.2) drop-shadow(0 2px 8px ${colors[0]}60)`
-                    }}
-                    onMouseLeave={(e) => {
-                      setTooltip(null)
-                      e.currentTarget.setAttribute('r', '5')
-                      e.currentTarget.style.filter = 'brightness(1)'
-                    }}
-                    onMouseMove={(e) => {
-                      if (tooltip) {
-                        setTooltip(prev => prev ? {
-                          ...prev,
-                          x: e.clientX,
-                          y: e.clientY
-                        } : null)
-                      }
-                    }}
-                  />
+            {/* Line data points */}
+            {linePoints.map(({ x, y, item, index }) => (
+              <g key={`point-${index}`}>
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="5"
+                  fill={lineColor}
+                  className="cursor-pointer transition-all duration-300 hover:r-7"
+                  style={{
+                    filter: `drop-shadow(0 2px 4px ${lineColor}40)`,
+                    animation: `bounceIn 0.6s ease-out ${0.5 + index * 0.1}s backwards`
+                  }}
+                  onMouseEnter={(e) => {
+                    setTooltip({
+                      x: e.clientX,
+                      y: e.clientY,
+                      label: `${item.scenario} (Line)`,
+                      value: item.value,
+                      color: lineColor
+                    })
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
+                />
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="2"
+                  fill="white"
+                  className="pointer-events-none"
+                />
+              </g>
+            ))}
+
+            {/* Y-axis labels */}
+            <g>
+              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                const y = chartHeight - padding - (ratio * (chartHeight - 2 * padding))
+                const value = maxValue * ratio
+                return (
                   <text
-                    x={x}
-                    y={y - 12}
-                    textAnchor="middle"
-                    className={`${isDark ? 'fill-white' : 'fill-gray-900'} text-xs font-medium`}
+                    key={i}
+                    x={padding - 10}
+                    y={y + 5}
+                    textAnchor="end"
+                    className={`text-xs ${isDark ? 'fill-gray-400' : 'fill-gray-600'}`}
                   >
-                    {formatNumber(item.value)}
+                    {formatNumber(value)}
                   </text>
-                </g>
-              )
-            })}
+                )
+              })}
+            </g>
           </svg>
         </div>
 
-        <div className={`flex justify-between text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} px-6`}>
-          {config.data.map((item, index) => (
-            <span key={index} className="text-center max-w-20 truncate">
-              {item.scenario}
-            </span>
-          ))}
+        {/* X-axis labels */}
+        <div className="flex justify-center mt-2">
+          <div className="flex justify-between" style={{ width: `${chartWidth - 2 * padding}px` }}>
+            {config.data.map((item, index) => (
+              <span
+                key={index}
+                className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} text-center max-w-20 truncate`}
+              >
+                {item.scenario}
+              </span>
+            ))}
+          </div>
         </div>
+
+        {/* Legend */}
+        <div className="flex justify-center gap-6 mt-3">
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-3 h-3 rounded" 
+              style={{ backgroundColor: primaryColor }} 
+            />
+            <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Bars
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-3 h-3 rounded-full" 
+              style={{ backgroundColor: lineColor }} 
+            />
+            <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Line
+            </span>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes slideUp {
+            from {
+              transform: translateY(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+          @keyframes drawLine {
+            to {
+              stroke-dashoffset: 0;
+            }
+          }
+          @keyframes bounceIn {
+            0% {
+              transform: scale(0);
+              opacity: 0;
+            }
+            50% {
+              transform: scale(1.2);
+            }
+            100% {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+        `}</style>
       </div>
     )
   }
 
   const renderChart = () => {
+    if (config.data.length === 0) {
+      return (
+        <div className="h-full flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-800/50 rounded-2xl flex items-center justify-center mb-4 mx-auto">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-300 mb-2">No data to display</h3>
+            <p className="text-sm text-gray-500">Add some data points to see your chart</p>
+          </div>
+        </div>
+      )
+    }
+
     switch (config.type) {
       case "horizontal-bar":
         return renderHorizontalBarChart()
@@ -977,80 +1046,38 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       <Tooltip data={tooltip} formatNumber={formatNumber} />
       
       {/* Chart Area */}
-      <div className="flex-1 p-12 overflow-auto">
-        {needsGradientBorder ? (
-          <div className={`h-full min-h-[500px] p-0.5 ${getCornerStyle()} transition-all duration-300`} style={getGradientBorderStyle()}>
-            <div ref={chartRef} className={`h-full ${getBackgroundStyle()} ${getCornerStyle()} shadow-sm`}>
-              {config.data.length > 0 ? (
-                <div className={`h-full w-full ${getChartPadding()}`}>
-                  <div className="h-full flex flex-col">
-                    {/* Chart Title and Subtitle */}
-                    <div className="mb-10">
-                      <h1 className={`text-2xl font-light tracking-tight ${isDark ? 'text-white' : 'text-gray-900'} mb-2 leading-tight`}>
-                        {config.title}
-                      </h1>
-                      <p className={`text-sm font-light ${isDark ? 'text-gray-400' : 'text-gray-600'} leading-relaxed`}>
-                        {config.subtitle}
-                      </p>
-                    </div>
-                    
-                    {/* Chart Content */}
-                    <div className="flex-1">
-                      {renderChart()}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className={`h-full flex items-center justify-center ${getChartPadding()}`}>
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gray-800/50 rounded-2xl flex items-center justify-center mb-4 mx-auto">
-                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-light text-gray-300 mb-2 tracking-wide">No data to display</h3>
-                    <p className="text-sm font-light text-gray-500 leading-relaxed">Add some data points to see your chart</p>
-                  </div>
-                </div>
-              )}
+      <div className="flex-1 p-6 overflow-hidden flex items-center justify-center">
+        <div 
+          ref={chartRef} 
+          className={`${getBackgroundStyle()} ${getCornerStyle()} ${getBorderStyle()} shadow-sm transition-all duration-300`} 
+          style={{
+            ...getBorderColor(),
+            aspectRatio: `${dimensions.width} / ${dimensions.height}`,
+            width: 'min(100%, 90vh * ' + (dimensions.width / dimensions.height) + ')',
+            height: 'min(100%, 90vw * ' + (dimensions.height / dimensions.width) + ')',
+            maxWidth: '95%',
+            maxHeight: '95%'
+          }}
+        >
+          <div className={`h-full w-full ${getChartPadding()}`}>
+            <div className="h-full flex flex-col">
+              {/* Chart Title and Subtitle */}
+              <div className="mb-8">
+                <h1 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
+                  {config.title}
+                </h1>
+                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {config.subtitle}
+                </p>
+              </div>
+              
+              {/* Chart Content */}
+              <div className="flex-1">
+                {renderChart()}
+              </div>
             </div>
           </div>
-        ) : (
-          <div ref={chartRef} className={`h-full min-h-[500px] ${getBackgroundStyle()} ${getCornerStyle()} ${getBorderStyle()} shadow-sm transition-all duration-300`} style={getBorderColor()}>
-            {config.data.length > 0 ? (
-              <div className={`h-full w-full ${getChartPadding()}`}>
-                <div className="h-full flex flex-col">
-                  {/* Chart Title and Subtitle */}
-                  <div className="mb-8">
-                    <h1 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
-                      {config.title}
-                    </h1>
-                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {config.subtitle}
-                    </p>
-                  </div>
-                  
-                  {/* Chart Content */}
-                  <div className="flex-1">
-                    {renderChart()}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className={`h-full flex items-center justify-center ${getChartPadding()}`}>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gray-800/50 rounded-2xl flex items-center justify-center mb-4 mx-auto">
-                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-300 mb-2">No data to display</h3>
-                  <p className="text-sm text-gray-500">Add some data points to see your chart</p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   )

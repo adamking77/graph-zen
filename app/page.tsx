@@ -12,12 +12,31 @@ export interface ChartData {
   value: number
 }
 
+export interface ChartDimensions {
+  width: number
+  height: number
+  preset: string
+  aspectRatio: string
+}
+
 export interface ChartConfig {
   title: string
   subtitle: string
   type: "horizontal-bar" | "vertical-bar" | "pie" | "donut" | "line" | "combo"
   data: ChartData[]
+  dimensions?: ChartDimensions
   theme?: ColorTheme
+}
+
+// Size presets for chart dimensions
+export const SIZE_PRESETS = {
+  'presentation': { width: 1920, height: 1080, preset: 'Google Slides / PowerPoint', aspectRatio: '16:9' },
+  'web': { width: 1200, height: 800, preset: 'Web / email', aspectRatio: '3:2' },
+  'linkedin': { width: 1200, height: 628, preset: 'LinkedIn post', aspectRatio: '1.91:1' },
+  'instagram': { width: 1080, height: 1080, preset: 'Instagram post', aspectRatio: '1:1' },
+  'story': { width: 1080, height: 1920, preset: 'TikTok / Instagram story', aspectRatio: '9:16' },
+  'twitter': { width: 1200, height: 675, preset: 'X (Twitter)', aspectRatio: '16:9' },
+  'mobile': { width: 750, height: 1334, preset: 'Mobile', aspectRatio: '9:16' }
 }
 
 export default function ChartGeneratorPage() {
@@ -31,6 +50,7 @@ export default function ChartGeneratorPage() {
       { scenario: "Year 2 Growth Scenario", value: 360000 },
       { scenario: "Year 3 Scale Scenario", value: 690000 },
     ],
+    dimensions: SIZE_PRESETS.presentation,
     theme: {
       palette: {
         id: 'dashboard-pro',

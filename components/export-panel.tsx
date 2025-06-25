@@ -13,18 +13,23 @@ interface ExportPanelProps {
 
 export function ExportPanel({ config, onClose }: ExportPanelProps) {
   const [activeTab, setActiveTab] = useState<"png" | "svg" | "embed" | "link">("png")
-  const [copied, setCopied] = useState(false)
+  const [copiedEmbedCode, setCopiedEmbedCode] = useState(false)
+  const [copiedShareableLink, setCopiedShareableLink] = useState(false)
+  const [copiedEmbedLink, setCopiedEmbedLink] = useState(false)
 
   const generateEmbedCode = () => {
     const embedUrl = generateEmbedLink()
-    return `<iframe 
-  src="${embedUrl}"
-  width="800" 
-  height="600" 
-  frameborder="0" 
-  style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"
-  title="${config.title} - Created with GraphZen">
-</iframe>`
+    const dimensions = config.dimensions || { width: 1920, height: 1080, preset: 'Google Slides / PowerPoint', aspectRatio: '16:9' }
+    return `<div style="position: relative; width: 100%; max-width: ${dimensions.width}px; aspect-ratio: ${dimensions.width}/${dimensions.height};">
+  <iframe 
+    src="${embedUrl}"
+    width="100%" 
+    height="100%" 
+    frameborder="0" 
+    style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: absolute; top: 0; left: 0;"
+    title="${config.title} - Created with Chart Maker">
+  </iframe>
+</div>`
   }
 
   const getBaseUrl = () => {
@@ -53,11 +58,19 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
     }
   }
 
-  const copyToClipboard = async (text: string) => {
+  const copyToClipboard = async (text: string, type: 'embedCode' | 'shareableLink' | 'embedLink') => {
     try {
       await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      if (type === 'embedCode') {
+        setCopiedEmbedCode(true)
+        setTimeout(() => setCopiedEmbedCode(false), 2000)
+      } else if (type === 'shareableLink') {
+        setCopiedShareableLink(true)
+        setTimeout(() => setCopiedShareableLink(false), 2000)
+      } else if (type === 'embedLink') {
+        setCopiedEmbedLink(true)
+        setTimeout(() => setCopiedEmbedLink(false), 2000)
+      }
     } catch (err) {
       console.error("Failed to copy:", err)
     }
@@ -139,29 +152,20 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
                     className="w-full h-40 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm font-mono resize-none"
                   />
                   <Button
-                    onClick={() => copyToClipboard(generateEmbedCode())}
+                    onClick={() => copyToClipboard(generateEmbedCode(), 'embedCode')}
                     size="sm"
                     className="absolute top-2 right-2 bg-purple-600 hover:bg-purple-700"
                   >
                     <Copy className="w-4 h-4 mr-1" />
-                    {copied ? "Copied!" : "Copy"}
+                    {copiedEmbedCode ? "Copied!" : "Copy"}
                   </Button>
                 </div>
-              </div>
-              <div className="bg-gray-700 rounded-lg p-4">
-                <h4 className="text-white font-medium mb-2">Usage Instructions:</h4>
-                <ul className="text-gray-300 text-sm space-y-1">
-                  <li>• Copy the embed code above</li>
-                  <li>• Paste it into your HTML document</li>
-                  <li>• The chart will display with your data</li>
-                  <li>• Customize the styling as needed</li>
-                </ul>
               </div>
             </div>
           )}
 
           {activeTab === "link" && (
-            <div className="space-y-4">
+            <div className="space-y-8">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Shareable Link</label>
                 <div className="relative">
@@ -171,12 +175,12 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
                     className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm pr-20"
                   />
                   <Button
-                    onClick={() => copyToClipboard(generateShareableLink())}
+                    onClick={() => copyToClipboard(generateShareableLink(), 'shareableLink')}
                     size="sm"
                     className="absolute top-1 right-1 bg-purple-600 hover:bg-purple-700"
                   >
                     <Copy className="w-4 h-4 mr-1" />
-                    {copied ? "Copied!" : "Copy"}
+                    {copiedShareableLink ? "Copied!" : "Copy"}
                   </Button>
                 </div>
               </div>
@@ -190,32 +194,16 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
                     className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm pr-20"
                   />
                   <Button
-                    onClick={() => copyToClipboard(generateEmbedLink())}
+                    onClick={() => copyToClipboard(generateEmbedLink(), 'embedLink')}
                     size="sm"
                     className="absolute top-1 right-1 bg-purple-600 hover:bg-purple-700"
                   >
                     <Copy className="w-4 h-4 mr-1" />
-                    {copied ? "Copied!" : "Copy"}
+                    {copiedEmbedLink ? "Copied!" : "Copy"}
                   </Button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Share className="w-4 h-4 text-purple-400" />
-                    <h4 className="text-white font-medium">Shareable Link</h4>
-                  </div>
-                  <p className="text-gray-300 text-sm">Direct link to view and edit the chart</p>
-                </div>
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Link className="w-4 h-4 text-purple-400" />
-                    <h4 className="text-white font-medium">Embed Link</h4>
-                  </div>
-                  <p className="text-gray-300 text-sm">Direct link for embedding in iframes</p>
-                </div>
-              </div>
             </div>
           )}
 
