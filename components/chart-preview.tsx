@@ -139,14 +139,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   const showGridLines = config.theme?.showGridLines !== false
 
   // Data label styling system
-  const getDataLabelStyle = (value: number, color: string, position: 'inside' | 'outside' = 'inside') => {
+  const getDataLabelStyle = (value: number, color: string, position: 'inside' | 'outside' = 'inside', chartType?: string) => {
     const isLightColor = isColorLight(color)
     const textColor = position === 'inside' 
       ? (isLightColor ? '#1f2937' : '#ffffff')
       : (isDark ? '#f3f4f6' : '#1f2937')
     
+    // Use smaller text for pie and donut charts
+    const textSize = (chartType === 'pie' || chartType === 'donut') ? 'text-xs' : 'text-xs'
+    const fontWeight = (chartType === 'pie' || chartType === 'donut') ? 'font-light' : 'font-medium'
+    
     return {
-      className: "text-xs font-medium",
+      className: `${textSize} ${fontWeight}`,
       style: { 
         color: textColor
       }
@@ -194,8 +198,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     }}
                     onMouseEnter={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect()
+                      const tooltipWidth = 200 // Approximate tooltip width
+                      const screenWidth = window.innerWidth
+                      
+                      // Smart positioning: if tooltip would go off screen, position it to the left of the bar
+                      const wouldOverflow = rect.right + tooltipWidth > screenWidth - 20
+                      const xPosition = wouldOverflow ? rect.left - 10 : rect.right + 10
+                      
                       setTooltip({
-                        x: rect.right,
+                        x: xPosition,
                         y: rect.top + rect.height / 2,
                         label: item.scenario,
                         value: item.value,
@@ -312,12 +323,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         <div className="relative w-64 h-64">
           <svg viewBox="0 0 200 200" className="w-full h-full transform rotate-0">
             <defs>
-              {colors.map((color, i) => (
-                <linearGradient key={i} id={`pieGradient${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor={color} />
-                  <stop offset="100%" stopColor={color} stopOpacity="0.7" />
-                </linearGradient>
-              ))}
               <filter id="pieShadow" x="-50%" y="-50%" width="200%" height="200%">
                 <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.2"/>
               </filter>
@@ -338,7 +343,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 <g key={index}>
                   <path
                     d={`M 100 100 L ${x1} ${y1} A 70 70 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
-                    fill={`url(#pieGradient${index % colors.length})`}
+                    fill={color}
                     filter="url(#pieShadow)"
                     className="cursor-pointer transition-all duration-300 hover:opacity-90"
                     style={{
@@ -369,7 +374,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const labelX = 100 + labelRadius * Math.cos(midAngleRad)
                     const labelY = 100 + labelRadius * Math.sin(midAngleRad)
                     const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
-                    const labelStyle = getDataLabelStyle(item.value, color, 'inside')
+                    const labelStyle = getDataLabelStyle(item.value, color, 'inside', 'pie')
                     
                     return (
                       <foreignObject x={labelX - 25} y={labelY - 10} width="50" height="20">
@@ -431,12 +436,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         <div className="relative w-72 h-72">
           <svg viewBox="0 0 200 200" className="w-full h-full">
             <defs>
-              {colors.map((color, i) => (
-                <linearGradient key={i} id={`donutGradient${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor={color} />
-                  <stop offset="100%" stopColor={color} stopOpacity="0.6" />
-                </linearGradient>
-              ))}
               <filter id="donutShadow" x="-50%" y="-50%" width="200%" height="200%">
                 <feDropShadow dx="0" dy="3" stdDeviation="6" floodOpacity="0.25"/>
               </filter>
@@ -481,7 +480,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 <g key={index}>
                   <path
                     d={pathData}
-                    fill={`url(#donutGradient${index % colors.length})`}
+                    fill={color}
                     filter="url(#donutShadow)"
                     className="cursor-pointer transition-all duration-500 hover:opacity-90"
                     style={{
@@ -512,7 +511,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const labelX = centerX + labelRadius * Math.cos(midAngleRad)
                     const labelY = centerY + labelRadius * Math.sin(midAngleRad)
                     const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
-                    const labelStyle = getDataLabelStyle(item.value, color, 'inside')
+                    const labelStyle = getDataLabelStyle(item.value, color, 'inside', 'donut')
                     
                     return (
                       <foreignObject x={labelX - 30} y={labelY - 10} width="60" height="20">
@@ -1192,7 +1191,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             <div className="h-full flex flex-col">
               {/* Chart Title and Subtitle */}
               <div className="mb-8">
-                <h1 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
+                <h1 className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
                   {config.title}
                 </h1>
                 <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>

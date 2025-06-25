@@ -10,6 +10,9 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			'albert': ['var(--font-albert)', 'system-ui', 'sans-serif'],
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
