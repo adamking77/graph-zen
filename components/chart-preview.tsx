@@ -16,33 +16,14 @@ if (typeof document !== 'undefined') {
       from { transform: scaleY(0); }
       to { transform: scaleY(1); }
     }
-    @keyframes smoothSweep {
+    @keyframes pieSegmentReveal {
       from { 
-        clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%); 
+        opacity: 0;
+        transform: scale(0.3);
       }
-      12.5% { 
-        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 50% 0%); 
-      }
-      25% { 
-        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%, 100% 50%, 100% 50%, 50% 0%); 
-      }
-      37.5% { 
-        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%, 50% 0%); 
-      }
-      50% { 
-        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 50% 100%, 50% 0%); 
-      }
-      62.5% { 
-        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 100%, 50% 0%); 
-      }
-      75% { 
-        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 50% 0%); 
-      }
-      87.5% { 
-        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%); 
-      }
-      100% { 
-        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%); 
+      to { 
+        opacity: 1;
+        transform: scale(1);
       }
     }
     @keyframes fadeInUp {
@@ -444,7 +425,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             <svg 
               viewBox="-50 -50 300 300" 
               className="w-full h-full transform rotate-0"
-              style={{ animation: 'smoothSweep 1200ms ease-out' }}
             >
               <defs>
                 <filter id="pieShadow" x="-50%" y="-50%" width="200%" height="200%">
@@ -473,7 +453,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       style={{
                         transformOrigin: '100px 100px',
                         transform: 'scale(1)',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        opacity: 0,
+                        animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s forwards`
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'scale(1.03)'
@@ -565,7 +547,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           <svg 
             viewBox="-50 -50 300 300" 
             className="w-full h-full transform rotate-0"
-            style={{ animation: 'smoothSweep 1200ms ease-out' }}
           >
             <defs>
               <filter id="pieShadowLandscape" x="-50%" y="-50%" width="200%" height="200%">
@@ -594,7 +575,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     style={{
                       transformOrigin: '100px 100px',
                       transform: 'scale(1)',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      opacity: 0,
+                      animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s forwards`
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'scale(1.03)'
@@ -697,7 +680,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             <svg 
               viewBox="-50 -50 300 300" 
               className="w-full h-full"
-              style={{ animation: 'smoothSweep 1200ms ease-out' }}
             >
               <defs>
                 <filter id="donutShadowPortrait" x="-50%" y="-50%" width="200%" height="200%">
@@ -750,7 +732,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       style={{
                         transformOrigin: '100px 100px',
                         transform: 'scale(1)',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        opacity: 0,
+                        animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s forwards`
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'scale(1.05)'
@@ -860,7 +844,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           <svg 
             viewBox="-50 -50 300 300" 
             className="w-full h-full"
-            style={{ animation: 'smoothSweep 1200ms ease-out' }}
           >
             <defs>
               <filter id="donutShadow" x="-50%" y="-50%" width="200%" height="200%">
@@ -913,7 +896,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     style={{
                       transformOrigin: '100px 100px',
                       transform: 'scale(1)',
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      opacity: 0,
+                      animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s forwards`
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'scale(1.05)'
