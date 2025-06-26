@@ -436,7 +436,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       const midAngleRad = (midAngle * Math.PI) / 180
                       
                       // Position labels outside the pie
-                      const labelDistance = 110 // Distance from center for labels
+                      const labelDistance = 135 // Distance from center for labels
                       const labelX = 100 + labelDistance * Math.cos(midAngleRad)
                       const labelY = 100 + labelDistance * Math.sin(midAngleRad)
                       
@@ -553,7 +553,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const midAngleRad = (midAngle * Math.PI) / 180
                     
                     // Position labels outside the pie
-                    const labelDistance = 110 // Distance from center for labels
+                    const labelDistance = 135 // Distance from center for labels
                     const labelX = 100 + labelDistance * Math.cos(midAngleRad)
                     const labelY = 100 + labelDistance * Math.sin(midAngleRad)
                     
