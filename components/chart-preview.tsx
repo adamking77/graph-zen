@@ -396,17 +396,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
                 const color = colors[index % colors.length]
 
-                const x1 = 100 + 70 * Math.cos(((startAngle - 90) * Math.PI) / 180)
-                const y1 = 100 + 70 * Math.sin(((startAngle - 90) * Math.PI) / 180)
-                const x2 = 100 + 70 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
-                const y2 = 100 + 70 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
+                const x1 = 100 + 115 * Math.cos(((startAngle - 90) * Math.PI) / 180)
+                const y1 = 100 + 115 * Math.sin(((startAngle - 90) * Math.PI) / 180)
+                const x2 = 100 + 115 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
+                const y2 = 100 + 115 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
 
                 const largeArcFlag = angle > 180 ? 1 : 0
 
                 return (
                   <g key={index}>
                     <path
-                      d={`M 100 100 L ${x1} ${y1} A 70 70 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                      d={`M 100 100 L ${x1} ${y1} A 115 115 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                       fill={color}
                       filter="url(#pieShadow)"
                       className="cursor-pointer transition-all duration-300 hover:opacity-90"
@@ -513,17 +513,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
               const color = colors[index % colors.length]
 
-              const x1 = 100 + 70 * Math.cos(((startAngle - 90) * Math.PI) / 180)
-              const y1 = 100 + 70 * Math.sin(((startAngle - 90) * Math.PI) / 180)
-              const x2 = 100 + 70 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
-              const y2 = 100 + 70 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
+              const x1 = 100 + 115 * Math.cos(((startAngle - 90) * Math.PI) / 180)
+              const y1 = 100 + 115 * Math.sin(((startAngle - 90) * Math.PI) / 180)
+              const x2 = 100 + 115 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
+              const y2 = 100 + 115 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
 
               const largeArcFlag = angle > 180 ? 1 : 0
 
               return (
                 <g key={index}>
                   <path
-                    d={`M 100 100 L ${x1} ${y1} A 70 70 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                    d={`M 100 100 L ${x1} ${y1} A 115 115 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                     fill={color}
                     filter="url(#pieShadowLandscape)"
                     className="cursor-pointer transition-all duration-300 hover:opacity-90"
