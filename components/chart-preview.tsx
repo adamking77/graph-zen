@@ -17,12 +17,15 @@ if (typeof document !== 'undefined') {
       to { transform: scaleY(1); }
     }
     @keyframes pieSegmentReveal {
-      from { 
+      0% { 
         opacity: 0;
         transform: scale(0.3);
       }
-      to { 
+      50% { 
         opacity: 1;
+        transform: scale(0.8);
+      }
+      100% { 
         transform: scale(1);
       }
     }
@@ -281,7 +284,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 <div className="flex-1 relative">
                 <div className={`h-8 ${isDark ? 'bg-gray-800/30' : 'bg-gray-200/40'} rounded-sm overflow-hidden`}>
                   <div
-                    className="h-full rounded-sm transition-all duration-200 ease-out flex items-center justify-end pr-3 relative cursor-pointer"
+                    className="h-full rounded-sm transition-all duration-200 ease-out flex items-center justify-end pr-3 relative cursor-pointer hover:opacity-80"
                     style={{
                       '--target-width': `${percentage}%`,
                       width: `${percentage}%`,
@@ -357,7 +360,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             return (
               <div key={index} className="flex flex-col items-center gap-2">
                 <div
-                  className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2"
+                  className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2 hover:opacity-80"
                   style={{
                     width: `${barWidth}px`,
                     height: `${barHeight}px`,
@@ -449,16 +452,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       d={`M 100 100 L ${x1} ${y1} A 115 115 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                       fill={color}
                       filter="url(#pieShadow)"
-                      className="cursor-pointer transition-all duration-300 hover:opacity-90"
+                      className="cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105"
                       style={{
                         transformOrigin: '100px 100px',
                         transform: 'scale(1)',
-                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        opacity: 0,
-                        animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s forwards`
+                        animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s backwards`
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.03)'
                         setTooltip({
                           x: e.clientX,
                           y: e.clientY,
@@ -468,8 +468,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                           color: color
                         })
                       }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1)'
+                      onMouseLeave={() => {
                         setTooltip(null)
                       }}
                     />
@@ -571,16 +570,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     d={`M 100 100 L ${x1} ${y1} A 115 115 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                     fill={color}
                     filter="url(#pieShadowLandscape)"
-                    className="cursor-pointer transition-all duration-300 hover:opacity-90"
+                    className="cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105"
                     style={{
                       transformOrigin: '100px 100px',
                       transform: 'scale(1)',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      opacity: 0,
-                      animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s forwards`
+                      animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s backwards`
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.03)'
                       setTooltip({
                         x: e.clientX,
                         y: e.clientY,
@@ -591,7 +587,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       })
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)'
                       setTooltip(null)
                     }}
                   />
@@ -728,16 +723,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       d={pathData}
                       fill={color}
                       filter="url(#donutShadowPortrait)"
-                      className="cursor-pointer transition-all duration-500 hover:opacity-90"
+                      className="cursor-pointer transition-all duration-500 hover:opacity-80 hover:scale-105"
                       style={{
                         transformOrigin: '100px 100px',
                         transform: 'scale(1)',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                        opacity: 0,
-                        animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s forwards`
+                        animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s backwards`
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.05)'
                         setTooltip({
                           x: e.clientX,
                           y: e.clientY,
@@ -748,8 +740,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         })
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1)'
-                        setTooltip(null)
+                          setTooltip(null)
                       }}
                     />
                     {showDataLabels && angle > 15 && (() => {
@@ -892,16 +883,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     d={pathData}
                     fill={color}
                     filter="url(#donutShadow)"
-                    className="cursor-pointer transition-all duration-500 hover:opacity-90"
+                    className="cursor-pointer transition-all duration-500 hover:opacity-80 hover:scale-105"
                     style={{
                       transformOrigin: '100px 100px',
                       transform: 'scale(1)',
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                      opacity: 0,
-                      animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s forwards`
+                      animation: `pieSegmentReveal 0.6s ease-out ${index * 0.12}s backwards`
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.05)'
                       setTooltip({
                         x: e.clientX,
                         y: e.clientY,
@@ -912,7 +900,6 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       })
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)'
                       setTooltip(null)
                     }}
                   />
@@ -1134,7 +1121,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   cy={y}
                   r="6"
                   fill={primaryColor}
-                  className="cursor-pointer transition-all duration-300 hover:r-8"
+                  className="cursor-pointer transition-all duration-300 hover:r-8 hover:opacity-80"
                   style={{
                     filter: `drop-shadow(0 2px 4px ${primaryColor}40)`,
                     animation: `bounceIn 0.6s ease-out ${index * 0.1}s backwards`
@@ -1393,7 +1380,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   height={barHeight}
                   fill="url(#comboBarGradient)"
                   filter="url(#comboShadow)"
-                  className="cursor-pointer transition-all duration-300 hover:opacity-80"
+                  className="cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105"
                   style={{
                     animation: `slideUp 0.8s ease-out ${index * 0.1}s backwards`
                   }}
