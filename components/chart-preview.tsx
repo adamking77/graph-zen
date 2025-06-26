@@ -4,6 +4,58 @@ import { useRef, useState } from "react"
 import type { ChartConfig, ChartData } from "@/app/page"
 import { Card, CardContent } from "@/components/ui/card"
 
+// Inject chart animation styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style')
+  styleSheet.textContent = `
+    @keyframes growHorizontal {
+      from { width: 0%; }
+      to { width: var(--target-width, 100%); }
+    }
+    @keyframes growVertical {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+    @keyframes smoothSweep {
+      from { 
+        clip-path: polygon(50% 50%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%); 
+      }
+      12.5% { 
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%, 50% 0%); 
+      }
+      25% { 
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%, 100% 50%, 100% 50%, 50% 0%); 
+      }
+      37.5% { 
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%, 50% 0%); 
+      }
+      50% { 
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 50% 100%, 50% 0%); 
+      }
+      62.5% { 
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 100%, 50% 0%); 
+      }
+      75% { 
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 50% 0%); 
+      }
+      87.5% { 
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%); 
+      }
+      100% { 
+        clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%); 
+      }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  `
+  if (!document.head.querySelector('[data-chart-animations]')) {
+    styleSheet.setAttribute('data-chart-animations', 'true')
+    document.head.appendChild(styleSheet)
+  }
+}
+
 interface TooltipData {
   x: number
   y: number
@@ -250,10 +302,12 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   <div
                     className="h-full rounded-sm transition-all duration-200 ease-out flex items-center justify-end pr-3 relative cursor-pointer"
                     style={{
+                      '--target-width': `${percentage}%`,
                       width: `${percentage}%`,
                       background: `linear-gradient(90deg, ${color}e6, ${color})`,
-                      boxShadow: `0 2px 4px ${color}20`
-                    }}
+                      boxShadow: `0 2px 4px ${color}20`,
+                      animation: `growHorizontal 800ms ease-out ${index * 150}ms both`
+                    } as React.CSSProperties}
                     onMouseEnter={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect()
                       const tooltipWidth = 200 // Approximate tooltip width
@@ -327,7 +381,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     width: `${barWidth}px`,
                     height: `${barHeight}px`,
                     background: `linear-gradient(180deg, ${color}f0, ${color})`,
-                    boxShadow: `0 2px 8px ${color}25`
+                    boxShadow: `0 2px 8px ${color}25`,
+                    transformOrigin: 'bottom',
+                    animation: `growVertical 800ms ease-out ${index * 150}ms both`
                   }}
                   onMouseEnter={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect()
@@ -385,7 +441,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       return (
         <div className="flex flex-col items-center justify-center gap-6 h-full">
           <div className="relative w-full max-w-64 aspect-square">
-            <svg viewBox="-50 -50 300 300" className="w-full h-full transform rotate-0">
+            <svg 
+              viewBox="-50 -50 300 300" 
+              className="w-full h-full transform rotate-0"
+              style={{ animation: 'smoothSweep 1200ms ease-out' }}
+            >
               <defs>
                 <filter id="pieShadow" x="-50%" y="-50%" width="200%" height="200%">
                   <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.2"/>
@@ -502,7 +562,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return (
       <div className="flex items-center justify-center gap-8 h-full">
         <div className="relative w-full h-full max-w-80 max-h-80">
-          <svg viewBox="-50 -50 300 300" className="w-full h-full transform rotate-0">
+          <svg 
+            viewBox="-50 -50 300 300" 
+            className="w-full h-full transform rotate-0"
+            style={{ animation: 'smoothSweep 1200ms ease-out' }}
+          >
             <defs>
               <filter id="pieShadowLandscape" x="-50%" y="-50%" width="200%" height="200%">
                 <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.2"/>
@@ -630,7 +694,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       return (
         <div className="flex flex-col items-center justify-center gap-6 h-full">
           <div className="relative w-full max-w-64 aspect-square">
-            <svg viewBox="-50 -50 300 300" className="w-full h-full">
+            <svg 
+              viewBox="-50 -50 300 300" 
+              className="w-full h-full"
+              style={{ animation: 'smoothSweep 1200ms ease-out' }}
+            >
               <defs>
                 <filter id="donutShadowPortrait" x="-50%" y="-50%" width="200%" height="200%">
                   <feDropShadow dx="0" dy="3" stdDeviation="6" floodOpacity="0.25"/>
@@ -739,7 +807,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             </svg>
             
             {/* Center content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <div 
+              className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
+              style={{ animation: 'fadeInUp 500ms ease-out 1000ms both' }}
+            >
               <div className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 {formatNumber(total)}
               </div>
@@ -786,7 +857,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return (
       <div className="flex items-center justify-center gap-8 h-full">
         <div className="relative w-full h-full max-w-80 max-h-80">
-          <svg viewBox="-50 -50 300 300" className="w-full h-full">
+          <svg 
+            viewBox="-50 -50 300 300" 
+            className="w-full h-full"
+            style={{ animation: 'smoothSweep 1200ms ease-out' }}
+          >
             <defs>
               <filter id="donutShadow" x="-50%" y="-50%" width="200%" height="200%">
                 <feDropShadow dx="0" dy="3" stdDeviation="6" floodOpacity="0.25"/>
@@ -895,7 +970,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           </svg>
           
           {/* Center content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <div 
+            className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
+            style={{ animation: 'fadeInUp 500ms ease-out 1000ms both' }}
+          >
             <div className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
               {formatNumber(total)}
             </div>
