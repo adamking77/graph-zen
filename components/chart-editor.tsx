@@ -528,6 +528,8 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                 <div className="text-xs text-gray-400">
                   {previewData.filter(item => item.status === 'error').length > 0
                     ? 'Rows with errors will be skipped'
+                    : previewData.filter(item => item.status === 'warning').length > 0
+                    ? ''
                     : 'All data looks good!'}
                 </div>
                 <div className="flex items-center gap-3">
