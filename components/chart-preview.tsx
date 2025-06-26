@@ -385,7 +385,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       return (
         <div className="flex flex-col items-center justify-center gap-6 h-full">
           <div className="relative w-full max-w-64 aspect-square">
-            <svg viewBox="0 0 200 200" className="w-full h-full transform rotate-0">
+            <svg viewBox="-50 -50 300 300" className="w-full h-full transform rotate-0">
               <defs>
                 <filter id="pieShadow" x="-50%" y="-50%" width="200%" height="200%">
                   <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.2"/>
@@ -431,17 +431,26 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         setTooltip(null)
                       }}
                     />
-                    {showDataLabels && angle > 30 && (() => {
+                    {showDataLabels && angle > 15 && (() => {
                       const midAngle = startAngle + angle / 2 - 90
                       const midAngleRad = (midAngle * Math.PI) / 180
-                      const labelRadius = 45
-                      const labelX = 100 + labelRadius * Math.cos(midAngleRad)
-                      const labelY = 100 + labelRadius * Math.sin(midAngleRad)
+                      
+                      // Position labels outside the pie
+                      const labelDistance = 110 // Distance from center for labels
+                      const labelX = 100 + labelDistance * Math.cos(midAngleRad)
+                      const labelY = 100 + labelDistance * Math.sin(midAngleRad)
+                      
                       const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
-                      const labelStyle = getDataLabelStyle(item.value, color, 'inside', 'pie')
+                      // For external pie labels, use background-based contrast
+                      const labelStyle = {
+                        className: 'text-xs font-medium',
+                        style: { 
+                          color: isDark ? '#f3f4f6' : '#1f2937'
+                        }
+                      }
                       
                       return (
-                        <foreignObject x={labelX - 25} y={labelY - 10} width="50" height="20">
+                        <foreignObject x={labelX - 35} y={labelY - 10} width="70" height="20">
                           <div 
                             className={`${labelStyle.className} text-center w-full`}
                             style={labelStyle.style}
@@ -493,7 +502,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return (
       <div className="flex items-center justify-center gap-8 h-full">
         <div className="relative w-full h-full max-w-80 max-h-80">
-          <svg viewBox="0 0 200 200" className="w-full h-full transform rotate-0">
+          <svg viewBox="-50 -50 300 300" className="w-full h-full transform rotate-0">
             <defs>
               <filter id="pieShadowLandscape" x="-50%" y="-50%" width="200%" height="200%">
                 <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.2"/>
@@ -539,17 +548,26 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       setTooltip(null)
                     }}
                   />
-                  {showDataLabels && angle > 30 && (() => {
+                  {showDataLabels && angle > 15 && (() => {
                     const midAngle = startAngle + angle / 2 - 90
                     const midAngleRad = (midAngle * Math.PI) / 180
-                    const labelRadius = 45
-                    const labelX = 100 + labelRadius * Math.cos(midAngleRad)
-                    const labelY = 100 + labelRadius * Math.sin(midAngleRad)
+                    
+                    // Position labels outside the pie
+                    const labelDistance = 110 // Distance from center for labels
+                    const labelX = 100 + labelDistance * Math.cos(midAngleRad)
+                    const labelY = 100 + labelDistance * Math.sin(midAngleRad)
+                    
                     const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
-                    const labelStyle = getDataLabelStyle(item.value, color, 'inside', 'pie')
+                    // For external pie labels, use background-based contrast
+                    const labelStyle = {
+                      className: 'text-xs font-medium',
+                      style: { 
+                        color: isDark ? '#f3f4f6' : '#1f2937'
+                      }
+                    }
                     
                     return (
-                      <foreignObject x={labelX - 25} y={labelY - 10} width="50" height="20">
+                      <foreignObject x={labelX - 35} y={labelY - 10} width="70" height="20">
                         <div 
                           className={`${labelStyle.className} text-center w-full`}
                           style={labelStyle.style}
@@ -612,7 +630,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       return (
         <div className="flex flex-col items-center justify-center gap-6 h-full">
           <div className="relative w-full max-w-64 aspect-square">
-            <svg viewBox="0 0 200 200" className="w-full h-full">
+            <svg viewBox="-50 -50 300 300" className="w-full h-full">
               <defs>
                 <filter id="donutShadowPortrait" x="-50%" y="-50%" width="200%" height="200%">
                   <feDropShadow dx="0" dy="3" stdDeviation="6" floodOpacity="0.25"/>
@@ -625,8 +643,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
                 const centerX = 100
                 const centerY = 100
-                const outerRadius = 80
-                const innerRadius = 58
+                const outerRadius = 115
+                const innerRadius = 93
 
                 // Calculate angles for the donut segments
                 const startAngleRad = ((startAngle - 90) * Math.PI) / 180
@@ -682,17 +700,30 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         setTooltip(null)
                       }}
                     />
-                    {showDataLabels && angle > 25 && (() => {
+                    {showDataLabels && angle > 15 && (() => {
                       const midAngle = startAngle + angle / 2 - 90
                       const midAngleRad = (midAngle * Math.PI) / 180
-                      const labelRadius = (outerRadius + innerRadius) / 2
-                      const labelX = centerX + labelRadius * Math.cos(midAngleRad)
-                      const labelY = centerY + labelRadius * Math.sin(midAngleRad)
+                      
+                      // Position labels outside the donut
+                      const labelDistance = 135 // Distance from center for labels
+                      const labelX = centerX + labelDistance * Math.cos(midAngleRad)
+                      const labelY = centerY + labelDistance * Math.sin(midAngleRad)
+                      
+                      // Leader line from outer edge to label
+                      const lineStartX = centerX + outerRadius * Math.cos(midAngleRad)
+                      const lineStartY = centerY + outerRadius * Math.sin(midAngleRad)
+                      
                       const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
-                      const labelStyle = getDataLabelStyle(item.value, color, 'inside', 'donut')
+                      // For external donut labels, use background-based contrast
+                      const labelStyle = {
+                        className: 'text-xs font-medium',
+                        style: { 
+                          color: isDark ? '#f3f4f6' : '#1f2937'
+                        }
+                      }
                       
                       return (
-                        <foreignObject x={labelX - 30} y={labelY - 10} width="60" height="20">
+                        <foreignObject x={labelX - 35} y={labelY - 10} width="70" height="20">
                           <div 
                             className={`${labelStyle.className} text-center w-full`}
                             style={labelStyle.style}
@@ -709,7 +740,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             
             {/* Center content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              <div className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 {formatNumber(total)}
               </div>
               <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -755,7 +786,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return (
       <div className="flex items-center justify-center gap-8 h-full">
         <div className="relative w-full h-full max-w-80 max-h-80">
-          <svg viewBox="0 0 200 200" className="w-full h-full">
+          <svg viewBox="-50 -50 300 300" className="w-full h-full">
             <defs>
               <filter id="donutShadow" x="-50%" y="-50%" width="200%" height="200%">
                 <feDropShadow dx="0" dy="3" stdDeviation="6" floodOpacity="0.25"/>
@@ -768,8 +799,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
               const centerX = 100
               const centerY = 100
-              const outerRadius = 80
-              const innerRadius = 58
+              const outerRadius = 115
+              const innerRadius = 93
 
               // Calculate angles for the donut segments
               const startAngleRad = ((startAngle - 90) * Math.PI) / 180
@@ -825,17 +856,30 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       setTooltip(null)
                     }}
                   />
-                  {showDataLabels && angle > 25 && (() => {
+                  {showDataLabels && angle > 15 && (() => {
                     const midAngle = startAngle + angle / 2 - 90
                     const midAngleRad = (midAngle * Math.PI) / 180
-                    const labelRadius = (outerRadius + innerRadius) / 2
-                    const labelX = centerX + labelRadius * Math.cos(midAngleRad)
-                    const labelY = centerY + labelRadius * Math.sin(midAngleRad)
+                    
+                    // Position labels outside the donut
+                    const labelDistance = 135 // Distance from center for labels
+                    const labelX = centerX + labelDistance * Math.cos(midAngleRad)
+                    const labelY = centerY + labelDistance * Math.sin(midAngleRad)
+                    
+                    // Leader line from outer edge to label
+                    const lineStartX = centerX + outerRadius * Math.cos(midAngleRad)
+                    const lineStartY = centerY + outerRadius * Math.sin(midAngleRad)
+                    
                     const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
-                    const labelStyle = getDataLabelStyle(item.value, color, 'inside', 'donut')
+                    // For external donut labels, use background-based contrast
+                    const labelStyle = {
+                      className: 'text-xs font-medium',
+                      style: { 
+                        color: isDark ? '#f3f4f6' : '#1f2937'
+                      }
+                    }
                     
                     return (
-                      <foreignObject x={labelX - 30} y={labelY - 10} width="60" height="20">
+                      <foreignObject x={labelX - 35} y={labelY - 10} width="70" height="20">
                         <div 
                           className={`${labelStyle.className} text-center w-full`}
                           style={labelStyle.style}
@@ -852,7 +896,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           
           {/* Center content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <div className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
               {formatNumber(total)}
             </div>
             <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
