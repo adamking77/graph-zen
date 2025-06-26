@@ -198,9 +198,20 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   // Data label styling system
   const getDataLabelStyle = (value: number, color: string, position: 'inside' | 'outside' = 'inside', chartType?: string) => {
     const isLightColor = isColorLight(color)
-    const textColor = position === 'inside' 
-      ? (isLightColor ? '#1f2937' : '#ffffff')
-      : (isDark ? '#f3f4f6' : '#1f2937')
+    let textColor: string
+    
+    if (position === 'inside') {
+      // Inside the bar: use contrasting color based on bar color
+      textColor = isLightColor ? '#1f2937' : '#ffffff'
+    } else {
+      // Outside the bar: use contrasting color based on background
+      if (isDark) {
+        textColor = '#f3f4f6' // Light text on dark background
+      } else {
+        // White background: use the bar color itself for better visibility
+        textColor = color
+      }
+    }
     
     // Use smaller text for pie and donut charts
     const textSize = (chartType === 'pie' || chartType === 'donut') ? 'text-xs' : 'text-xs'
