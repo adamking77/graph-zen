@@ -1175,7 +1175,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 {showDataLabels && (() => {
                   const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
                   const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
-                  const labelStyle = getDataLabelStyle(item.value, primaryColor, 'outside')
+                  // For line chart labels, use background-based contrast like pie chart
+                  const labelStyle = {
+                    className: 'text-xs font-medium',
+                    style: { 
+                      color: isDark ? '#f3f4f6' : '#1f2937'
+                    }
+                  }
                   
                   return (
                     <foreignObject x={x - 30} y={y - 35} width="60" height="25">
