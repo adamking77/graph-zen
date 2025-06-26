@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "dev:8080": "next dev -p 8080",
+    "dev:8080": "next dev -p 8080 -H 0.0.0.0",
     "lint": "next lint",
     "start": "next start",
     "start:8080": "next start -p 8080"

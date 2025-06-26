@@ -896,7 +896,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   const renderLineChart = () => {
     if (config.data.length === 0) return null
 
-    const maxValue = Math.max(...config.data.map((d) => d.value))
+    const sortedData = sortData(config.data)
+    const maxValue = Math.max(...sortedData.map((d) => d.value))
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     const primaryColor = colors[0]
 
@@ -906,7 +907,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const chartHeight = availableHeight
     const padding = 40
 
-    const points = config.data.map((item, index) => {
+    const points = sortedData.map((item, index) => {
       const x = padding + (index / (config.data.length - 1)) * (chartWidth - 2 * padding)
       const y = chartHeight - padding - ((item.value / maxValue) * (chartHeight - 2 * padding))
       return { x, y, item, index }
@@ -970,22 +971,24 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             </defs>
 
             {/* Grid lines */}
-            <g opacity="0.1">
-              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
-                const y = chartHeight - padding - (ratio * (chartHeight - 2 * padding))
-                return (
-                  <line
-                    key={i}
-                    x1={padding}
-                    y1={y}
-                    x2={chartWidth - padding}
-                    y2={y}
-                    stroke={isDark ? "#fff" : "#000"}
-                    strokeWidth="1"
-                  />
-                )
-              })}
-            </g>
+            {showGridLines && (
+              <g opacity="0.1">
+                {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                  const y = chartHeight - padding - (ratio * (chartHeight - 2 * padding))
+                  return (
+                    <line
+                      key={i}
+                      x1={padding}
+                      y1={y}
+                      x2={chartWidth - padding}
+                      y2={y}
+                      stroke={isDark ? "#fff" : "#000"}
+                      strokeWidth="1"
+                    />
+                  )
+                })}
+              </g>
+            )}
 
             {/* Area under the curve */}
             <path
@@ -1137,7 +1140,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   const renderComboChart = () => {
     if (config.data.length === 0) return null
 
-    const maxValue = Math.max(...config.data.map((d) => d.value))
+    const sortedData = sortData(config.data)
+    const maxValue = Math.max(...sortedData.map((d) => d.value))
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     
     // Smart color selection for maximum contrast
@@ -1185,15 +1189,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const barWidth = 32 // Narrow width to match horizontal and vertical bar chart consistency
 
     // Calculate positions for both bars and line points
-    const barPositions = config.data.map((item, index) => {
-      const x = padding + (index + 0.5) * ((chartWidth - 2 * padding) / config.data.length)
+    const barPositions = sortedData.map((item, index) => {
+      const x = padding + (index + 0.5) * ((chartWidth - 2 * padding) / sortedData.length)
       const barHeight = (item.value / maxValue) * (chartHeight - 2 * padding)
       const y = chartHeight - padding - barHeight
       return { x, y, barHeight, item, index }
     })
 
-    const linePoints = config.data.map((item, index) => {
-      const x = padding + (index + 0.5) * ((chartWidth - 2 * padding) / config.data.length)
+    const linePoints = sortedData.map((item, index) => {
+      const x = padding + (index + 0.5) * ((chartWidth - 2 * padding) / sortedData.length)
       const y = chartHeight - padding - ((item.value / maxValue) * (chartHeight - 2 * padding))
       return { x, y, item, index }
     })
@@ -1246,22 +1250,24 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             </defs>
 
             {/* Grid lines */}
-            <g opacity="0.1">
-              {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
-                const y = chartHeight - padding - (ratio * (chartHeight - 2 * padding))
-                return (
-                  <line
-                    key={i}
-                    x1={padding}
-                    y1={y}
-                    x2={chartWidth - padding}
-                    y2={y}
-                    stroke={isDark ? "#fff" : "#000"}
-                    strokeWidth="1"
-                  />
-                )
-              })}
-            </g>
+            {showGridLines && (
+              <g opacity="0.1">
+                {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
+                  const y = chartHeight - padding - (ratio * (chartHeight - 2 * padding))
+                  return (
+                    <line
+                      key={i}
+                      x1={padding}
+                      y1={y}
+                      x2={chartWidth - padding}
+                      y2={y}
+                      stroke={isDark ? "#fff" : "#000"}
+                      strokeWidth="1"
+                    />
+                  )
+                })}
+              </g>
+            )}
 
             {/* Bars */}
             {barPositions.map(({ x, y, barHeight, item, index }) => (
