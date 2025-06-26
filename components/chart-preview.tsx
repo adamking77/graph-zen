@@ -626,7 +626,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 const centerX = 100
                 const centerY = 100
                 const outerRadius = 80
-                const innerRadius = 45
+                const innerRadius = 58
 
                 // Calculate angles for the donut segments
                 const startAngleRad = ((startAngle - 90) * Math.PI) / 180
@@ -769,7 +769,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               const centerX = 100
               const centerY = 100
               const outerRadius = 80
-              const innerRadius = 45
+              const innerRadius = 58
 
               // Calculate angles for the donut segments
               const startAngleRad = ((startAngle - 90) * Math.PI) / 180
