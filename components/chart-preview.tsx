@@ -314,7 +314,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   >
                     {showDataLabels && (() => {
                       const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
-                      const labelStyle = getDataLabelStyle(item.value, color, percentage > 30 ? 'inside' : 'outside')
+                      const isInside = percentage > 30
+                      const labelStyle = isInside ? 
+                        { className: 'text-xs font-medium', style: { color: '#ffffff' } } :
+                        { className: 'text-xs font-medium', style: { color: isDark ? '#f3f4f6' : '#1f2937' } }
                       
                       return (
                         <div 
@@ -383,7 +386,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 >
                   {showDataLabels && (() => {
                     const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
-                    const labelStyle = getDataLabelStyle(item.value, color, barHeight > 40 ? 'inside' : 'outside')
+                    const isInside = barHeight > 40
+                    const labelStyle = isInside ? 
+                      { className: 'text-xs font-medium', style: { color: '#ffffff' } } :
+                      { className: 'text-xs font-medium', style: { color: isDark ? '#f3f4f6' : '#1f2937' } }
                     
                     return (
                       <div 
@@ -689,7 +695,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 const centerX = 100
                 const centerY = 100
                 const outerRadius = 115
-                const innerRadius = 93
+                const innerRadius = 80
 
                 // Calculate angles for the donut segments
                 const startAngleRad = ((startAngle - 90) * Math.PI) / 180
@@ -849,7 +855,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               const centerX = 100
               const centerY = 100
               const outerRadius = 115
-              const innerRadius = 93
+              const innerRadius = 80
 
               // Calculate angles for the donut segments
               const startAngleRad = ((startAngle - 90) * Math.PI) / 180
@@ -1399,13 +1405,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 {showDataLabels && (() => {
                   const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
                   const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                  const isInside = barHeight > 40
                   
                   return (
-                    <foreignObject x={x - 30} y={barHeight > 40 ? y + barHeight - 25 : y - 30} width="60" height="25">
+                    <foreignObject x={x - 30} y={isInside ? y + barHeight - 25 : y - 30} width="60" height="25">
                       <div 
                         className="text-xs font-medium text-center w-full"
                         style={{ 
-                          color: isDark ? '#f3f4f6' : '#1f2937'
+                          color: isInside ? '#ffffff' : (isDark ? '#f3f4f6' : '#1f2937')
                         }}
                       >
                         {labelValue}
