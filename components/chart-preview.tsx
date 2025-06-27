@@ -1337,8 +1337,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           >
             <defs>
               <linearGradient id="comboBarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor={primaryColor} />
-                <stop offset="100%" stopColor={primaryColor} stopOpacity="0.7" />
+                <stop offset="0%" stopColor={`${primaryColor}f0`} />
+                <stop offset="100%" stopColor={primaryColor} />
               </linearGradient>
               <linearGradient id="comboLineStroke" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor={lineColor} />
@@ -1378,11 +1378,12 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   y={y}
                   width={barWidth}
                   height={barHeight}
+                  rx="2"
                   fill="url(#comboBarGradient)"
                   filter="url(#comboShadow)"
-                  className="cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105"
+                  className="cursor-pointer transition-all duration-200 hover:opacity-80"
                   style={{
-                    animation: `slideUp 0.8s ease-out ${index * 0.1}s backwards`
+                    animation: `slideUp 0.8s ease-out ${index * 0.15}s backwards`
                   }}
                   onMouseEnter={(e) => {
                     setTooltip({
@@ -1398,13 +1399,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 {showDataLabels && (() => {
                   const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
                   const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
-                  const labelStyle = getDataLabelStyle(item.value, primaryColor, barHeight > 40 ? 'inside' : 'outside')
                   
                   return (
                     <foreignObject x={x - 30} y={barHeight > 40 ? y + barHeight - 25 : y - 30} width="60" height="25">
                       <div 
-                        className={`${labelStyle.className} text-center w-full`}
-                        style={labelStyle.style}
+                        className="text-xs font-medium text-center w-full"
+                        style={{ 
+                          color: isDark ? '#f3f4f6' : '#1f2937'
+                        }}
                       >
                         {labelValue}
                       </div>
@@ -1464,13 +1466,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 {showDataLabels && (() => {
                   const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
                   const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
-                  const labelStyle = getDataLabelStyle(item.value, lineColor, 'outside')
                   
                   return (
                     <foreignObject x={x - 30} y={y - 50} width="60" height="25">
                       <div 
-                        className={`${labelStyle.className} text-center w-full`}
-                        style={labelStyle.style}
+                        className="text-xs font-medium text-center w-full"
+                        style={{ 
+                          color: isDark ? '#f3f4f6' : '#1f2937'
+                        }}
                       >
                         {labelValue}
                       </div>
