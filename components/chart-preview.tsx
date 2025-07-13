@@ -1658,11 +1658,25 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-[#0d0d0d] relative">
+    <div 
+      className="h-full flex flex-col relative"
+      style={{
+        backgroundColor: '#0F1419'
+      }}
+    >
       <Tooltip data={tooltip} formatNumber={formatNumber} />
       
       {/* Chart Area */}
-      <div className="flex-1 p-6 overflow-hidden flex items-center justify-center">
+      <div 
+        className="flex-1 p-6 overflow-hidden flex items-center justify-center"
+        style={{
+          backgroundColor: '#1A1F26',
+          boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.3), inset 0 2px 6px rgba(0,0,0,0.2)',
+          border: '1px solid rgba(47, 58, 74, 0.2)',
+          margin: '12px',
+          borderRadius: '12px'
+        }}
+      >
         {config.theme?.borderStyle === 'gradient' ? (
           <div 
             className={`${getCornerStyle()} shadow-sm transition-all duration-300`}

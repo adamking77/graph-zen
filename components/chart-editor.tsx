@@ -216,159 +216,388 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
     setPreviewData([])
   }
 
+
   const chartTypes = [
-    { value: "horizontal-bar", label: "Horizontal Bar", icon: BarChart3 },
-    { value: "vertical-bar", label: "Vertical Bar", icon: BarChart3 },
-    { value: "pie", label: "Pie Chart", icon: PieChart },
-    { value: "donut", label: "Donut Chart", icon: PieChart },
-    { value: "line", label: "Line Chart", icon: TrendingUp },
-    { value: "combo", label: "Combo Chart", icon: TrendingUp },
+    { 
+      value: "horizontal-bar", 
+      label: "Horizontal Bar", 
+      icon: BarChart3,
+      description: "Great for comparing categories with long names"
+    },
+    { 
+      value: "vertical-bar", 
+      label: "Vertical Bar", 
+      icon: BarChart3,
+      description: "Perfect for showing values across categories"
+    },
+    { 
+      value: "pie", 
+      label: "Pie Chart", 
+      icon: PieChart,
+      description: "Ideal for showing parts of a whole"
+    },
+    { 
+      value: "donut", 
+      label: "Donut Chart", 
+      icon: PieChart,
+      description: "Like pie charts, but with space for totals"
+    },
+    { 
+      value: "line", 
+      label: "Line Chart", 
+      icon: TrendingUp,
+      description: "Best for showing trends over time"
+    },
+    { 
+      value: "combo", 
+      label: "Combo Chart", 
+      icon: TrendingUp,
+      description: "Combines bars and lines for rich data stories"
+    },
   ]
 
+  // Section expansion state
+  const [expandedSections, setExpandedSections] = useState({
+    essentials: true,
+    data: true,
+    appearance: true,
+    advanced: false
+  })
+
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }))
+  }
+
+  // Render section header with expand/collapse
+  const SectionHeader = ({ 
+    title, 
+    icon, 
+    section, 
+    description
+  }: { 
+    title: string
+    icon: React.ReactNode
+    section: keyof typeof expandedSections
+    description?: string
+  }) => (
+    <button
+      onClick={() => toggleSection(section)}
+      className="w-full flex items-center justify-between p-3 rounded-lg transition-all group"
+      style={{
+        backgroundColor: expandedSections[section] ? '#12151A' : '#1C1F26',
+        backgroundImage: expandedSections[section] 
+          ? 'linear-gradient(135deg, #11141A 0%, #13161B 100%)'
+          : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+        boxShadow: expandedSections[section] 
+          ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
+          : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+        border: '1px solid rgba(47, 58, 74, 0.15)',
+        transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
+      onMouseEnter={(e) => {
+        if (!expandedSections[section]) {
+          e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
+          e.currentTarget.style.transform = 'translateY(-0.5px)'
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!expandedSections[section]) {
+          e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
+          e.currentTarget.style.transform = 'translateY(0)'
+        }
+      }}
+    >
+      <div className="flex items-center gap-3">
+        <div className="text-purple-400">{icon}</div>
+        <div className="text-left">
+          <h3 className="text-white text-sm font-medium">{title}</h3>
+          {description && (
+            <p className="text-xs text-gray-400">{description}</p>
+          )}
+        </div>
+      </div>
+      <div className={`transform transition-transform ${expandedSections[section] ? 'rotate-180' : ''}`}>
+        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </button>
+  )
+
   return (
-    <div className="h-full flex flex-col overflow-hidden">
+    <div 
+      className="h-full flex flex-col overflow-hidden" 
+      style={{ 
+        backgroundColor: '#16191E',
+        backgroundImage: 'linear-gradient(135deg, #16191E 0%, #14171C 100%)'
+      }}
+    >
       {/* Configuration Sections */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {/* Chart Configuration */}
-        <div className="space-y-4">
-          <div className="space-y-3">
-            <div>
-              <label className="block text-xs font-light text-gray-400 mb-2 tracking-wide">Chart Title</label>
-              <input
-                type="text"
-                value={config.title}
-                onChange={(e) => updateConfig({ title: e.target.value })}
-                className="w-full bg-gray-800/50 border-gray-700/50 text-white placeholder-gray-400 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
-                placeholder="Enter chart title"
-                suppressHydrationWarning
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-light text-gray-400 mb-2 tracking-wide">Subtitle</label>
-              <input
-                type="text"
-                value={config.subtitle}
-                onChange={(e) => updateConfig({ subtitle: e.target.value })}
-                className="w-full bg-gray-800/50 border-gray-700/50 text-white placeholder-gray-400 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
-                placeholder="Enter subtitle"
-                suppressHydrationWarning
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Chart Type Selection */}
+        
+        {/* ESSENTIALS SECTION */}
         <div className="space-y-3">
+          <SectionHeader 
+            title="Essentials" 
+            icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
+            section="essentials"
+            description="Chart type, title, and basic setup"
+          />
           
-          <div className="grid grid-cols-2 gap-2">
-            {chartTypes.map((type) => {
-              const Icon = type.icon
-              return (
-                <button
-                  key={type.value}
-                  onClick={() => updateConfig({ type: type.value as "horizontal-bar" | "vertical-bar" | "pie" | "donut" | "line" | "combo" })}
-                  className={`flex items-center gap-2 p-2 rounded-lg border transition-all duration-200 text-xs ${
-                    config.type === type.value
-                      ? "bg-purple-600/20 border-purple-500/50 text-purple-300 shadow-sm"
-                      : "bg-gray-800/30 border-gray-700/50 text-gray-300 hover:bg-gray-800/50 hover:border-gray-600/50 hover:text-white"
-                  }`}
-                >
-                  <Icon className="w-3 h-3" />
-                  <span className="font-light tracking-wide">{type.label}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Data Points */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-white text-sm font-light tracking-wide flex items-center gap-2">
-              <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
-              Chart Data
-            </h3>
-            <DataEditorDialog config={config} onConfigChange={onChange}>
-              <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-2">
-                <Plus className="w-3 h-3 mr-1" />
-                Edit Data
-              </Button>
-            </DataEditorDialog>
-          </div>
-          
-          <div className="bg-gray-900/30 border border-gray-800/30 rounded-lg p-3">
-            <div className="space-y-2">
-              <div className="text-xs text-gray-400 mb-2">
-                {config.data.length} data {config.data.length === 1 ? 'point' : 'points'}
-              </div>
-              {config.data.slice(0, 3).map((item, index) => (
-                <div
-                  key={index}
-                  className="flex gap-2 items-center p-2 bg-gray-800/30 rounded border border-gray-700/30"
-                >
-                  <div className="flex-1 text-xs text-white truncate">
-                    {item.scenario}
-                  </div>
-                  <div className="text-xs text-purple-300 font-light text-right">
-                    {formatNumber(item.value)}
-                  </div>
-                </div>
-              ))}
-              {config.data.length > 3 && (
-                <div className="text-xs text-gray-400 text-center py-1">
-                  +{config.data.length - 3} more items...
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-
-        {/* Import Data Section */}
-        <div className="space-y-3">
-          <h3 className="text-white text-sm font-light tracking-wide flex items-center gap-2">
-            <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
-            Import Data
-          </h3>
-          
-          {/* Import Mode Tabs */}
-          <div className="grid grid-cols-3 gap-1 bg-gray-800/30 rounded-lg p-1">
-            <button
-              onClick={() => setImportMode('csv')}
-              className={`py-2 px-3 rounded text-xs transition-all ${
-                importMode === 'csv'
-                  ? 'bg-purple-600 text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              CSV File
-            </button>
-            <button
-              onClick={() => setImportMode('paste')}
-              className={`py-2 px-3 rounded text-xs transition-all ${
-                importMode === 'paste'
-                  ? 'bg-purple-600 text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Copy/Paste
-            </button>
-            <button
-              onClick={() => setImportMode('json')}
-              className={`py-2 px-3 rounded text-xs transition-all ${
-                importMode === 'json'
-                  ? 'bg-purple-600 text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              JSON
-            </button>
-          </div>
-          
-          <div className="bg-gray-900/30 border border-gray-800/30 rounded-lg p-3">
-            {importMode === 'csv' && (
+          {expandedSections.essentials && (
+            <div className="space-y-4 pl-2">
+              {/* Chart Type Selection */}
               <div className="space-y-3">
+                <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
+                  <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+                  Chart Type
+                </h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {chartTypes.map((type) => {
+                    const Icon = type.icon
+                    return (
+                      <button
+                        key={type.value}
+                        onClick={() => updateConfig({ type: type.value as "horizontal-bar" | "vertical-bar" | "pie" | "donut" | "line" | "combo" })}
+                        className={`flex items-center gap-2 p-3 rounded-lg transition-all duration-200 text-xs ${
+                          config.type === type.value
+                            ? "text-purple-300"
+                            : "text-gray-300 hover:text-white"
+                        }`}
+                        style={{
+                          backgroundColor: config.type === type.value ? '#1E1B2E' : '#1C1F26',
+                          backgroundImage: config.type === type.value 
+                            ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
+                            : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+                          boxShadow: config.type === type.value
+                            ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
+                            : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+                          border: config.type === type.value 
+                            ? '1px solid rgba(139, 92, 246, 0.2)'
+                            : '1px solid rgba(47, 58, 74, 0.1)',
+                          transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (config.type !== type.value) {
+                            e.currentTarget.style.backgroundColor = '#1E2128'
+                            e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
+                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
+                            e.currentTarget.style.transform = 'translateY(-0.5px)'
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (config.type !== type.value) {
+                            e.currentTarget.style.backgroundColor = '#1C1F26'
+                            e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
+                            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
+                            e.currentTarget.style.transform = 'translateY(0)'
+                          }
+                        }}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="font-light tracking-wide">{type.label}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+                
+                {/* Contextual help for selected chart type */}
+                {(() => {
+                  const selectedType = chartTypes.find(t => t.value === config.type)
+                  if (selectedType) {
+                    return (
+                      <div 
+                        className="rounded-lg p-3"
+                        style={{
+                          backgroundColor: '#1E2530',
+                          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)',
+                          border: '1px solid rgba(139, 92, 246, 0.2)'
+                        }}
+                      >
+                        <p className="text-xs text-purple-200">{selectedType.description}</p>
+                      </div>
+                    )
+                  }
+                  return null
+                })()}
+              </div>
+
+              {/* Chart Configuration */}
+              <div className="space-y-3">
+                <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
+                  <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+                  Title & Subtitle
+                </h4>
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    value={config.title}
+                    onChange={(e) => updateConfig({ title: e.target.value })}
+                    className="w-full text-white placeholder-gray-400 rounded-lg px-3 py-2 text-sm transition-all focus:outline-none"
+                    style={{
+                      backgroundColor: '#1E2530',
+                      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
+                      border: '1px solid rgba(47, 58, 74, 0.3)'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.3), 0 0 0 2px rgba(139, 92, 246, 0.3)'
+                      e.target.style.borderColor = 'rgba(139, 92, 246, 0.5)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.2)'
+                      e.target.style.borderColor = 'rgba(47, 58, 74, 0.3)'
+                    }}
+                    placeholder="Enter chart title"
+                    suppressHydrationWarning
+                  />
+                  <input
+                    type="text"
+                    value={config.subtitle}
+                    onChange={(e) => updateConfig({ subtitle: e.target.value })}
+                    className="w-full text-white placeholder-gray-400 rounded-lg px-3 py-2 text-sm transition-all focus:outline-none"
+                    style={{
+                      backgroundColor: '#1E2530',
+                      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
+                      border: '1px solid rgba(47, 58, 74, 0.3)'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.3), 0 0 0 2px rgba(139, 92, 246, 0.3)'
+                      e.target.style.borderColor = 'rgba(139, 92, 246, 0.5)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.2)'
+                      e.target.style.borderColor = 'rgba(47, 58, 74, 0.3)'
+                    }}
+                    placeholder="Enter subtitle (optional)"
+                    suppressHydrationWarning
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* DATA SECTION */}
+        <div className="space-y-3">
+          <SectionHeader 
+            title="Data" 
+            icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
+            section="data"
+            description={`${config.data.length} data ${config.data.length === 1 ? 'point' : 'points'}`}
+          />
+          
+          {expandedSections.data && (
+            <div className="space-y-4 pl-2">
+              {/* Data Points */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
+                    <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+                    Data Points
+                  </h4>
+                  <DataEditorDialog config={config} onConfigChange={onChange}>
+                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-3">
+                      <Plus className="w-3 h-3 mr-1" />
+                      Edit Data
+                    </Button>
+                  </DataEditorDialog>
+                </div>
+                
+                <div 
+                  className="rounded-lg p-3"
+                  style={{
+                    backgroundColor: '#1E2530',
+                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
+                    border: '1px solid rgba(47, 58, 74, 0.2)'
+                  }}
+                >
+                  <div className="space-y-2">
+                    {config.data.slice(0, 3).map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex gap-2 items-center p-2 rounded"
+                        style={{
+                          backgroundColor: '#1A1F26',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(255,255,255,0.02) inset',
+                          border: '1px solid rgba(47, 58, 74, 0.3)'
+                        }}
+                      >
+                        <div className="flex-1 text-xs text-white truncate">
+                          {item.scenario}
+                        </div>
+                        <div className="text-xs text-purple-300 font-light text-right">
+                          {formatNumber(item.value)}
+                        </div>
+                      </div>
+                    ))}
+                    {config.data.length > 3 && (
+                      <div className="text-xs text-gray-400 text-center py-1">
+                        +{config.data.length - 3} more items...
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Import */}
+              <div className="space-y-3">
+                <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
+                  <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+                  Quick Import
+                </h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center justify-center gap-2 p-3 border-dashed rounded-lg text-gray-300 hover:text-white transition-all text-xs"
+                    style={{
+                      backgroundColor: '#1A1F26',
+                      border: '2px dashed rgba(107, 114, 128, 0.5)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.7)'
+                      e.currentTarget.style.backgroundColor = '#1E2530'
+                      e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2), 0 1px 2px rgba(255,255,255,0.05) inset'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(107, 114, 128, 0.5)'
+                      e.currentTarget.style.backgroundColor = '#1A1F26'
+                      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    <Upload className="w-3 h-3" />
+                    CSV File
+                  </button>
+                  <button
+                    onClick={() => {
+                      const sampleData = "Q1 Sales\t$1.2M\nQ2 Sales\t950K\nQ3 Sales\t75%"
+                      setPasteInput(sampleData)
+                      handlePasteImport()
+                    }}
+                    className="flex items-center justify-center gap-2 p-3 border-dashed rounded-lg text-gray-300 hover:text-white transition-all text-xs"
+                    style={{
+                      backgroundColor: '#1A1F26',
+                      border: '2px dashed rgba(107, 114, 128, 0.5)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.7)'
+                      e.currentTarget.style.backgroundColor = '#1E2530'
+                      e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2), 0 1px 2px rgba(255,255,255,0.05) inset'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(107, 114, 128, 0.5)'
+                      e.currentTarget.style.backgroundColor = '#1A1F26'
+                      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    <FileText className="w-3 h-3" />
+                    Sample Data
+                  </button>
+                </div>
                 <input
                   type="file"
                   accept=".csv,.txt"
@@ -376,50 +605,158 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                   ref={fileInputRef}
                   className="hidden"
                 />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-600 hover:border-purple-500 rounded-lg text-gray-300 hover:text-white transition-all"
-                >
-                  <Upload className="w-4 h-4" />
-                  <span className="text-sm">Click to upload CSV file</span>
-                </button>
-                <p className="text-xs text-gray-400">
-                  Expected format: First column = labels, Second column = values
-                </p>
               </div>
-            )}
-            
-            {importMode === 'paste' && (
-              <div className="space-y-3">
-                <textarea
-                  value={pasteInput}
-                  onChange={(e) => setPasteInput(e.target.value)}
-                  placeholder="Paste from Excel/Google Sheets:\nQ1 Sales\t$1.2M\nQ2 Sales\t950K\nQ3 Sales\t75%\nQ4 Sales\t2.1B"
-                  className="w-full h-20 bg-gray-800/50 border border-gray-700/50 rounded px-3 py-2 text-xs text-white placeholder-gray-400 focus:ring-1 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all resize-none"
+            </div>
+          )}
+        </div>
+
+        {/* APPEARANCE SECTION */}
+        <div className="space-y-3">
+          <SectionHeader 
+            title="Appearance" 
+            icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" /></svg>}
+            section="appearance"
+            description="Colors, layout, and visual styling"
+          />
+          
+          {expandedSections.appearance && (
+            <div className="pl-2">
+              {/* Size Selector */}
+              <div className="mb-4">
+                <SizeSelector 
+                  value={config.dimensions || { width: 1920, height: 1080, preset: 'Google Slides / PowerPoint', aspectRatio: '16:9' }}
+                  onChange={(dimensions) => updateConfig({ dimensions })}
                 />
-                <Button onClick={handlePasteImport} className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-3">
-                  Import Pasted Data
-                </Button>
-                <p className="text-xs text-gray-400">
-                  Supports tab-separated (Excel) or comma-separated data. Auto-detects currency symbols, K/M/B suffixes, and percentages
-                </p>
               </div>
-            )}
-            
-            {importMode === 'json' && (
-              <div className="space-y-3">
-                <textarea
-                  value={jsonInput}
-                  onChange={(e) => setJsonInput(e.target.value)}
-                  placeholder='[{"scenario": "Year 1", "value": 180000}]'
-                  className="w-full h-16 bg-gray-800/50 border border-gray-700/50 rounded px-3 py-2 text-xs text-white placeholder-gray-400 focus:ring-1 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all resize-none"
+
+              {/* Color Palette */}
+              <div>
+                <ColorPalette 
+                  theme={config.theme || {
+                    palette: {
+                      id: 'dashboard-pro',
+                      name: 'Dashboard Pro',
+                      colors: ['#6366F1', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B'],
+                      type: 'colorful'
+                    },
+                    borderStyle: 'none',
+                    cornerStyle: 'rounded',
+                    background: 'black',
+                    showChartTotal: false,
+                    titleAlignment: 'center',
+                    sortOrder: 'none',
+                    legendPosition: 'right'
+                  }}
+                  chartType={config.type}
+                  onChange={(theme) => updateConfig({ theme })}
                 />
-                <Button onClick={handleJsonImport} className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-3">
-                  Import JSON Data
-                </Button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+        </div>
+
+        {/* ADVANCED SECTION */}
+        <div className="space-y-3">
+          <SectionHeader 
+            title="Advanced" 
+            icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" /></svg>}
+            section="advanced"
+            description="Import options and detailed settings"
+          />
+          
+          {expandedSections.advanced && (
+            <div className="space-y-4 pl-2">
+              {/* Import Data Options */}
+              <div className="space-y-3">
+                <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
+                  <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+                  Import Options
+                </h4>
+                
+                {/* Import Mode Tabs */}
+                <div className="grid grid-cols-3 gap-1 bg-gray-800/30 rounded-lg p-1">
+                  <button
+                    onClick={() => setImportMode('csv')}
+                    className={`py-2 px-3 rounded text-xs transition-all ${
+                      importMode === 'csv'
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    CSV File
+                  </button>
+                  <button
+                    onClick={() => setImportMode('paste')}
+                    className={`py-2 px-3 rounded text-xs transition-all ${
+                      importMode === 'paste'
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Copy/Paste
+                  </button>
+                  <button
+                    onClick={() => setImportMode('json')}
+                    className={`py-2 px-3 rounded text-xs transition-all ${
+                      importMode === 'json'
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    JSON
+                  </button>
+                </div>
+                
+                <div className="bg-gray-900/30 border border-gray-800/30 rounded-lg p-3">
+                  {importMode === 'csv' && (
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-600 hover:border-purple-500 rounded-lg text-gray-300 hover:text-white transition-all"
+                      >
+                        <Upload className="w-4 h-4" />
+                        <span className="text-sm">Click to upload CSV file</span>
+                      </button>
+                      <p className="text-xs text-gray-400">
+                        Expected format: First column = labels, Second column = values
+                      </p>
+                    </div>
+                  )}
+                  
+                  {importMode === 'paste' && (
+                    <div className="space-y-3">
+                      <textarea
+                        value={pasteInput}
+                        onChange={(e) => setPasteInput(e.target.value)}
+                        placeholder="Paste from Excel/Google Sheets:\nQ1 Sales\t$1.2M\nQ2 Sales\t950K\nQ3 Sales\t75%\nQ4 Sales\t2.1B"
+                        className="w-full h-20 bg-gray-800/50 border border-gray-700/50 rounded px-3 py-2 text-xs text-white placeholder-gray-400 focus:ring-1 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all resize-none"
+                      />
+                      <Button onClick={handlePasteImport} className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-3">
+                        Import Pasted Data
+                      </Button>
+                      <p className="text-xs text-gray-400">
+                        Supports tab-separated (Excel) or comma-separated data. Auto-detects currency symbols, K/M/B suffixes, and percentages
+                      </p>
+                    </div>
+                  )}
+                  
+                  {importMode === 'json' && (
+                    <div className="space-y-3">
+                      <textarea
+                        value={jsonInput}
+                        onChange={(e) => setJsonInput(e.target.value)}
+                        placeholder='[{"scenario": "Year 1", "value": 180000}]'
+                        className="w-full h-16 bg-gray-800/50 border border-gray-700/50 rounded px-3 py-2 text-xs text-white placeholder-gray-400 focus:ring-1 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all resize-none"
+                      />
+                      <Button onClick={handleJsonImport} className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-3">
+                        Import JSON Data
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Data Preview Modal */}
@@ -565,36 +902,6 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
             </div>
           </div>
         )}
-
-        {/* Size Selector */}
-        <div>
-          <SizeSelector 
-            value={config.dimensions || { width: 1920, height: 1080, preset: 'Google Slides / PowerPoint', aspectRatio: '16:9' }}
-            onChange={(dimensions) => updateConfig({ dimensions })}
-          />
-        </div>
-
-        {/* Color Palette */}
-        <div>
-          <ColorPalette 
-            theme={config.theme || {
-              palette: {
-                id: 'dashboard-pro',
-                name: 'Dashboard Pro',
-                colors: ['#6366F1', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B'],
-                type: 'colorful'
-              },
-              borderStyle: 'none',
-              cornerStyle: 'rounded',
-              background: 'black',
-              showChartTotal: false,
-              titleAlignment: 'center',
-              sortOrder: 'none',
-              legendPosition: 'right'
-            }}
-            onChange={(theme) => updateConfig({ theme })}
-          />
-        </div>
 
       </div>
     </div>

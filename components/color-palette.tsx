@@ -37,6 +37,7 @@ export interface ColorTheme {
 interface ColorPaletteProps {
   theme: ColorTheme
   onChange: (theme: ColorTheme) => void
+  chartType?: string
 }
 
 const colorPalettes: ColorPalette[] = [
@@ -138,12 +139,17 @@ const colorPalettes: ColorPalette[] = [
 ]
 
 
-export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
+export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) {
   const [activeTab, setActiveTab] = useState<'monochrome' | 'colorful' | 'neon'>('colorful')
 
   const updateTheme = (updates: Partial<ColorTheme>) => {
     onChange({ ...theme, ...updates })
   }
+
+  // Chart type specific controls
+  const isPieOrDonut = chartType === 'pie' || chartType === 'donut'
+  const isBarChart = chartType === 'horizontal-bar' || chartType === 'vertical-bar'
+  const hasGridLines = isBarChart || chartType === 'line' || chartType === 'combo'
 
   // Border color options
   const borderColors = [
@@ -162,7 +168,15 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
   const neonPalettes = colorPalettes.filter(p => p.type === 'neon')
 
   return (
-    <Card className="bg-gray-900/30 border-gray-800/30 backdrop-blur-sm">
+    <Card 
+      className="backdrop-blur-sm"
+      style={{
+        backgroundColor: '#1C1F26',
+        backgroundImage: 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15), 0 1px 3px rgba(255,255,255,0.008) inset',
+        border: '1px solid rgba(47, 58, 74, 0.12)'
+      }}
+    >
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-white text-sm font-normal">
           <Palette className="w-4 h-4 text-purple-400" />
@@ -181,9 +195,20 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
               onClick={() => setActiveTab('monochrome')}
               className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'monochrome'
-                  ? 'bg-gray-700 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                  ? 'text-white'
+                  : 'text-gray-400 hover:text-white'
               }`}
+              style={{
+                backgroundColor: activeTab === 'monochrome' ? '#14171C' : '#1C1F26',
+                backgroundImage: activeTab === 'monochrome'
+                  ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
+                  : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+                boxShadow: activeTab === 'monochrome'
+                  ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
+                  : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+                border: '1px solid rgba(47, 58, 74, 0.15)',
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
             >
               Monochrome
             </button>
@@ -191,9 +216,20 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
               onClick={() => setActiveTab('colorful')}
               className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'colorful'
-                  ? 'bg-gray-700 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                  ? 'text-white'
+                  : 'text-gray-400 hover:text-white'
               }`}
+              style={{
+                backgroundColor: activeTab === 'colorful' ? '#14171C' : '#1C1F26',
+                backgroundImage: activeTab === 'colorful'
+                  ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
+                  : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+                boxShadow: activeTab === 'colorful'
+                  ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
+                  : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+                border: '1px solid rgba(47, 58, 74, 0.15)',
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
             >
               Colorful
             </button>
@@ -201,9 +237,20 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
               onClick={() => setActiveTab('neon')}
               className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'neon'
-                  ? 'bg-gray-700 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                  ? 'text-white'
+                  : 'text-gray-400 hover:text-white'
               }`}
+              style={{
+                backgroundColor: activeTab === 'neon' ? '#14171C' : '#1C1F26',
+                backgroundImage: activeTab === 'neon'
+                  ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
+                  : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+                boxShadow: activeTab === 'neon'
+                  ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
+                  : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+                border: '1px solid rgba(47, 58, 74, 0.15)',
+                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
             >
               Neon
             </button>
@@ -217,11 +264,40 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
                   <button
                     key={palette.id}
                     onClick={() => updateTheme({ palette })}
-                    className={`p-3 rounded-lg border transition-all ${
+                    className={`p-3 rounded-lg transition-all ${
                       theme.palette.id === palette.id
-                        ? 'border-purple-500 bg-purple-600/20'
-                        : 'border-gray-700 bg-gray-800/30 hover:border-gray-600'
+                        ? ''
+                        : 'hover:bg-opacity-80'
                     }`}
+                    style={{
+                      backgroundColor: theme.palette.id === palette.id ? '#1E1B2E' : '#1C1F26',
+                      backgroundImage: theme.palette.id === palette.id
+                        ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
+                        : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+                      boxShadow: theme.palette.id === palette.id
+                        ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
+                        : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+                      border: theme.palette.id === palette.id 
+                        ? '1px solid rgba(139, 92, 246, 0.2)'
+                        : '1px solid rgba(47, 58, 74, 0.1)',
+                      transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (theme.palette.id !== palette.id) {
+                        e.currentTarget.style.backgroundColor = '#1E2128'
+                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
+                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
+                        e.currentTarget.style.transform = 'translateY(-0.5px)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (theme.palette.id !== palette.id) {
+                        e.currentTarget.style.backgroundColor = '#1C1F26'
+                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
+                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
+                        e.currentTarget.style.transform = 'translateY(0)'
+                      }
+                    }}
                   >
                     <div className="flex gap-1 mb-2">
                       {palette.colors.map((color, index) => (
@@ -244,11 +320,40 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
                   <button
                     key={palette.id}
                     onClick={() => updateTheme({ palette })}
-                    className={`p-3 rounded-lg border transition-all ${
+                    className={`p-3 rounded-lg transition-all ${
                       theme.palette.id === palette.id
-                        ? 'border-purple-500 bg-purple-600/20'
-                        : 'border-gray-700 bg-gray-800/30 hover:border-gray-600'
+                        ? ''
+                        : 'hover:bg-opacity-80'
                     }`}
+                    style={{
+                      backgroundColor: theme.palette.id === palette.id ? '#1E1B2E' : '#1C1F26',
+                      backgroundImage: theme.palette.id === palette.id
+                        ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
+                        : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+                      boxShadow: theme.palette.id === palette.id
+                        ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
+                        : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+                      border: theme.palette.id === palette.id 
+                        ? '1px solid rgba(139, 92, 246, 0.2)'
+                        : '1px solid rgba(47, 58, 74, 0.1)',
+                      transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (theme.palette.id !== palette.id) {
+                        e.currentTarget.style.backgroundColor = '#1E2128'
+                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
+                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
+                        e.currentTarget.style.transform = 'translateY(-0.5px)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (theme.palette.id !== palette.id) {
+                        e.currentTarget.style.backgroundColor = '#1C1F26'
+                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
+                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
+                        e.currentTarget.style.transform = 'translateY(0)'
+                      }
+                    }}
                   >
                     <div className="flex gap-1 mb-2">
                       {palette.colors.map((color, index) => (
@@ -271,11 +376,40 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
                   <button
                     key={palette.id}
                     onClick={() => updateTheme({ palette })}
-                    className={`p-3 rounded-lg border transition-all ${
+                    className={`p-3 rounded-lg transition-all ${
                       theme.palette.id === palette.id
-                        ? 'border-purple-500 bg-purple-600/20'
-                        : 'border-gray-700 bg-gray-800/30 hover:border-gray-600'
+                        ? ''
+                        : 'hover:bg-opacity-80'
                     }`}
+                    style={{
+                      backgroundColor: theme.palette.id === palette.id ? '#1E1B2E' : '#1C1F26',
+                      backgroundImage: theme.palette.id === palette.id
+                        ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
+                        : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+                      boxShadow: theme.palette.id === palette.id
+                        ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
+                        : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+                      border: theme.palette.id === palette.id 
+                        ? '1px solid rgba(139, 92, 246, 0.2)'
+                        : '1px solid rgba(47, 58, 74, 0.1)',
+                      transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (theme.palette.id !== palette.id) {
+                        e.currentTarget.style.backgroundColor = '#1E2128'
+                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
+                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
+                        e.currentTarget.style.transform = 'translateY(-0.5px)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (theme.palette.id !== palette.id) {
+                        e.currentTarget.style.backgroundColor = '#1C1F26'
+                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
+                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
+                        e.currentTarget.style.transform = 'translateY(0)'
+                      }
+                    }}
                   >
                     <div className="flex gap-1 mb-2">
                       {palette.colors.map((color, index) => (
@@ -293,7 +427,6 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
             )}
           </div>
         </div>
-
 
         {/* Chart Border */}
         <div>
@@ -343,9 +476,20 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
             onClick={() => updateTheme({ cornerStyle: 'rounded' })}
             className={`py-2 px-3 rounded-lg text-xs transition-all ${
               theme.cornerStyle === 'rounded'
-                ? 'bg-gray-700 text-white'
-                : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                ? 'text-white'
+                : 'text-gray-400 hover:text-white'
             }`}
+            style={{
+              backgroundColor: theme.cornerStyle === 'rounded' ? '#14171C' : '#1C1F26',
+              backgroundImage: theme.cornerStyle === 'rounded'
+                ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
+                : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+              boxShadow: theme.cornerStyle === 'rounded'
+                ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
+                : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+              border: '1px solid rgba(47, 58, 74, 0.15)',
+              transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
           >
             Rounded corners
           </button>
@@ -353,9 +497,20 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
             onClick={() => updateTheme({ cornerStyle: 'sharp' })}
             className={`py-2 px-3 rounded-lg text-xs transition-all ${
               theme.cornerStyle === 'sharp'
-                ? 'bg-gray-700 text-white'
-                : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                ? 'text-white'
+                : 'text-gray-400 hover:text-white'
             }`}
+            style={{
+              backgroundColor: theme.cornerStyle === 'sharp' ? '#14171C' : '#1C1F26',
+              backgroundImage: theme.cornerStyle === 'sharp'
+                ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
+                : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+              boxShadow: theme.cornerStyle === 'sharp'
+                ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
+                : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+              border: '1px solid rgba(47, 58, 74, 0.15)',
+              transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
           >
             Sharp corners
           </button>
@@ -374,11 +529,36 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
               <button
                 key={bg.id}
                 onClick={() => updateTheme({ background: bg.id as any })}
-                className={`flex flex-col items-center gap-2 p-2 rounded-lg border transition-all ${
-                  theme.background === bg.id
-                    ? 'border-purple-500 bg-purple-600/20'
-                    : 'border-gray-700 bg-gray-800/30 hover:border-gray-600'
-                }`}
+                className={`flex flex-col items-center gap-2 p-2 rounded-lg transition-all`}
+                style={{
+                  backgroundColor: theme.background === bg.id ? '#1E1B2E' : '#1C1F26',
+                  backgroundImage: theme.background === bg.id
+                    ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
+                    : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
+                  boxShadow: theme.background === bg.id
+                    ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
+                    : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
+                  border: theme.background === bg.id 
+                    ? '1px solid rgba(139, 92, 246, 0.2)'
+                    : '1px solid rgba(47, 58, 74, 0.1)',
+                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+                onMouseEnter={(e) => {
+                  if (theme.background !== bg.id) {
+                    e.currentTarget.style.backgroundColor = '#1E2128'
+                    e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
+                    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
+                    e.currentTarget.style.transform = 'translateY(-0.5px)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (theme.background !== bg.id) {
+                    e.currentTarget.style.backgroundColor = '#1C1F26'
+                    e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
+                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
+                    e.currentTarget.style.transform = 'translateY(0)'
+                  }
+                }}
               >
                 <div
                   className="w-6 h-6 rounded border border-gray-600"
@@ -453,25 +633,27 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
               </button>
             </div>
 
-            {/* Grid lines */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="text-gray-300 text-sm">⋈</div>
-                <span className="text-white text-sm">Grid lines</span>
-              </div>
-              <button
-                onClick={() => updateTheme({ showGridLines: !theme.showGridLines })}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                  theme.showGridLines !== false ? 'bg-green-500' : 'bg-gray-600'
-                }`}
-              >
-                <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                    theme.showGridLines !== false ? 'translate-x-5' : 'translate-x-1'
+            {/* Grid lines - only for charts that support them */}
+            {hasGridLines && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="text-gray-300 text-sm">⋈</div>
+                  <span className="text-white text-sm">Grid lines</span>
+                </div>
+                <button
+                  onClick={() => updateTheme({ showGridLines: !theme.showGridLines })}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                    theme.showGridLines !== false ? 'bg-green-500' : 'bg-gray-600'
                   }`}
-                />
-              </button>
-            </div>
+                >
+                  <span
+                    className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                      theme.showGridLines !== false ? 'translate-x-5' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -519,25 +701,27 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
               </div>
             </div>
 
-            {/* Legend position */}
-            <div>
-              <label className="block text-white text-sm mb-2">Legend position</label>
-              <div className="grid grid-cols-3 gap-2">
-                {['left', 'bottom', 'right'].map((position) => (
-                  <button
-                    key={position}
-                    onClick={() => updateTheme({ legendPosition: position as any })}
-                    className={`py-2 px-3 rounded-lg text-xs transition-all ${
-                      (theme.legendPosition || 'right') === position
-                        ? 'bg-gray-700 text-white'
-                        : 'bg-gray-800/50 text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    {position.charAt(0).toUpperCase() + position.slice(1)}
-                  </button>
-                ))}
+            {/* Legend position - only for pie/donut charts */}
+            {isPieOrDonut && (
+              <div>
+                <label className="block text-white text-sm mb-2">Legend position</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['left', 'bottom', 'right'].map((position) => (
+                    <button
+                      key={position}
+                      onClick={() => updateTheme({ legendPosition: position as any })}
+                      className={`py-2 px-3 rounded-lg text-xs transition-all ${
+                        (theme.legendPosition || 'right') === position
+                          ? 'bg-gray-700 text-white'
+                          : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      {position.charAt(0).toUpperCase() + position.slice(1)}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
