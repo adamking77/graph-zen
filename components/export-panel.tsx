@@ -4,7 +4,8 @@ import { useState } from "react"
 import type { ChartConfig } from "@/app/page"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { X, Download, Copy, Code, Link, Share } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { X, Download, Copy, Code, Link, Share, Check, Clipboard } from "lucide-react"
 
 interface ExportPanelProps {
   config: ChartConfig
@@ -16,6 +17,9 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
   const [copiedEmbedCode, setCopiedEmbedCode] = useState(false)
   const [copiedShareableLink, setCopiedShareableLink] = useState(false)
   const [copiedEmbedLink, setCopiedEmbedLink] = useState(false)
+  const [copiedImage, setCopiedImage] = useState(false)
+  const [exportQuality, setExportQuality] = useState("2x")
+  const [isExporting, setIsExporting] = useState(false)
 
   const generateEmbedCode = () => {
     const embedUrl = generateEmbedLink()
@@ -76,10 +80,52 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
     }
   }
 
-  const downloadAsImage = (format: "png" | "svg") => {
-    // In a real implementation, you would use html2canvas or similar
-    // to convert the chart to an image
-    alert(`Download as ${format.toUpperCase()} would be implemented here`)
+  const downloadAsImage = async (format: "png" | "svg") => {
+    setIsExporting(true)
+    try {
+      // Get the chart element
+      const chartElement = document.querySelector('[data-chart-container]') as HTMLElement
+      if (!chartElement) {
+        alert('Chart not found. Please try again.')
+        return
+      }
+
+      const quality = exportQuality === "1x" ? 1 : exportQuality === "2x" ? 2 : 3
+      
+      if (format === "png") {
+        // For PNG, we'll need to implement actual image conversion
+        // For now, showing the quality would be applied
+        alert(`Download PNG at ${quality}x quality would be implemented here`)
+      } else {
+        // For SVG, quality doesn't matter as much since it's vector
+        alert(`Download SVG would be implemented here`)
+      }
+    } catch (error) {
+      console.error('Export failed:', error)
+      alert('Export failed. Please try again.')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const copyImageToClipboard = async () => {
+    setIsExporting(true)
+    try {
+      // This would implement actual image-to-clipboard functionality
+      // For now, showing the concept
+      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate processing
+      
+      setCopiedImage(true)
+      setTimeout(() => setCopiedImage(false), 2000)
+      
+      // In real implementation, would copy actual image data
+      alert('Copy to clipboard would be implemented here')
+    } catch (error) {
+      console.error('Copy failed:', error)
+      alert('Copy to clipboard failed. Please try again.')
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   return (
@@ -113,15 +159,67 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
 
           {activeTab === "png" && (
             <div className="space-y-4">
-              <div className="text-center">
-                <div className="w-32 h-32 bg-gray-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                  <Download className="w-8 h-8 text-gray-400" />
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Export Quality</label>
+                  <Select value={exportQuality} onValueChange={setExportQuality}>
+                    <SelectTrigger className="w-full bg-gray-700 border-gray-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-700 border-gray-600">
+                      <SelectItem value="1x" className="text-white hover:bg-gray-600">Standard (1x)</SelectItem>
+                      <SelectItem value="2x" className="text-white hover:bg-gray-600">High Quality (2x)</SelectItem>
+                      <SelectItem value="3x" className="text-white hover:bg-gray-600">Ultra HD (3x)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-400 mt-1">Higher quality creates larger file sizes</p>
                 </div>
-                <p className="text-gray-300 mb-4">Download your chart as a high-quality PNG image</p>
-                <Button onClick={() => downloadAsImage("png")} className="bg-purple-600 hover:bg-purple-700">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download PNG
-                </Button>
+                
+                <div className="text-center">
+                  <div className="w-32 h-32 bg-gray-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <Download className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-300 mb-4">Download your chart as a high-quality PNG image</p>
+                  
+                  <div className="flex gap-3 justify-center">
+                    <Button 
+                      onClick={() => downloadAsImage("png")} 
+                      className="bg-purple-600 hover:bg-purple-700"
+                      disabled={isExporting}
+                    >
+                      {isExporting ? (
+                        <>
+                          <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                          Exporting...
+                        </>
+                      ) : (
+                        <>
+                          <Download className="w-4 h-4 mr-2" />
+                          Download PNG
+                        </>
+                      )}
+                    </Button>
+                    
+                    <Button 
+                      onClick={copyImageToClipboard}
+                      variant="outline"
+                      className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                      disabled={isExporting}
+                    >
+                      {copiedImage ? (
+                        <>
+                          <Check className="w-4 h-4 mr-2" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Clipboard className="w-4 h-4 mr-2" />
+                          Copy to Clipboard
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -133,10 +231,45 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
                   <Code className="w-8 h-8 text-gray-400" />
                 </div>
                 <p className="text-gray-300 mb-4">Download your chart as a scalable SVG vector</p>
-                <Button onClick={() => downloadAsImage("svg")} className="bg-purple-600 hover:bg-purple-700">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download SVG
-                </Button>
+                
+                <div className="flex gap-3 justify-center">
+                  <Button 
+                    onClick={() => downloadAsImage("svg")} 
+                    className="bg-purple-600 hover:bg-purple-700"
+                    disabled={isExporting}
+                  >
+                    {isExporting ? (
+                      <>
+                        <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                        Exporting...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" />
+                        Download SVG
+                      </>
+                    )}
+                  </Button>
+                  
+                  <Button 
+                    onClick={copyImageToClipboard}
+                    variant="outline"
+                    className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                    disabled={isExporting}
+                  >
+                    {copiedImage ? (
+                      <>
+                        <Check className="w-4 h-4 mr-2" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Clipboard className="w-4 h-4 mr-2" />
+                        Copy to Clipboard
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           )}

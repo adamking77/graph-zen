@@ -20,9 +20,14 @@ export interface ColorTheme {
   background: 'black' | 'white' | 'midnight' | 'none'
   // Style options
   sortHighToLow?: boolean
+  sortOrder?: 'none' | 'value-desc' | 'value-asc' | 'alpha-asc' | 'alpha-desc'
   showDataLabels?: boolean
   showPercentages?: boolean
   showGridLines?: boolean
+  // Layout options
+  showChartTotal?: boolean
+  titleAlignment?: 'left' | 'center' | 'right'
+  legendPosition?: 'right' | 'bottom' | 'left'
   // Number format options
   abbreviation?: 'auto' | 'none' | 'k' | 'm'
   decimalPlaces?: 'auto' | 'fixed'
@@ -392,24 +397,20 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
         <div>
           <h3 className="text-white text-sm font-normal mb-3">Style</h3>
           <div className="space-y-3">
-            {/* Sort high to low */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="text-gray-300 text-sm">📊</div>
-                <span className="text-white text-sm">Sort high → low</span>
-              </div>
-              <button
-                onClick={() => updateTheme({ sortHighToLow: !theme.sortHighToLow })}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                  theme.sortHighToLow ? 'bg-purple-600' : 'bg-gray-600'
-                }`}
+            {/* Data sorting */}
+            <div>
+              <label className="block text-white text-sm mb-2">Data sorting</label>
+              <select
+                value={theme.sortOrder || 'none'}
+                onChange={(e) => updateTheme({ sortOrder: e.target.value as any, sortHighToLow: e.target.value === 'value-desc' })}
+                className="w-full bg-gray-800/50 border border-gray-700/50 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
               >
-                <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                    theme.sortHighToLow ? 'translate-x-5' : 'translate-x-1'
-                  }`}
-                />
-              </button>
+                <option value="none">No sorting</option>
+                <option value="value-desc">Value: High → Low</option>
+                <option value="value-asc">Value: Low → High</option>
+                <option value="alpha-asc">Name: A → Z</option>
+                <option value="alpha-desc">Name: Z → A</option>
+              </select>
             </div>
 
             {/* Data labels */}
@@ -470,6 +471,72 @@ export function ColorPalette({ theme, onChange }: ColorPaletteProps) {
                   }`}
                 />
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Layout Section */}
+        <div>
+          <h3 className="text-white text-sm font-normal mb-3">Layout</h3>
+          <div className="space-y-3">
+            {/* Show chart total */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="text-gray-300 text-sm">∑</div>
+                <span className="text-white text-sm">Show chart total</span>
+              </div>
+              <button
+                onClick={() => updateTheme({ showChartTotal: !theme.showChartTotal })}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                  theme.showChartTotal ? 'bg-purple-600' : 'bg-gray-600'
+                }`}
+              >
+                <span
+                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                    theme.showChartTotal ? 'translate-x-5' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Title alignment */}
+            <div>
+              <label className="block text-white text-sm mb-2">Title alignment</label>
+              <div className="grid grid-cols-3 gap-2">
+                {['left', 'center', 'right'].map((alignment) => (
+                  <button
+                    key={alignment}
+                    onClick={() => updateTheme({ titleAlignment: alignment as any })}
+                    className={`py-2 px-3 rounded-lg text-xs transition-all ${
+                      (theme.titleAlignment || 'center') === alignment
+                        ? 'bg-gray-700 text-white'
+                        : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    {alignment.charAt(0).toUpperCase() + alignment.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Legend position */}
+            <div>
+              <label className="block text-white text-sm mb-2">Legend position</label>
+              <div className="grid grid-cols-3 gap-2">
+                {['left', 'bottom', 'right'].map((position) => (
+                  <button
+                    key={position}
+                    onClick={() => updateTheme({ legendPosition: position as any })}
+                    className={`py-2 px-3 rounded-lg text-xs transition-all ${
+                      (theme.legendPosition || 'right') === position
+                        ? 'bg-gray-700 text-white'
+                        : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    {position.charAt(0).toUpperCase() + position.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

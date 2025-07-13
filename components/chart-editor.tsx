@@ -58,22 +58,35 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
     return value.toString()
   }
 
-  // Smart number parsing - handles currency symbols, commas, K/M suffixes
+  // Smart number parsing - handles currency symbols, commas, K/M/B suffixes, percentages
   const parseSmartNumber = (value: string): number => {
     if (typeof value === 'number') return value
     
-    // Remove currency symbols and whitespace
-    let cleaned = value.toString().replace(/[$€£¥₹,\s]/g, '')
+    const originalValue = value.toString().trim()
+    if (!originalValue) return 0
     
-    // Handle K/M suffixes
+    // Handle percentage values
+    if (originalValue.includes('%')) {
+      const numericPart = originalValue.replace('%', '').replace(/[$€£¥₹,\s]/g, '')
+      return parseFloat(numericPart) || 0
+    }
+    
+    // Remove currency symbols and whitespace
+    let cleaned = originalValue.replace(/[$€£¥₹,\s]/g, '')
+    
+    // Handle suffixes (case insensitive)
     const lastChar = cleaned.slice(-1).toLowerCase()
     if (lastChar === 'k') {
       return parseFloat(cleaned.slice(0, -1)) * 1000
     } else if (lastChar === 'm') {
       return parseFloat(cleaned.slice(0, -1)) * 1000000
+    } else if (lastChar === 'b') {
+      return parseFloat(cleaned.slice(0, -1)) * 1000000000
     }
     
-    return parseFloat(cleaned) || 0
+    // Handle decimal numbers with proper error checking
+    const result = parseFloat(cleaned)
+    return isNaN(result) ? 0 : result
   }
 
   // Validate and create preview data
@@ -381,14 +394,14 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                 <textarea
                   value={pasteInput}
                   onChange={(e) => setPasteInput(e.target.value)}
-                  placeholder="Paste from Excel/Google Sheets:\nYear 1\t180000\nYear 2\t360000\nYear 3\t690000"
+                  placeholder="Paste from Excel/Google Sheets:\nQ1 Sales\t$1.2M\nQ2 Sales\t950K\nQ3 Sales\t75%\nQ4 Sales\t2.1B"
                   className="w-full h-20 bg-gray-800/50 border border-gray-700/50 rounded px-3 py-2 text-xs text-white placeholder-gray-400 focus:ring-1 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all resize-none"
                 />
                 <Button onClick={handlePasteImport} className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-3">
                   Import Pasted Data
                 </Button>
                 <p className="text-xs text-gray-400">
-                  Supports tab-separated (Excel) or comma-separated data
+                  Supports tab-separated (Excel) or comma-separated data. Auto-detects currency symbols, K/M/B suffixes, and percentages
                 </p>
               </div>
             )}
@@ -573,7 +586,11 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
               },
               borderStyle: 'none',
               cornerStyle: 'rounded',
-              background: 'black'
+              background: 'black',
+              showChartTotal: false,
+              titleAlignment: 'center',
+              sortOrder: 'none',
+              legendPosition: 'right'
             }}
             onChange={(theme) => updateConfig({ theme })}
           />

@@ -196,6 +196,32 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return hasBorder ? 'p-6' : 'p-4'
   }
 
+  // Helper function to render chart title with alignment
+  const renderChartTitle = () => {
+    const alignment = config.theme?.titleAlignment || 'center'
+    const alignmentClass = alignment === 'left' ? 'text-left' : alignment === 'right' ? 'text-right' : 'text-center'
+    const showTotal = config.theme?.showChartTotal && config.data.length > 0
+    const total = config.data.reduce((sum, item) => sum + item.value, 0)
+    
+    return (
+      <div className={`mb-8 ${alignmentClass}`}>
+        <h1 className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
+          {config.title}
+          {showTotal && (
+            <span className={`ml-3 text-lg font-normal ${isDark ? 'text-purple-300' : 'text-purple-600'}`}>
+              ({formatNumber(total)})
+            </span>
+          )}
+        </h1>
+        {config.subtitle && (
+          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            {config.subtitle}
+          </p>
+        )}
+      </div>
+    )
+  }
+
   const formatNumber = (value: number): string => {
     const abbreviation = config.theme?.abbreviation || 'auto'
     
@@ -220,10 +246,21 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
   // Sort data function
   const sortData = (data: ChartData[]) => {
-    if (config.theme?.sortHighToLow) {
-      return [...data].sort((a, b) => b.value - a.value)
+    const sortOrder = config.theme?.sortOrder || (config.theme?.sortHighToLow ? 'value-desc' : 'none')
+    
+    switch (sortOrder) {
+      case 'value-desc':
+        return [...data].sort((a, b) => b.value - a.value)
+      case 'value-asc':
+        return [...data].sort((a, b) => a.value - b.value)
+      case 'alpha-asc':
+        return [...data].sort((a, b) => a.scenario.localeCompare(b.scenario))
+      case 'alpha-desc':
+        return [...data].sort((a, b) => b.scenario.localeCompare(a.scenario))
+      case 'none':
+      default:
+        return data
     }
-    return data
   }
 
   // Style options
@@ -422,11 +459,12 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const total = config.data.reduce((sum, item) => sum + item.value, 0)
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"]
     
-    // Check if we're in portrait mode
+    // Use legend position setting, fallback to aspect ratio logic
+    const legendPosition = config.theme?.legendPosition || 'right'
     const aspectRatio = dimensions.width / dimensions.height
-    const isPortrait = aspectRatio < 1
+    const useVerticalLayout = legendPosition === 'bottom' || (legendPosition === 'right' && aspectRatio < 1)
     
-    if (isPortrait) {
+    if (useVerticalLayout) {
       // Portrait layout: stack chart and legend vertically
       return (
         <div className="flex flex-col items-center justify-center gap-6 h-full">
@@ -545,9 +583,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       )
     }
 
-    // Landscape layout: chart and legend side by side
+    // Horizontal layout: chart and legend side by side
+    const chartFirst = legendPosition !== 'left'
     return (
-      <div className="flex items-center justify-center gap-8 h-full">
+      <div className={`flex items-center justify-center gap-8 h-full ${chartFirst ? '' : 'flex-row-reverse'}`}>
         <div className="relative w-full h-full max-w-80 max-h-80">
           <svg 
             viewBox="-50 -50 300 300" 
@@ -669,11 +708,12 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const total = config.data.reduce((sum, item) => sum + item.value, 0)
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B", "#EF4444"]
     
-    // Check if we're in portrait mode
+    // Use legend position setting, fallback to aspect ratio logic
+    const legendPosition = config.theme?.legendPosition || 'right'
     const aspectRatio = dimensions.width / dimensions.height
-    const isPortrait = aspectRatio < 1
+    const useVerticalLayout = legendPosition === 'bottom' || (legendPosition === 'right' && aspectRatio < 1)
     
-    if (isPortrait) {
+    if (useVerticalLayout) {
       // Portrait layout: stack chart and legend vertically
       return (
         <div className="flex flex-col items-center justify-center gap-6 h-full">
@@ -834,9 +874,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       )
     }
 
-    // Landscape layout: chart and legend side by side
+    // Horizontal layout: chart and legend side by side
+    const chartFirst = legendPosition !== 'left'
     return (
-      <div className="flex items-center justify-center gap-8 h-full">
+      <div className={`flex items-center justify-center gap-8 h-full ${chartFirst ? '' : 'flex-row-reverse'}`}>
         <div className="relative w-full h-full max-w-80 max-h-80">
           <svg 
             viewBox="-50 -50 300 300" 
@@ -1639,14 +1680,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               <div className={`h-full w-full ${getChartPadding()}`}>
                 <div className="h-full flex flex-col">
                   {/* Chart Title and Subtitle */}
-                  <div className="mb-8">
-                    <h1 className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
-                      {config.title}
-                    </h1>
-                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {config.subtitle}
-                    </p>
-                  </div>
+                  {renderChartTitle()}
                   
                   {/* Chart Content */}
                   <div className="flex-1">
@@ -1669,14 +1703,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             <div className={`h-full w-full ${getChartPadding()}`}>
               <div className="h-full flex flex-col">
                 {/* Chart Title and Subtitle */}
-                <div className="mb-8">
-                  <h1 className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
-                    {config.title}
-                  </h1>
-                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {config.subtitle}
-                  </p>
-                </div>
+                {renderChartTitle()}
                 
                 {/* Chart Content */}
                 <div className="flex-1">
