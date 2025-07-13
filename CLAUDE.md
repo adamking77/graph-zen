@@ -78,3 +78,44 @@ Use the existing `start-8080.sh` script which already implements this fix:
 
 ### Memory Commitment
 This complete fix sequence should be applied automatically whenever server startup issues occur in this project.
+
+## Chart Styling and Data Label Best Practices
+
+### Data Label Color Strategy
+
+**Problem**: Data labels that adapt to bar colors can become unreadable on certain color palettes (especially neon colors where brightness calculations fail).
+
+**Solution**: Use position-based color strategy:
+
+1. **Inside chart elements** (bars, segments): Always use white (`#ffffff`) for maximum readability
+2. **Outside chart elements**: Use background-based contrast:
+   ```javascript
+   color: isDark ? '#f3f4f6' : '#1f2937'
+   ```
+
+**Implementation Pattern**:
+```javascript
+const isInside = [condition] // e.g., barHeight > 40 or percentage > 30
+const labelStyle = isInside ? 
+  { className: 'text-xs font-medium', style: { color: '#ffffff' } } :
+  { className: 'text-xs font-medium', style: { color: isDark ? '#f3f4f6' : '#1f2937' } }
+```
+
+### Chart Element Consistency Rules
+
+**Bar Charts**: All bar charts (vertical, horizontal, combo) should have:
+- Rounded corners (`rx="2"` for SVG, `rounded-t` or `rounded-sm` for CSS)
+- Consistent hover behavior (`hover:opacity-80`, no scaling)
+- Consistent gradient patterns (`${color}f0` to `${color}` for vertical, `${color}e6` to `${color}` for horizontal)
+- Animation timing with 150ms stagger intervals
+
+**Donut Charts**: 
+- Outer radius: 115px (maintain chart size)
+- Inner radius: 80px (increased thickness from previous 93px)
+- Results in 35px thickness for better visual presence
+
+### Color Palette Handling
+
+When working with neon or bright color palettes, avoid using `getDataLabelStyle()` with bar color contrast for labels positioned outside chart elements. The `isColorLight()` function can misclassify bright neon colors, causing readability issues.
+
+**Safe approach**: Always use background-based contrast for external labels, regardless of chart element colors.

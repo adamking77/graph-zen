@@ -1,101 +1,197 @@
+
+> my-v0-project@0.1.0 dev:8080
+> next dev -p 8080
+
    ▲ Next.js 15.2.4
    - Local:        http://localhost:8080
-   - Network:      http://0.0.0.0:8080
+   - Network:      http://192.168.0.101:8080
 
  ✓ Starting...
- ✓ Ready in 1553ms
+ ✓ Ready in 1471ms
  ○ Compiling / ...
- ✓ Compiled / in 1279ms (737 modules)
- GET / 200 in 1816ms
- ✓ Compiled in 562ms (353 modules)
- ⚠ Cross origin request detected from 192.168.0.101 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
-Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
- ✓ Compiled in 471ms (737 modules)
- GET / 200 in 84ms
- ✓ Compiled in 275ms (737 modules)
- GET / 200 in 32ms
- ✓ Compiled in 167ms (737 modules)
+ ✓ Compiled / in 2.7s (768 modules)
+ GET / 200 in 3181ms
+ ✓ Compiled in 486ms (365 modules)
+ ✓ Compiled in 210ms (365 modules)
+ ✓ Compiled in 280ms (759 modules)
+ ✓ Compiled in 479ms (879 modules)
+ GET / 200 in 152ms
+ GET / 200 in 69ms
+ ✓ Compiled in 457ms (879 modules)
  GET / 200 in 51ms
- ✓ Compiled in 185ms (737 modules)
- GET / 200 in 26ms
- ✓ Compiled in 322ms (733 modules)
- GET / 200 in 28ms
- ✓ Compiled in 230ms (733 modules)
- GET / 200 in 25ms
- ✓ Compiled in 154ms (733 modules)
- GET / 200 in 39ms
- ✓ Compiled in 289ms (733 modules)
- GET / 200 in 54ms
- ✓ Compiled in 194ms (733 modules)
- GET / 200 in 68ms
- ✓ Compiled in 363ms (729 modules)
- GET / 200 in 80ms
- ✓ Compiled in 148ms (729 modules)
- GET / 200 in 25ms
- ✓ Compiled in 260ms (729 modules)
- GET / 200 in 25ms
- ✓ Compiled in 248ms (729 modules)
- GET / 200 in 27ms
- ✓ Compiled in 324ms (729 modules)
- GET / 200 in 27ms
- ✓ Compiled in 175ms (729 modules)
- GET / 200 in 41ms
- ✓ Compiled in 219ms (729 modules)
- GET / 200 in 26ms
- ⨯ ./components/chart-preview.tsx
-Error:   [31mx[0m Unexpected token `div`. Expected jsx identifier
-     ,-[[36;1;4m/Users/adamking/claude-code-projects/graph-maker-app/chart-maker/components/chart-preview.tsx[0m:476:1]
- [2m473[0m |   }
- [2m474[0m | 
- [2m475[0m |   return (
- [2m476[0m |     <div className="h-full flex flex-col bg-[#0d0d0d]">
-     : [35;1m     ^^^[0m
- [2m477[0m |       {/* Header */}
- [2m478[0m |       <div className="flex items-center justify-between p-6 border-b border-gray-800/30">
- [2m479[0m |         <div className="flex items-center gap-4">
-     `----
-
-Caused by:
-    Syntax Error
-
-Import trace for requested module:
-./components/chart-preview.tsx
-./app/page.tsx
- ⨯ ./components/chart-preview.tsx
-Error:   [31mx[0m Expected ';', got ':'
-     ,-[[36;1;4m/Users/adamking/claude-code-projects/graph-maker-app/chart-maker/components/chart-preview.tsx[0m:629:1]
- [2m626[0m |                 </div>
- [2m627[0m |               </div>
- [2m628[0m |             </div>
- [2m629[0m |           ) : (
-     : [35;1m            ^[0m
- [2m630[0m |             <div className="h-full flex items-center justify-center">
- [2m631[0m |               <div className="text-center">
- [2m632[0m |                 <div className="w-16 h-16 bg-gray-800/50 rounded-2xl flex items-center justify-center mb-4 mx-auto">
-     `----
-
-Caused by:
-    Syntax Error
-
-Import trace for requested module:
-./components/chart-preview.tsx
-./app/page.tsx
- ✓ Compiled in 229ms (729 modules)
- GET / 200 in 48ms
- ✓ Compiled in 346ms (729 modules)
- GET / 200 in 59ms
- ✓ Compiled in 245ms (729 modules)
+ ✓ Compiled in 228ms (879 modules)
  GET / 200 in 37ms
- ✓ Compiled in 330ms (729 modules)
- GET / 200 in 49ms
+ ✓ Compiled in 168ms (879 modules)
+ GET / 200 in 29ms
+ ✓ Compiled in 279ms (879 modules)
+ GET / 200 in 27ms
+ ✓ Compiled in 148ms (879 modules)
+ GET / 200 in 28ms
+ ✓ Compiled in 254ms (879 modules)
+ GET / 200 in 79ms
+ ✓ Compiled in 297ms (879 modules)
+ GET / 200 in 32ms
+ ✓ Compiled in 353ms (879 modules)
+ GET / 200 in 52ms
+ ✓ Compiled in 276ms (879 modules)
+ GET / 200 in 45ms
+ ✓ Compiled in 198ms (879 modules)
+ GET / 200 in 27ms
+ GET / 200 in 148ms
+ ✓ Compiled in 311ms (879 modules)
+ GET / 200 in 59ms
+ ✓ Compiled in 178ms (879 modules)
+ GET / 200 in 27ms
+ GET / 200 in 100ms
+ GET / 200 in 74ms
+ ✓ Compiled in 213ms (879 modules)
+ GET / 200 in 45ms
+ ✓ Compiled in 172ms (879 modules)
+ GET / 200 in 26ms
+ ✓ Compiled in 140ms (879 modules)
+ GET / 200 in 26ms
+ GET / 200 in 76ms
+ GET / 200 in 83ms
+ GET / 200 in 66ms
+ ✓ Compiled in 196ms (425 modules)
+ GET / 200 in 16ms
+ ✓ Compiled in 586ms (879 modules)
+ GET / 200 in 48ms
+ GET / 200 in 135ms
+ GET / 200 in 119ms
+ ✓ Compiled in 420ms (879 modules)
+ GET / 200 in 62ms
+ ✓ Compiled in 186ms (879 modules)
+ GET / 200 in 25ms
+ GET / 200 in 102ms
+ GET / 200 in 64ms
+ ✓ Compiled in 450ms (879 modules)
+ GET / 200 in 35ms
+ ✓ Compiled in 171ms (879 modules)
+ GET / 200 in 26ms
+ ✓ Compiled in 228ms (879 modules)
+ GET / 200 in 23ms
+ GET / 200 in 91ms
+ GET / 200 in 52ms
+ ✓ Compiled in 405ms (879 modules)
+ GET / 200 in 75ms
+ ✓ Compiled in 257ms (879 modules)
+ GET / 200 in 28ms
+ ✓ Compiled in 198ms (879 modules)
+ GET / 200 in 31ms
+ ✓ Compiled in 183ms (879 modules)
+ GET / 200 in 41ms
+ ✓ Compiled in 271ms (879 modules)
+ GET / 200 in 27ms
+ ✓ Compiled in 214ms (879 modules)
+ GET / 200 in 40ms
+ ✓ Compiled in 171ms (879 modules)
+ GET / 200 in 28ms
+ GET / 200 in 287ms
+ ✓ Compiled in 336ms (879 modules)
+ GET / 200 in 51ms
+ ✓ Compiled in 301ms (879 modules)
+ GET / 200 in 42ms
+ GET / 200 in 116ms
+ ✓ Compiled in 370ms (879 modules)
+ GET / 200 in 35ms
+ ✓ Compiled in 180ms (879 modules)
+ GET / 200 in 25ms
+ ✓ Compiled in 186ms (879 modules)
+ GET / 200 in 31ms
+ ✓ Compiled in 271ms (879 modules)
+ GET / 200 in 26ms
+ ✓ Compiled in 238ms (879 modules)
+ GET / 200 in 45ms
+ GET / 200 in 172ms
+ ✓ Compiled in 407ms (879 modules)
+ GET / 200 in 58ms
+ ✓ Compiled in 233ms (879 modules)
+ GET / 200 in 29ms
+ ✓ Compiled in 194ms (879 modules)
+ GET / 200 in 28ms
+ ✓ Compiled in 183ms (879 modules)
+ GET / 200 in 30ms
+ ✓ Compiled in 216ms (879 modules)
+ GET / 200 in 35ms
+ GET / 200 in 122ms
+ ✓ Compiled in 431ms (879 modules)
+ GET / 200 in 34ms
+ ✓ Compiled in 333ms (879 modules)
+ GET / 200 in 31ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ReferenceError: getResponsiveContainerStyles is not defined
+    at ChartPreview (components/chart-preview.tsx:1289:17)
+  1287 |             style={{
+  1288 |               ...getBorderStyles(),
+> 1289 |               ...getResponsiveContainerStyles()
+       |                 ^
+  1290 |             }}
+  1291 |           >
+  1292 |             <div className={`h-full w-full ${getChartPadding()}`}> {
+  digest: '3808312471'
+}
+ GET / 500 in 184ms
+ ✓ Compiled in 240ms (879 modules)
+ ⨯ ReferenceError: getResponsiveContainerStyles is not defined
+    at ChartPreview (components/chart-preview.tsx:1286:17)
+  1284 |             style={{
+  1285 |               ...getBorderStyles(),
+> 1286 |               ...getResponsiveContainerStyles()
+       |                 ^
+  1287 |             }}
+  1288 |           >
+  1289 |             <div className={`h-full w-full ${getChartPadding()}`}> {
+  digest: '3808312471'
+}
+ GET / 500 in 176ms
+ ✓ Compiled in 215ms (879 modules)
+ ⨯ ReferenceError: getResponsiveContainerStyles is not defined
+    at ChartPreview (components/chart-preview.tsx:1287:17)
+  1285 |             style={{
+  1286 |               ...getBorderStyles(),
+> 1287 |               ...getResponsiveContainerStyles()
+       |                 ^
+  1288 |             }}
+  1289 |           >
+  1290 |             <div className={`h-full w-full ${getChartPadding()}`}> {
+  digest: '3808312471'
+}
+ GET / 500 in 127ms
+ ✓ Compiled in 281ms (879 modules)
+ GET / 200 in 173ms
+ ✓ Compiled in 363ms (879 modules)
+ GET / 200 in 46ms
+ ✓ Compiled in 272ms (879 modules)
+ GET / 200 in 29ms
+ GET / 200 in 159ms
  ⨯ ./components/chart-preview.tsx
 Error:   [31mx[0m Expected '}', got '<eof>'
-     ,-[[36;1;4m/Users/adamking/claude-code-projects/graph-maker-app/chart-maker/components/chart-preview.tsx[0m:623:1]
- [2m620[0m |       </div>
- [2m621[0m |     </div>
- [2m622[0m |   )
- [2m623[0m | }
-     : [35;1m^[0m
+      ,-[[36;1;4m/Users/adamking/claude-code-projects/graph-maker-app/chart-maker/components/chart-preview.tsx[0m:1317:1]
+ [2m1314[0m |       </div>
+ [2m1315[0m |     </div>
+ [2m1316[0m |   )
+ [2m1317[0m | }
+      : [35;1m^[0m
+      `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/chart-preview.tsx
+./app/page.tsx
+ ⨯ ./components/chart-preview.tsx
+Error:   [31mx[0m Unexpected token `div`. Expected jsx identifier
+     ,-[[36;1;4m/Users/adamking/claude-code-projects/graph-maker-app/chart-maker/components/chart-preview.tsx[0m:492:1]
+ [2m489[0m | 
+ [2m490[0m |     // Landscape layout: chart and legend side by side
+ [2m491[0m |     return (
+ [2m492[0m |       <div className="flex items-center justify-center gap-8 h-full">
+     : [35;1m       ^^^[0m
+ [2m493[0m |         <div className="relative w-full h-full max-w-80 max-h-80">
+ [2m494[0m |           <svg viewBox="0 0 200 200" className="w-full h-full transform rotate-0">
+ [2m495[0m |             </defs>
      `----
 
 Caused by:
@@ -104,170 +200,19 @@ Caused by:
 Import trace for requested module:
 ./components/chart-preview.tsx
 ./app/page.tsx
- ✓ Compiled in 219ms (729 modules)
- GET / 200 in 34ms
- ✓ Compiled in 206ms (729 modules)
- GET / 200 in 35ms
- ✓ Compiled in 214ms (729 modules)
- GET / 200 in 29ms
- GET / 200 in 99ms
- ✓ Compiled in 282ms (729 modules)
- GET / 200 in 47ms
- ✓ Compiled in 237ms (729 modules)
- GET / 200 in 29ms
- ✓ Compiled in 251ms (729 modules)
- GET / 200 in 33ms
- GET / 200 in 101ms
- ✓ Compiled in 394ms (729 modules)
- GET / 200 in 31ms
- ✓ Compiled in 212ms (729 modules)
- GET / 200 in 32ms
- ✓ Compiled in 181ms (729 modules)
- GET / 200 in 27ms
- ✓ Compiled in 155ms (729 modules)
- GET / 200 in 30ms
- ✓ Compiled in 268ms (729 modules)
- GET / 200 in 31ms
- ✓ Compiled in 305ms (729 modules)
- GET / 200 in 30ms
- ✓ Compiled in 317ms (729 modules)
- GET / 200 in 25ms
- GET / 200 in 117ms
- ✓ Compiled in 396ms (729 modules)
- GET / 200 in 40ms
- ✓ Compiled in 189ms (729 modules)
- GET / 200 in 34ms
- ✓ Compiled in 237ms (729 modules)
- GET / 200 in 39ms
- ✓ Compiled in 234ms (729 modules)
- GET / 200 in 68ms
- ✓ Compiled in 258ms (729 modules)
- GET / 200 in 23ms
- ✓ Compiled in 244ms (729 modules)
- GET / 200 in 42ms
- ✓ Compiled in 249ms (729 modules)
- GET / 200 in 34ms
- ✓ Compiled in 199ms (729 modules)
+ ✓ Compiled in 511ms (879 modules)
+ GET / 200 in 72ms
+ ✓ Compiled in 260ms (879 modules)
  GET / 200 in 41ms
- ✓ Compiled in 320ms (729 modules)
- GET / 200 in 29ms
- ✓ Compiled in 299ms (729 modules)
- GET / 200 in 37ms
- ✓ Compiled in 136ms (729 modules)
- GET / 200 in 25ms
- ✓ Compiled in 235ms (729 modules)
+ ✓ Compiled in 282ms (879 modules)
  GET / 200 in 40ms
- ✓ Compiled in 150ms (729 modules)
- GET / 200 in 25ms
- ✓ Compiled in 254ms (729 modules)
- GET / 200 in 44ms
- ✓ Compiled in 193ms (729 modules)
- GET / 200 in 24ms
- ✓ Compiled in 318ms (725 modules)
- GET / 200 in 38ms
- ✓ Compiled in 354ms (725 modules)
- ✓ Compiled in 149ms (725 modules)
- ✓ Compiled in 171ms (725 modules)
- ✓ Compiled in 174ms (725 modules)
- ✓ Compiled in 236ms (725 modules)
- ✓ Compiled in 125ms (725 modules)
- ✓ Compiled in 77ms (347 modules)
- GET / 200 in 107ms
- GET / 200 in 67ms
- ✓ Compiled in 254ms (725 modules)
- GET / 200 in 62ms
- ✓ Compiled in 139ms (725 modules)
- GET / 200 in 24ms
- ✓ Compiled in 229ms (725 modules)
- GET / 200 in 24ms
- GET / 200 in 90ms
- ✓ Compiled in 347ms (725 modules)
- GET / 200 in 45ms
- ✓ Compiled in 325ms (725 modules)
- GET / 200 in 50ms
- ✓ Compiled in 338ms (725 modules)
- GET / 200 in 32ms
- GET / 200 in 131ms
- GET / 200 in 121ms
- GET / 200 in 88ms
- ✓ Compiled in 357ms (725 modules)
- GET / 200 in 73ms
- ✓ Compiled in 175ms (725 modules)
- GET / 200 in 29ms
- ✓ Compiled in 170ms (725 modules)
- GET / 200 in 25ms
- GET / 200 in 71ms
- ✓ Compiled in 206ms (725 modules)
- GET / 200 in 48ms
- GET / 200 in 63ms
- ✓ Compiled in 465ms (725 modules)
- GET / 200 in 45ms
- ✓ Compiled in 168ms (725 modules)
- GET / 200 in 34ms
- ✓ Compiled in 250ms (725 modules)
- GET / 200 in 40ms
- ✓ Compiled in 224ms (725 modules)
- GET / 200 in 25ms
- ✓ Compiled in 256ms (725 modules)
- GET / 200 in 45ms
- ✓ Compiled in 266ms (725 modules)
- GET / 200 in 35ms
- ✓ Compiled in 286ms (725 modules)
+ ✓ Compiled in 497ms (879 modules)
+ GET / 200 in 30ms
+ ✓ Compiled in 170ms (879 modules)
  GET / 200 in 26ms
- GET / 200 in 77ms
- GET / 200 in 46ms
- ✓ Compiled in 345ms (725 modules)
- GET / 200 in 63ms
- ✓ Compiled in 228ms (725 modules)
- GET / 200 in 42ms
- ✓ Compiled in 288ms (725 modules)
- GET / 200 in 43ms
- ✓ Compiled in 391ms (725 modules)
- GET / 200 in 55ms
- ✓ Compiled in 168ms (725 modules)
- GET / 200 in 45ms
- ✓ Compiled in 337ms (725 modules)
- GET / 200 in 56ms
- ✓ Compiled in 620ms (727 modules)
- GET / 200 in 40ms
- ✓ Compiled in 778ms (733 modules)
- GET / 200 in 43ms
- ✓ Compiled in 336ms (733 modules)
- GET / 200 in 53ms
- ✓ Compiled in 202ms (733 modules)
- GET / 200 in 34ms
- ✓ Compiled in 470ms (733 modules)
- GET / 200 in 29ms
- ✓ Compiled in 299ms (733 modules)
- GET / 200 in 42ms
- ✓ Compiled in 263ms (733 modules)
- GET / 200 in 50ms
- ✓ Compiled in 229ms (733 modules)
- GET / 200 in 31ms
- ✓ Compiled in 466ms (733 modules)
- GET / 200 in 54ms
- ✓ Compiled in 351ms (733 modules)
- GET / 200 in 38ms
- ✓ Compiled in 598ms (733 modules)
- GET / 200 in 43ms
- ✓ Compiled in 430ms (733 modules)
- GET / 200 in 43ms
- ✓ Compiled in 204ms (733 modules)
- GET / 200 in 27ms
- ✓ Compiled in 244ms (733 modules)
- GET / 200 in 38ms
- ✓ Compiled in 144ms (733 modules)
- GET / 200 in 24ms
- ✓ Compiled in 374ms (733 modules)
- GET / 200 in 51ms
- ✓ Compiled in 237ms (733 modules)
- GET / 200 in 29ms
- ✓ Compiled in 280ms (733 modules)
- GET / 200 in 44ms
- ✓ Compiled in 204ms (733 modules)
- GET / 200 in 40ms
- ✓ Compiled in 283ms (733 modules)
- GET / 200 in 44ms
- ✓ Compiled in 175ms (733 modules)
- GET / 200 in 24ms
- GET / 200 in 111ms
+ ✓ Compiled in 295ms (879 modules)
+ GET / 200 in 26ms
+ ✓ Compiled in 1004ms (879 modules)
+ ✓ Compiled in 320ms (879 modules)
+ ✓ Compiled in 202ms (879 modules)
+[?25h

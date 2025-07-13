@@ -1,11 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ChartEditor } from "@/components/chart-editor"
 import { ChartPreview } from "@/components/chart-preview"
 import { ExportPanel } from "@/components/export-panel"
 import { Header } from "@/components/header"
 import { ColorPalette, type ColorTheme } from "@/components/color-palette"
+import { ErrorBoundary } from "@/components/error-boundary"
+import { useChartConfig } from "@/hooks/use-chart-config"
+import { useEmbedMode } from "@/hooks/use-embed-mode"
+import { SIZE_PRESETS } from "@/lib/chart-constants"
 
 export interface ChartData {
   scenario: string
@@ -28,79 +32,21 @@ export interface ChartConfig {
   theme?: ColorTheme
 }
 
-// Size presets for chart dimensions
-export const SIZE_PRESETS = {
-  'presentation': { width: 1920, height: 1080, preset: 'Google Slides / PowerPoint', aspectRatio: '16:9' },
-  'web': { width: 1200, height: 800, preset: 'Web / email', aspectRatio: '3:2' },
-  'linkedin': { width: 1200, height: 628, preset: 'LinkedIn post', aspectRatio: '1.91:1' },
-  'instagram': { width: 1080, height: 1080, preset: 'Instagram post', aspectRatio: '1:1' },
-  'story': { width: 1080, height: 1920, preset: 'TikTok / Instagram story', aspectRatio: '9:16' },
-  'twitter': { width: 1200, height: 675, preset: 'X (Twitter)', aspectRatio: '16:9' },
-  'mobile': { width: 750, height: 1334, preset: 'Mobile', aspectRatio: '9:16' }
-}
 
 export default function ChartGeneratorPage() {
-  const [isEmbedMode, setIsEmbedMode] = useState(false)
-  const [config, setConfig] = useState<ChartConfig>({
-    title: "Revenue (€) projections for GraphZen",
-    subtitle: "Revenue by year for each scenario",
-    type: "horizontal-bar",
-    data: [
-      { scenario: "Year 1 Conservative", value: 180000 },
-      { scenario: "Year 2 Growth Scenario", value: 360000 },
-      { scenario: "Year 3 Scale Scenario", value: 690000 },
-    ],
-    dimensions: SIZE_PRESETS.presentation,
-    theme: {
-      palette: {
-        id: 'dashboard-pro',
-        name: 'Dashboard Pro',
-        colors: ['#6366F1', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B'],
-        type: 'colorful'
-      },
-      borderStyle: 'none',
-      borderColor: '#6B7280',
-      cornerStyle: 'rounded',
-      background: 'black',
-      // Style defaults
-      sortHighToLow: false,
-      showDataLabels: true,
-      showPercentages: false,
-      showGridLines: true,
-      // Number format defaults
-      abbreviation: 'auto',
-      decimalPlaces: 'auto',
-      fixedDecimalCount: 0
-    }
-  })
-
+  const isEmbedMode = useEmbedMode()
+  const { config, updateConfig } = useChartConfig()
   const [showExport, setShowExport] = useState(false)
-
-  // Handle URL parameters for sharing and embedding
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const embedMode = urlParams.get('embed') === 'true'
-    const configParam = urlParams.get('config')
-    
-    setIsEmbedMode(embedMode)
-    
-    if (configParam) {
-      try {
-        const decodedConfig = JSON.parse(decodeURIComponent(escape(atob(configParam))))
-        if (decodedConfig && typeof decodedConfig === 'object') {
-          setConfig(decodedConfig)
-        }
-      } catch (error) {
-        console.warn('Failed to decode shared chart config:', error)
-      }
-    }
-  }, [])
 
   // Embed mode - simplified layout
   if (isEmbedMode) {
     return (
       <div className="min-h-screen bg-[#0d0d0d] text-white">
-        <ChartPreview config={config} />
+        <ErrorBoundary>
+          <main role="main" aria-label="Chart display">
+            <ChartPreview config={config} />
+          </main>
+        </ErrorBoundary>
       </div>
     )
   }
@@ -111,24 +57,37 @@ export default function ChartGeneratorPage() {
       <Header />
       <div className="flex h-[calc(100vh-80px)]">
         {/* Left Sidebar */}
-        <div className="w-[400px] border-r border-gray-800/30 bg-[#161616] flex flex-col">
-          <ChartEditor config={config} onChange={setConfig} />
+        <aside
+          className="w-[400px] border-r border-gray-800/30 bg-[#161616] flex flex-col"
+          role="complementary"
+          aria-label="Chart editor and controls"
+        >
+          <ErrorBoundary>
+            <ChartEditor config={config} onChange={updateConfig} />
+          </ErrorBoundary>
           <div className="p-6 mt-auto">
             <button
               onClick={() => setShowExport(true)}
-              className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-purple-500/25"
+              className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-purple-500/25 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+              aria-label="Export chart to various formats"
             >
               Export Chart
             </button>
           </div>
-        </div>
+        </aside>
         
         {/* Main Chart Area */}
-        <div className="flex-1 flex flex-col">
-          <ChartPreview config={config} />
-        </div>
+        <main className="flex-1 flex flex-col" role="main" aria-label="Chart preview">
+          <ErrorBoundary>
+            <ChartPreview config={config} />
+          </ErrorBoundary>
+        </main>
       </div>
-      {showExport && <ExportPanel config={config} onClose={() => setShowExport(false)} />}
+      {showExport && (
+        <div role="dialog" aria-modal="true" aria-label="Export chart dialog">
+          <ExportPanel config={config} onClose={() => setShowExport(false)} />
+        </div>
+      )}
     </div>
   )
 }

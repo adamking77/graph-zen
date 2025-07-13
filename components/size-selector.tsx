@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { ChevronDown, Monitor, Smartphone, Globe, Users, Video, MessageSquare, Presentation } from "lucide-react"
-import { SIZE_PRESETS, type ChartDimensions } from "@/app/page"
+import { SIZE_PRESETS } from "@/lib/chart-constants"
+import { type ChartDimensions } from "@/app/page"
 
 interface SizeSelectorProps {
   value: ChartDimensions

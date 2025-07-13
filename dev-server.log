@@ -1,0 +1,94 @@
+
+> my-v0-project@0.1.1 dev:8080
+> next dev -p 8080 -H 0.0.0.0
+
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:8080
+   - Network:      http://0.0.0.0:8080
+
+ ✓ Starting...
+ ✓ Ready in 2.6s
+ ○ Compiling / ...
+ ✓ Compiled / in 1921ms (889 modules)
+ HEAD / 200 in 2159ms
+ ✓ Compiled in 364ms (430 modules)
+ ✓ Compiled in 212ms (430 modules)
+ ✓ Compiled in 143ms (430 modules)
+ ✓ Compiled in 137ms (430 modules)
+ ✓ Compiled in 173ms (430 modules)
+ ✓ Compiled in 175ms (430 modules)
+ ⚠ ./components/size-selector.tsx
+Attempted import error: 'SIZE_PRESETS' is not exported from '@/app/page' (imported as 'SIZE_PRESETS').
+
+Import trace for requested module:
+./components/size-selector.tsx
+./components/chart-editor.tsx
+./app/page.tsx
+
+./components/size-selector.tsx
+Attempted import error: 'SIZE_PRESETS' is not exported from '@/app/page' (imported as 'SIZE_PRESETS').
+
+Import trace for requested module:
+./components/size-selector.tsx
+./components/chart-editor.tsx
+./app/page.tsx
+
+./components/size-selector.tsx
+Attempted import error: 'SIZE_PRESETS' is not exported from '@/app/page' (imported as 'SIZE_PRESETS').
+
+Import trace for requested module:
+./components/size-selector.tsx
+./components/chart-editor.tsx
+./app/page.tsx
+
+./components/size-selector.tsx
+Attempted import error: 'SIZE_PRESETS' is not exported from '@/app/page' (imported as 'SIZE_PRESETS').
+
+Import trace for requested module:
+./components/size-selector.tsx
+./components/chart-editor.tsx
+./app/page.tsx
+ ⚠ ./components/size-selector.tsx
+Attempted import error: 'SIZE_PRESETS' is not exported from '@/app/page' (imported as 'SIZE_PRESETS').
+
+Import trace for requested module:
+./components/size-selector.tsx
+./components/chart-editor.tsx
+./app/page.tsx
+
+./components/size-selector.tsx
+Attempted import error: 'SIZE_PRESETS' is not exported from '@/app/page' (imported as 'SIZE_PRESETS').
+
+Import trace for requested module:
+./components/size-selector.tsx
+./components/chart-editor.tsx
+./app/page.tsx
+
+./components/size-selector.tsx
+Attempted import error: 'SIZE_PRESETS' is not exported from '@/app/page' (imported as 'SIZE_PRESETS').
+
+Import trace for requested module:
+./components/size-selector.tsx
+./components/chart-editor.tsx
+./app/page.tsx
+
+./components/size-selector.tsx
+Attempted import error: 'SIZE_PRESETS' is not exported from '@/app/page' (imported as 'SIZE_PRESETS').
+
+Import trace for requested module:
+./components/size-selector.tsx
+./components/chart-editor.tsx
+./app/page.tsx
+ ✓ Compiled in 210ms (431 modules)
+ ✓ Compiled in 195ms (431 modules)
+ ✓ Compiled in 208ms (431 modules)
+ ✓ Compiled in 112ms (431 modules)
+ ✓ Compiled in 33ms (417 modules)
+ ✓ Compiled in 159ms (431 modules)
+ ✓ Compiled in 129ms (431 modules)
+ ✓ Compiled in 151ms (431 modules)
+ ✓ Compiled in 178ms (431 modules)
+ ✓ Compiled in 221ms (431 modules)
+ ✓ Compiled / in 220ms (460 modules)
+ GET / 200 in 375ms
+ GET / 200 in 106ms

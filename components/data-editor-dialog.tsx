@@ -121,7 +121,7 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
                         <Input
                           type="number"
                           value={item.value === null ? '' : item.value}
-                          onChange={(e) => updateRow(index, 'value', e.target.value === '' ? null : parseFloat(e.target.value) || 0)}
+                          onChange={(e) => updateRow(index, 'value', e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
                           placeholder="Enter value"
                           className="w-full bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:ring-purple-500/50 focus:border-purple-500/50"
                         />
@@ -159,8 +159,14 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
                   },
                   theme: {
                     ...previewConfig.theme,
-                    background: 'transparent'
-                  }
+                    background: 'none',
+                    palette: previewConfig.theme?.palette || {
+                      id: 'default',
+                      name: 'Default',
+                      colors: ['#6366F1'],
+                      type: 'colorful'
+                    }
+                  } as any
                 }} />
               </div>
             </div>
