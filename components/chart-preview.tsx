@@ -191,13 +191,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     
     // Responsive max dimensions that better utilize available space
     const maxContainerWidth = Math.min(
-      Math.max(availableViewportWidth * 0.95, aspectRatio < 0.8 ? 400 : 600), // Lower min for portrait
-      aspectRatio < 0.8 ? 500 : 1000 // More reasonable limits for portrait vs landscape
+      Math.max(availableViewportWidth * 0.98, aspectRatio < 0.8 ? 450 : 700), // Increased utilization and minimums
+      aspectRatio < 0.8 ? 600 : 1200 // More generous limits for better space usage
     )
     
     const maxContainerHeight = Math.min(
-      Math.max(availableViewportHeight * 0.85, aspectRatio < 0.8 ? 600 : 500), // Higher min for portrait
-      aspectRatio < 0.8 ? 900 : 700 // Allow taller for portrait formats
+      Math.max(availableViewportHeight * 0.90, aspectRatio < 0.8 ? 650 : 550), // Increased utilization and minimums
+      aspectRatio < 0.8 ? 1000 : 800 // Allow more height for better chart visibility
     )
     
     const availableHeight = maxContainerHeight - reservedHeight
@@ -213,8 +213,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     }
     
     // Ensure minimum sizes for usability and readability (more permissive for portrait)
-    containerWidth = Math.max(containerWidth, aspectRatio < 0.8 ? 350 : 500)
-    containerHeight = Math.max(containerHeight, aspectRatio < 0.8 ? 400 : 300)
+    containerWidth = Math.max(containerWidth, aspectRatio < 0.8 ? 400 : 600)
+    containerHeight = Math.max(containerHeight, aspectRatio < 0.8 ? 450 : 400)
     
     return {
       width: `${containerWidth}px`,
