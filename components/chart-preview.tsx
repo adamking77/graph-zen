@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react"
 import type { ChartConfig, ChartData } from "@/app/page"
 import { Card, CardContent } from "@/components/ui/card"
+import { useLayoutState, useSpaceAwareLayoutState } from "@/hooks/use-mobile"
 
 // Inject chart animation styles
 if (typeof document !== 'undefined') {
@@ -91,50 +92,34 @@ interface ChartPreviewProps {
 
 export function ChartPreview({ config }: ChartPreviewProps) {
   const chartRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const isDark = config.theme?.background !== 'white'
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
   const [renderKey, setRenderKey] = useState(0)
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
+  const layoutState = useSpaceAwareLayoutState(containerSize)
   
   // Handle data changes to force re-render when config data updates
   useEffect(() => {
     setRenderKey(prev => prev + 1)
   }, [config.data, config.type, config.dimensions])
 
-  // Handle window resize for responsive chart sizing
+  // Handle container resize with ResizeObserver for true responsive behavior
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout
+    const container = containerRef.current
+    if (!container) return
     
-    const handleResize = () => {
-      try {
-        // Throttle resize events to prevent excessive re-renders
-        clearTimeout(timeoutId)
-        timeoutId = setTimeout(() => {
-          setWindowSize({
-            width: window.innerWidth,
-            height: window.innerHeight
-          })
-        }, 100)
-      } catch (error) {
-        console.warn('Error in resize handler:', error)
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect
+        setContainerSize({ width, height })
       }
-    }
+    })
     
-    // Set initial size safely
-    if (typeof window !== 'undefined') {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
-    }
+    resizeObserver.observe(container)
     
-    // Add resize listener
-    window.addEventListener('resize', handleResize)
-    
-    // Cleanup
     return () => {
-      clearTimeout(timeoutId)
-      window.removeEventListener('resize', handleResize)
+      resizeObserver.disconnect()
     }
   }, [])
   
@@ -174,20 +159,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const padding = 48 // Chart padding
     const reservedHeight = titleSpace + legendSpace + padding
     
-    // Dynamic zone width calculation based on responsive breakpoints
-    const getZoneWidths = (width: number) => {
-      if (width < 768) return { zone1: 200, zone2: 280 } // Mobile
-      if (width < 1200) return { zone1: 220, zone2: 320 } // Tablet
-      return { zone1: 240, zone2: 360 } // Desktop
-    }
-    
-    const zones = getZoneWidths(windowSize.width)
-    const marginsAndPadding = 40 // Margins/padding around zones
-    const totalZoneWidth = zones.zone1 + zones.zone2 + marginsAndPadding
-    
-    // Viewport-aware responsive container sizing with dynamic zone calculation
-    const availableViewportWidth = windowSize.width > 0 ? windowSize.width - totalZoneWidth : 800
-    const availableViewportHeight = windowSize.width > 0 ? windowSize.height - 180 : 600
+    // Use pre-calculated space-aware values from layoutState
+    const availableViewportWidth = layoutState.availableChartWidth
+    const availableViewportHeight = layoutState.availableChartHeight
     
     // Responsive max dimensions that better utilize available space
     const maxContainerWidth = Math.min(
@@ -1748,14 +1722,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
   return (
     <div 
-      className="h-full flex flex-col relative bg-background"
+      className="h-full flex flex-col relative bg-background chart-container"
     >
       <Tooltip data={tooltip} formatNumber={formatNumber} />
       
       {/* Chart Area */}
       <div 
-        className={`flex-1 overflow-hidden flex items-center justify-center bg-background border-border rounded-xl ${
-          config.isModalContext ? 'py-2 px-3 mx-1 my-1' : 'py-6 px-8 mx-2 my-3'
+        className={`flex-1 overflow-hidden flex items-center justify-center bg-background border-border rounded-xl chart-responsive ${
+          config.isModalContext ? 'py-2 px-3 mx-1 my-1' : 'container-responsive'
         }`}
       >
         {config.theme?.borderStyle === 'gradient' ? (

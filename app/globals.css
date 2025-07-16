@@ -216,77 +216,215 @@
 }
 
 /* Responsive Zone Layout System */
-/* Desktop First (1200px+) */
+/* Mobile-first approach with flexible viewport units */
+
+/* Zone 1: Navigation Sidebar */
 .zone1-expanded {
-  width: 240px !important;
-  min-width: 240px !important;
-  max-width: 240px !important;
+  width: 15rem !important;        /* 240px equivalent */
+  min-width: 15rem !important;
+  max-width: 15rem !important;
 }
 
 .zone1-collapsed {
-  width: 60px !important;
-  min-width: 60px !important;
-  max-width: 60px !important;
+  width: 3.75rem !important;      /* 60px equivalent */
+  min-width: 3.75rem !important;
+  max-width: 3.75rem !important;
 }
 
+/* Zone 2: Control Panel */
 .zone2-width {
-  width: 360px !important;
-  min-width: 360px !important;
-  max-width: 360px !important;
+  width: 22.5rem !important;      /* 360px equivalent */
+  min-width: 22.5rem !important;
+  max-width: 22.5rem !important;
 }
 
-/* Tablet (768px - 1199px) */
-@media (max-width: 1199px) {
-  .zone1-expanded {
-    width: 220px !important;
-    min-width: 220px !important;
-    max-width: 220px !important;
-  }
-  
-  .zone2-width {
-    width: 320px !important;
-    min-width: 320px !important;
-    max-width: 320px !important;
-  }
-}
-
-/* Mobile (below 768px) */
-@media (max-width: 767px) {
-  .zone1-expanded {
-    width: 200px !important;
-    min-width: 200px !important;
-    max-width: 200px !important;
-  }
-  
-  .zone2-width {
-    width: 280px !important;
-    min-width: 280px !important;
-    max-width: 280px !important;
-  }
-}
-
-/* Touch-friendly spacing for iPad and tablets */
+/* Tablet optimizations (768px - 1199px) */
 @media (max-width: 1199px) and (min-width: 768px) {
-  /* Increase button padding for touch targets */
-  button {
-    padding: 12px 16px !important;
-    min-height: 44px !important;
+  .zone1-expanded {
+    width: 13.75rem !important;    /* 220px equivalent */
+    min-width: 13.75rem !important;
+    max-width: 13.75rem !important;
   }
   
-  /* Increase spacing in navigation */
-  .navigation-item {
-    padding: 16px !important;
-    margin-bottom: 8px !important;
+  .zone2-width {
+    width: 20rem !important;       /* 320px equivalent */
+    min-width: 20rem !important;
+    max-width: 20rem !important;
+  }
+}
+
+/* Large desktop optimizations (1400px+) */
+@media (min-width: 1400px) {
+  .zone1-expanded {
+    width: 16rem !important;       /* 256px for better proportions */
+    min-width: 16rem !important;
+    max-width: 16rem !important;
   }
   
-  /* Better touch targets for inputs */
-  input, select, textarea {
-    padding: 12px 16px !important;
-    min-height: 44px !important;
+  .zone2-width {
+    width: 24rem !important;       /* 384px for better proportions */
+    min-width: 24rem !important;
+    max-width: 24rem !important;
+  }
+}
+
+/* Extra large desktop (1600px+) */
+@media (min-width: 1600px) {
+  .zone1-expanded {
+    width: 17rem !important;       /* 272px for ultra-wide screens */
+    min-width: 17rem !important;
+    max-width: 17rem !important;
   }
   
-  /* Chart preview margins for touch scrolling */
+  .zone2-width {
+    width: 26rem !important;       /* 416px for ultra-wide screens */
+    min-width: 26rem !important;
+    max-width: 26rem !important;
+  }
+}
+
+/* Touch-friendly spacing for tablets and mobile */
+@media (max-width: 1199px) {
+  /* Better touch scrolling */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Chart preview touch-friendly margins */
   .chart-preview-container {
     margin: 16px !important;
+  }
+  
+  /* Increase tap target spacing */
+  .control-panel-section {
+    margin-bottom: 24px !important;
+  }
+}
+
+/* Container Queries for Component-Based Responsiveness */
+@container (min-width: 320px) {
+  .container-responsive {
+    padding: 0.75rem;
+  }
+  
+  .container-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+@container (min-width: 480px) {
+  .container-responsive {
+    padding: 1rem;
+  }
+  
+  .container-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+@container (min-width: 640px) {
+  .container-responsive {
+    padding: 1.5rem;
+  }
+  
+  .container-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@container (min-width: 768px) {
+  .container-responsive {
+    padding: 2rem;
+  }
+  
+  .container-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* Fluid Typography System */
+.text-fluid-sm {
+  font-size: clamp(0.75rem, 0.5rem + 1vw, 0.875rem);
+}
+
+.text-fluid-base {
+  font-size: clamp(0.875rem, 0.75rem + 1vw, 1rem);
+}
+
+.text-fluid-lg {
+  font-size: clamp(1rem, 0.875rem + 1.5vw, 1.25rem);
+}
+
+.text-fluid-xl {
+  font-size: clamp(1.25rem, 1rem + 2vw, 1.5rem);
+}
+
+.text-fluid-2xl {
+  font-size: clamp(1.5rem, 1.25rem + 2.5vw, 2rem);
+}
+
+.text-fluid-3xl {
+  font-size: clamp(2rem, 1.5rem + 3vw, 2.5rem);
+}
+
+/* Component Container Queries */
+.chart-container {
+  container-type: inline-size;
+}
+
+.control-panel-container {
+  container-type: inline-size;
+}
+
+.navigation-container {
+  container-type: inline-size;
+}
+
+/* Responsive chart containers */
+@container (min-width: 300px) {
+  .chart-responsive {
+    min-height: 200px;
+  }
+}
+
+@container (min-width: 500px) {
+  .chart-responsive {
+    min-height: 300px;
+  }
+}
+
+@container (min-width: 700px) {
+  .chart-responsive {
+    min-height: 400px;
+  }
+}
+
+@container (min-width: 900px) {
+  .chart-responsive {
+    min-height: 500px;
+  }
+}
+
+/* Control panel responsive containers */
+@container (min-width: 280px) {
+  .control-panel-responsive .grid-cols-responsive {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container (min-width: 320px) {
+  .control-panel-responsive .grid-cols-responsive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@container (min-width: 400px) {
+  .control-panel-responsive .grid-cols-responsive {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

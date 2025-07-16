@@ -3,20 +3,24 @@
 import { useState, useRef } from "react"
 import type { ChartConfig, ChartData } from "@/app/page"
 import { Button } from "@/components/ui/button"
-import { Plus, Upload, FileText, BarChart3, AlignLeft, TrendingUp, PieChart, CircleDot, Activity } from "lucide-react"
+import { Plus, Upload, FileText, BarChart3, AlignLeft, TrendingUp, PieChart, CircleDot, Activity, X } from "lucide-react"
 import { ColorPalette, type ColorTheme } from "@/components/color-palette"
 import { StyleControls } from "@/components/style-controls"
 import { LayoutControls } from "@/components/layout-controls"
 import { SizeSelector } from "@/components/size-selector"
 import { DataEditorDialog } from "@/components/data-editor-dialog"
+import { TouchTarget } from "@/components/touch-target"
 
 interface Zone2ControlPanelProps {
   activeSection: string
   config: ChartConfig
   onChange: (config: ChartConfig) => void
+  isMobile?: boolean
+  onClose?: () => void
+  isStacked?: boolean
 }
 
-export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2ControlPanelProps) {
+export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = false, onClose, isStacked = false }: Zone2ControlPanelProps) {
   const [jsonInput, setJsonInput] = useState("")
   const [pasteInput, setPasteInput] = useState("")
   const [importMode, setImportMode] = useState<'json' | 'csv' | 'paste'>('json')
@@ -167,20 +171,23 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
     <div className="space-y-6">
       {/* Chart Type */}
       <div className="space-y-3">
-        <h3 className="text-sm font-normal text-foreground">Chart Type</h3>
-        <div className="grid grid-cols-2 gap-2">
+        <h3 className="text-fluid-sm font-normal text-foreground">Chart Type</h3>
+        <div className="grid grid-cols-responsive gap-2">
           {chartTypes.map((type) => {
             const Icon = type.icon
             const isSelected = config.type === type.value
             return (
-              <button
+              <TouchTarget
                 key={type.value}
+                variant={isSelected ? "outline" : "ghost"}
+                size="md"
                 onClick={() => updateConfig({ type: type.value as any })}
-                className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 group border ${
+                className={`flex flex-col items-center gap-1 h-16 border transition-all duration-200 ${
                   isSelected
-                    ? "bg-primary/10 border-transparent text-primary"
+                    ? "bg-primary/10 border-primary/30 text-primary"
                     : "bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground"
                 }`}
+                hapticFeedback="light"
               >
                 <Icon className={`w-4 h-4 transition-all duration-200 ${
                   isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
@@ -190,7 +197,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
                 }`}>
                   {type.label}
                 </div>
-              </button>
+              </TouchTarget>
             )
           })}
         </div>
@@ -248,10 +255,15 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-normal text-foreground">Data Points</h3>
           <DataEditorDialog config={config} onConfigChange={onChange}>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1 text-xs">
+            <TouchTarget
+              variant="primary"
+              size="sm"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
+              hapticFeedback="light"
+            >
               <Plus className="w-3 h-3 mr-1" />
               Edit Data
-            </Button>
+            </TouchTarget>
           </DataEditorDialog>
         </div>
         
@@ -283,14 +295,19 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
       <div className="space-y-3">
         <h3 className="text-sm font-normal text-foreground">Quick Import</h3>
         <div className="grid grid-cols-2 gap-2">
-          <button
+          <TouchTarget
+            variant="outline"
+            size="sm"
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center justify-center gap-1 p-2 border border-dashed bg-transparent border-border/40 rounded-lg text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+            className="flex items-center justify-center gap-1 h-12 border border-dashed bg-transparent border-border/40 rounded-lg text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+            hapticFeedback="light"
           >
             <Upload className="w-4 h-4" />
             <span className="text-xs">CSV File</span>
-          </button>
-          <button
+          </TouchTarget>
+          <TouchTarget
+            variant="outline"
+            size="sm"
             onClick={() => {
               const sampleData = "Product A\t$2.4M\nProduct B\t$1.8M\nProduct C\t$3.1M\nProduct D\t$850K\nProduct E\t$1.2M\nProduct F\t$640K"
               setPasteInput(sampleData)
@@ -300,11 +317,12 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
                 updateConfig({ data: parsedData })
               }
             }}
-            className="flex items-center justify-center gap-1 p-2 border border-dashed bg-transparent border-border/40 rounded-lg text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+            className="flex items-center justify-center gap-1 h-12 border border-dashed bg-transparent border-border/40 rounded-lg text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+            hapticFeedback="light"
           >
             <FileText className="w-4 h-4" />
             <span className="text-xs">Sample Data</span>
-          </button>
+          </TouchTarget>
         </div>
         <input
           type="file"
@@ -427,23 +445,33 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
     }
   }
 
+  const containerClasses = isStacked 
+    ? 'h-full bg-card flex flex-col control-panel-container control-panel-responsive'
+    : `h-full bg-card flex flex-col control-panel-container control-panel-responsive ${isMobile ? 'w-full' : 'zone2-width shadow-[inset_-1px_0_2px_rgba(0,0,0,0.12)]'}`
+
   return (
-    <div className="h-full bg-card shadow-[inset_-1px_0_2px_rgba(0,0,0,0.12)] flex flex-col zone2-width">
-      {/* Header */}
-      <div className="h-16 px-6 flex flex-col justify-center">
-        <h2 className="text-lg font-light text-foreground capitalize">
-          {activeSection}
-        </h2>
-        <p className="text-xs text-muted-foreground">
-          {activeSection === 'essentials' && 'Chart type, title, and basic setup'}
-          {activeSection === 'data' && 'Import and manage your data'}
-          {activeSection === 'appearance' && 'Colors, sizing, and visual styling'}
-          {activeSection === 'advanced' && 'Import options and detailed settings'}
-        </p>
-      </div>
+    <div className={containerClasses}>
+      {/* Header - Different layout for stacked mode */}
+      {!isMobile && (
+        <div className={`${isStacked ? 'h-12 px-4' : 'h-16 px-6'} flex items-center justify-between ${isStacked ? 'border-b border-border' : ''}`}>
+          <div className="flex flex-col justify-center">
+            <h2 className={`${isStacked ? 'text-base' : 'text-fluid-lg'} font-light text-foreground capitalize`}>
+              {activeSection}
+            </h2>
+            {!isStacked && (
+              <p className="text-fluid-sm text-muted-foreground">
+                {activeSection === 'essentials' && 'Chart type, title, and basic setup'}
+                {activeSection === 'data' && 'Import and manage your data'}
+                {activeSection === 'appearance' && 'Colors, sizing, and visual styling'}
+                {activeSection === 'advanced' && 'Import options and detailed settings'}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6" suppressHydrationWarning={true}>
+      <div className={`flex-1 overflow-y-auto ${isMobile ? 'p-4' : isStacked ? 'p-4' : 'container-responsive'}`} suppressHydrationWarning={true}>
         {renderContent()}
       </div>
     </div>
