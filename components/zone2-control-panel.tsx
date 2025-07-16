@@ -3,7 +3,7 @@
 import { useState, useRef } from "react"
 import type { ChartConfig, ChartData } from "@/app/page"
 import { Button } from "@/components/ui/button"
-import { Plus, Upload, FileText, BarChart3, BarChart, TrendingUp, PieChart, Circle, Activity } from "lucide-react"
+import { Plus, Upload, FileText, BarChart3, AlignLeft, TrendingUp, PieChart, CircleDot, Activity } from "lucide-react"
 import { ColorPalette, type ColorTheme } from "@/components/color-palette"
 import { SizeSelector } from "@/components/size-selector"
 import { DataEditorDialog } from "@/components/data-editor-dialog"
@@ -110,7 +110,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
     { 
       value: "horizontal-bar", 
       label: "Horizontal Bar", 
-      icon: BarChart,
+      icon: AlignLeft,
       description: "Great for comparing categories with long names"
     },
     { 
@@ -128,7 +128,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
     { 
       value: "donut", 
       label: "Donut Chart", 
-      icon: Circle,
+      icon: CircleDot,
       description: "Like pie charts, but with space for totals"
     },
     { 
@@ -413,7 +413,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
     <div className="h-full bg-card shadow-[inset_-1px_0_2px_rgba(0,0,0,0.12)] flex flex-col zone2-width">
       {/* Header */}
       <div className="h-16 px-6 flex flex-col justify-center">
-        <h2 className="text-lg font-normal text-foreground capitalize">
+        <h2 className="text-lg font-light text-foreground capitalize">
           {activeSection}
         </h2>
         <p className="text-xs text-muted-foreground">
