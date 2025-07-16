@@ -3,7 +3,7 @@
 import { useState, useRef } from "react"
 import type { ChartConfig, ChartData } from "@/app/page"
 import { Button } from "@/components/ui/button"
-import { Plus, Upload, FileText, BarChart3, TrendingUp, PieChart } from "lucide-react"
+import { Plus, Upload, FileText, BarChart3, BarChart4, TrendingUp, PieChart, CircleDot, Activity } from "lucide-react"
 import { ColorPalette, type ColorTheme } from "@/components/color-palette"
 import { SizeSelector } from "@/components/size-selector"
 import { DataEditorDialog } from "@/components/data-editor-dialog"
@@ -110,7 +110,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
     { 
       value: "horizontal-bar", 
       label: "Horizontal Bar", 
-      icon: BarChart3,
+      icon: BarChart4,
       description: "Great for comparing categories with long names"
     },
     { 
@@ -128,7 +128,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
     { 
       value: "donut", 
       label: "Donut Chart", 
-      icon: PieChart,
+      icon: CircleDot,
       description: "Like pie charts, but with space for totals"
     },
     { 
@@ -140,7 +140,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
     { 
       value: "combo", 
       label: "Combo Chart", 
-      icon: TrendingUp,
+      icon: Activity,
       description: "Combines bars and lines for rich data stories"
     },
   ]
