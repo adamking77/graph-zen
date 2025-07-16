@@ -61,17 +61,33 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
     if (editedData.length <= 1) return // Keep at least one row
     const newData = editedData.filter((_, i) => i !== index)
     setEditedData(newData)
+    
+    // Filter out rows with null values for preview
+    const validData = newData.filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
+    
+    // Calculate dynamic dimensions based on data volume
+    const dataLength = validData.length
+    const baseDimensions = { width: 500, height: 400 }
+    let dynamicHeight = baseDimensions.height
+    
+    if (config.type === 'vertical-bar' || config.type === 'horizontal-bar') {
+      dynamicHeight = Math.min(600, Math.max(400, dataLength * 35 + 250))
+    } else if (config.type === 'line') {
+      dynamicHeight = Math.min(550, Math.max(400, dataLength * 25 + 300))
+    }
+    
     setPreviewConfig({
       ...config,
-      data: newData,
+      data: validData,
       dimensions: {
-        width: 450,
-        height: 380,
+        width: baseDimensions.width,
+        height: dynamicHeight,
         preset: 'modal-preview',
-        aspectRatio: '5:4'
+        aspectRatio: `${baseDimensions.width}:${dynamicHeight}`
       },
       isModalContext: true
     })
+    setChartKey(prev => prev + 1)
   }
 
   const updateRow = (index: number, field: keyof ChartData, value: string | number) => {
