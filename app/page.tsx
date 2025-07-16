@@ -32,6 +32,7 @@ export interface ChartConfig {
   data: ChartData[]
   dimensions?: ChartDimensions
   theme?: ColorTheme
+  isModalContext?: boolean
 }
 
 
