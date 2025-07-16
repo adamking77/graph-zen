@@ -26,7 +26,7 @@ export function Zone1Navigation({ activeSection, onSectionChange, onExportClick 
       id: "essentials",
       label: "Essentials",
       icon: BarChart3,
-      description: "Chart type, title, and basic setup"
+      description: "Chart type, title, and data formatting"
     },
     {
       id: "data", 
@@ -38,7 +38,7 @@ export function Zone1Navigation({ activeSection, onSectionChange, onExportClick 
       id: "appearance",
       label: "Appearance",
       icon: Palette,
-      description: "Colors and styling"
+      description: "Colors and visual styling"
     },
     {
       id: "advanced",

@@ -5,6 +5,8 @@ import type { ChartConfig, ChartData } from "@/app/page"
 import { Button } from "@/components/ui/button"
 import { Plus, Upload, FileText, BarChart3, AlignLeft, TrendingUp, PieChart, CircleDot, Activity } from "lucide-react"
 import { ColorPalette, type ColorTheme } from "@/components/color-palette"
+import { StyleControls } from "@/components/style-controls"
+import { LayoutControls } from "@/components/layout-controls"
 import { SizeSelector } from "@/components/size-selector"
 import { DataEditorDialog } from "@/components/data-editor-dialog"
 
@@ -22,6 +24,22 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
 
   const updateConfig = (updates: Partial<ChartConfig>) => {
     onChange({ ...config, ...updates })
+  }
+
+  const defaultTheme: ColorTheme = {
+    palette: {
+      id: 'dashboard-pro',
+      name: 'Dashboard Pro',
+      colors: ['#6366F1', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B'],
+      type: 'colorful' as const
+    },
+    borderStyle: 'none' as const,
+    cornerStyle: 'rounded' as const,
+    background: 'black' as const,
+    showChartTotal: false,
+    titleAlignment: 'center' as const,
+    sortOrder: 'none' as const,
+    legendPosition: 'right' as const
   }
 
   const formatNumber = (value: number): string => {
@@ -206,6 +224,20 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
           </div>
         </div>
       </div>
+
+      {/* Layout Controls */}
+      <LayoutControls 
+        theme={config.theme || defaultTheme}
+        chartType={config.type}
+        onChange={(themeUpdates) => updateConfig({ theme: { ...(config.theme || defaultTheme), ...themeUpdates } })}
+      />
+
+      {/* Style Controls */}
+      <StyleControls 
+        theme={config.theme || defaultTheme}
+        chartType={config.type}
+        onChange={(themeUpdates) => updateConfig({ theme: { ...(config.theme || defaultTheme), ...themeUpdates } })}
+      />
     </div>
   )
 
@@ -298,21 +330,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange }: Zone2Cont
       <div className="space-y-3">
         <h3 className="text-sm font-normal text-foreground">Color Palette</h3>
         <ColorPalette 
-          theme={config.theme || {
-            palette: {
-              id: 'dashboard-pro',
-              name: 'Dashboard Pro',
-              colors: ['#6366F1', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B'],
-              type: 'colorful'
-            },
-            borderStyle: 'none',
-            cornerStyle: 'rounded',
-            background: 'black',
-            showChartTotal: false,
-            titleAlignment: 'center',
-            sortOrder: 'none',
-            legendPosition: 'right'
-          }}
+          theme={config.theme || defaultTheme}
           chartType={config.type}
           onChange={(theme) => updateConfig({ theme })}
         />
