@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import type { ChartConfig, ChartData } from "@/app/page"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -94,13 +94,79 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   const isDark = config.theme?.background !== 'white'
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
   const [renderKey, setRenderKey] = useState(0)
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
+  
+  // Handle data changes to force re-render when config data updates
+  useEffect(() => {
+    setRenderKey(prev => prev + 1)
+  }, [config.data, config.type, config.dimensions])
+
+  // Handle window resize for responsive chart sizing
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+    
+    const handleResize = () => {
+      try {
+        // Throttle resize events to prevent excessive re-renders
+        clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => {
+          setWindowSize({
+            width: window.innerWidth,
+            height: window.innerHeight
+          })
+        }, 100)
+      } catch (error) {
+        console.warn('Error in resize handler:', error)
+      }
+    }
+    
+    // Set initial size safely
+    if (typeof window !== 'undefined') {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
+    }
+    
+    // Add resize listener
+    window.addEventListener('resize', handleResize)
+    
+    // Cleanup
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
   
   // Get chart dimensions
   const dimensions = config.dimensions || { width: 1920, height: 1080, preset: 'Google Slides / PowerPoint', aspectRatio: '16:9' }
   
-  // Calculate container dimensions with proper space reservation
+  // Calculate container dimensions with viewport-aware responsive sizing
   const getContainerDimensions = () => {
     const aspectRatio = dimensions.width / dimensions.height
+    // Dynamic dimensions for modal context that scale with data volume
+    if (config.isModalContext) {
+      const dataLength = config.data.length
+      const baseWidth = 500  // Increased from 350
+      const baseHeight = 400 // Increased from 280
+      
+      // Calculate dynamic height based on data volume and chart type
+      let dynamicHeight = baseHeight
+      if (config.type === 'vertical-bar' || config.type === 'horizontal-bar') {
+        // Bar charts need more height for more data points
+        dynamicHeight = Math.min(600, Math.max(baseHeight, dataLength * 35 + 250))
+      } else if (config.type === 'line') {
+        // Line charts can handle more data in same space but benefit from some scaling
+        dynamicHeight = Math.min(550, Math.max(baseHeight, dataLength * 25 + 300))
+      }
+      
+      return {
+        width: Math.min(dimensions.width, baseWidth),
+        height: Math.min(dimensions.height, dynamicHeight),
+        availableWidth: Math.min(dimensions.width, baseWidth),
+        availableHeight: Math.min(dimensions.height, dynamicHeight)
+      }
+    }
     
     // Reserve space for UI elements (predictable, not viewport-dependent)
     const titleSpace = 80 // Title + subtitle + margins
@@ -108,9 +174,32 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const padding = 48 // Chart padding
     const reservedHeight = titleSpace + legendSpace + padding
     
-    // Available container space (use fixed max dimensions to prevent overflow)
-    const maxContainerWidth = 800
-    const maxContainerHeight = 600
+    // Dynamic zone width calculation based on responsive breakpoints
+    const getZoneWidths = (width: number) => {
+      if (width < 768) return { zone1: 200, zone2: 280 } // Mobile
+      if (width < 1200) return { zone1: 220, zone2: 320 } // Tablet
+      return { zone1: 240, zone2: 360 } // Desktop
+    }
+    
+    const zones = getZoneWidths(windowSize.width)
+    const marginsAndPadding = 40 // Margins/padding around zones
+    const totalZoneWidth = zones.zone1 + zones.zone2 + marginsAndPadding
+    
+    // Viewport-aware responsive container sizing with dynamic zone calculation
+    const availableViewportWidth = windowSize.width > 0 ? windowSize.width - totalZoneWidth : 800
+    const availableViewportHeight = windowSize.width > 0 ? windowSize.height - 180 : 600
+    
+    // Responsive max dimensions that better utilize available space
+    const maxContainerWidth = Math.min(
+      Math.max(availableViewportWidth * 0.95, aspectRatio < 0.8 ? 400 : 600), // Lower min for portrait
+      aspectRatio < 0.8 ? 500 : 1000 // More reasonable limits for portrait vs landscape
+    )
+    
+    const maxContainerHeight = Math.min(
+      Math.max(availableViewportHeight * 0.85, aspectRatio < 0.8 ? 600 : 500), // Higher min for portrait
+      aspectRatio < 0.8 ? 900 : 700 // Allow taller for portrait formats
+    )
+    
     const availableHeight = maxContainerHeight - reservedHeight
     
     // Calculate dimensions maintaining aspect ratio within bounds
@@ -123,9 +212,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       containerWidth = availableHeight * aspectRatio
     }
     
-    // Ensure minimum sizes for usability
-    containerWidth = Math.max(containerWidth, 300)
-    containerHeight = Math.max(containerHeight, 200)
+    // Ensure minimum sizes for usability and readability (more permissive for portrait)
+    containerWidth = Math.max(containerWidth, aspectRatio < 0.8 ? 350 : 500)
+    containerHeight = Math.max(containerHeight, aspectRatio < 0.8 ? 400 : 300)
     
     return {
       width: `${containerWidth}px`,
@@ -204,8 +293,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const total = config.data.reduce((sum, item) => sum + item.value, 0)
     
     return (
-      <div className={`mb-8 ${alignmentClass}`}>
-        <h1 className={`text-xl font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
+      <div className={`${config.isModalContext ? 'mb-2' : 'mb-8'} ${alignmentClass}`}>
+        <h1 className={`${config.isModalContext ? 'text-lg' : 'text-xl'} font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
           {config.title}
           {showTotal && (
             <span className={`ml-3 text-lg font-normal ${isDark ? 'text-purple-300' : 'text-purple-600'}`}>
@@ -1659,23 +1748,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
   return (
     <div 
-      className="h-full flex flex-col relative"
-      style={{
-        backgroundColor: '#0F1419'
-      }}
+      className="h-full flex flex-col relative bg-background"
     >
       <Tooltip data={tooltip} formatNumber={formatNumber} />
       
       {/* Chart Area */}
       <div 
-        className="flex-1 p-6 overflow-hidden flex items-center justify-center"
-        style={{
-          backgroundColor: '#1A1F26',
-          boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.3), inset 0 2px 6px rgba(0,0,0,0.2)',
-          border: '1px solid rgba(47, 58, 74, 0.2)',
-          margin: '12px',
-          borderRadius: '12px'
-        }}
+        className={`flex-1 overflow-hidden flex items-center justify-center bg-background border-border rounded-xl ${
+          config.isModalContext ? 'py-2 px-3 mx-1 my-1' : 'py-6 px-8 mx-2 my-3'
+        }`}
       >
         {config.theme?.borderStyle === 'gradient' ? (
           <div 

@@ -11,7 +11,16 @@ const config: Config = {
   theme: {
   	extend: {
   		fontFamily: {
+  			'satoshi': ['Satoshi', 'system-ui', 'sans-serif'],
   			'albert': ['var(--font-albert)', 'system-ui', 'sans-serif'],
+  			'sans': ['Satoshi', 'system-ui', 'sans-serif'],
+  		},
+  		width: {
+  			'70': '17.5rem',   // 280px for Zone 1 (old)
+  			'80': '20rem',     // 320px for Zone 1 (new, professional)
+  			'120': '30rem',    // 480px for Zone 2 (old)
+  			'150': '37.5rem',  // 600px for Zone 2 (old)
+  			'180': '45rem',    // 720px for Zone 2 (new, professional)
   		},
   		colors: {
   			background: 'hsl(var(--background))',

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+// Removed Card imports - no longer needed
 import { Button } from "@/components/ui/button"
 import { Palette } from "lucide-react"
 
@@ -168,89 +168,40 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
   const neonPalettes = colorPalettes.filter(p => p.type === 'neon')
 
   return (
-    <Card 
-      className="backdrop-blur-sm"
-      style={{
-        backgroundColor: '#1C1F26',
-        backgroundImage: 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15), 0 1px 3px rgba(255,255,255,0.008) inset',
-        border: '1px solid rgba(47, 58, 74, 0.12)'
-      }}
-    >
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-white text-sm font-normal">
-          <Palette className="w-4 h-4 text-purple-400" />
-          Theme
-        </CardTitle>
-      </CardHeader>
-      
-      <CardContent className="space-y-6">
+    <div className="backdrop-blur-sm bg-transparent">
+      <div className="space-y-6">
         {/* Palette Section */}
         <div>
-          <h3 className="text-white text-sm font-normal mb-3">Palette</h3>
           
           {/* Palette Category Tabs */}
           <div className="grid grid-cols-3 gap-2 mb-4">
             <button
               onClick={() => setActiveTab('monochrome')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 border ${
                 activeTab === 'monochrome'
-                  ? 'text-white'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'bg-primary/10 border-transparent text-primary'
+                  : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground hover:shadow-[0_1px_3px_rgba(0,0,0,0.08)] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]'
               }`}
-              style={{
-                backgroundColor: activeTab === 'monochrome' ? '#14171C' : '#1C1F26',
-                backgroundImage: activeTab === 'monochrome'
-                  ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
-                  : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-                boxShadow: activeTab === 'monochrome'
-                  ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
-                  : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-                border: '1px solid rgba(47, 58, 74, 0.15)',
-                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
             >
-              Monochrome
+              Mono
             </button>
             <button
               onClick={() => setActiveTab('colorful')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 border ${
                 activeTab === 'colorful'
-                  ? 'text-white'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'bg-primary/10 border-transparent text-primary'
+                  : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground hover:shadow-[0_1px_3px_rgba(0,0,0,0.08)] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]'
               }`}
-              style={{
-                backgroundColor: activeTab === 'colorful' ? '#14171C' : '#1C1F26',
-                backgroundImage: activeTab === 'colorful'
-                  ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
-                  : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-                boxShadow: activeTab === 'colorful'
-                  ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
-                  : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-                border: '1px solid rgba(47, 58, 74, 0.15)',
-                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
             >
               Colorful
             </button>
             <button
               onClick={() => setActiveTab('neon')}
-              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 border ${
                 activeTab === 'neon'
-                  ? 'text-white'
-                  : 'text-gray-400 hover:text-white'
+                  ? 'bg-primary/10 border-transparent text-primary'
+                  : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground hover:shadow-[0_1px_3px_rgba(0,0,0,0.08)] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]'
               }`}
-              style={{
-                backgroundColor: activeTab === 'neon' ? '#14171C' : '#1C1F26',
-                backgroundImage: activeTab === 'neon'
-                  ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
-                  : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-                boxShadow: activeTab === 'neon'
-                  ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
-                  : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-                border: '1px solid rgba(47, 58, 74, 0.15)',
-                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
             >
               Neon
             </button>
@@ -264,40 +215,11 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
                   <button
                     key={palette.id}
                     onClick={() => updateTheme({ palette })}
-                    className={`p-3 rounded-lg transition-all ${
+                    className={`p-3 rounded-lg transition-all duration-200 border ${
                       theme.palette.id === palette.id
-                        ? ''
-                        : 'hover:bg-opacity-80'
+                        ? 'bg-primary/10 border-transparent'
+                        : 'bg-transparent border-border/40 hover:bg-primary/5 hover:border-primary/30 hover:shadow-[0_1px_3px_rgba(0,0,0,0.08)] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]'
                     }`}
-                    style={{
-                      backgroundColor: theme.palette.id === palette.id ? '#1E1B2E' : '#1C1F26',
-                      backgroundImage: theme.palette.id === palette.id
-                        ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
-                        : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-                      boxShadow: theme.palette.id === palette.id
-                        ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
-                        : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-                      border: theme.palette.id === palette.id 
-                        ? '1px solid rgba(139, 92, 246, 0.2)'
-                        : '1px solid rgba(47, 58, 74, 0.1)',
-                      transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (theme.palette.id !== palette.id) {
-                        e.currentTarget.style.backgroundColor = '#1E2128'
-                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
-                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
-                        e.currentTarget.style.transform = 'translateY(-0.5px)'
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (theme.palette.id !== palette.id) {
-                        e.currentTarget.style.backgroundColor = '#1C1F26'
-                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
-                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
-                        e.currentTarget.style.transform = 'translateY(0)'
-                      }
-                    }}
                   >
                     <div className="flex gap-1 mb-2">
                       {palette.colors.map((color, index) => (
@@ -320,40 +242,11 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
                   <button
                     key={palette.id}
                     onClick={() => updateTheme({ palette })}
-                    className={`p-3 rounded-lg transition-all ${
+                    className={`p-3 rounded-lg transition-all duration-200 border ${
                       theme.palette.id === palette.id
-                        ? ''
-                        : 'hover:bg-opacity-80'
+                        ? 'bg-primary/10 border-transparent'
+                        : 'bg-transparent border-border/40 hover:bg-primary/5 hover:border-primary/30 hover:shadow-[0_1px_3px_rgba(0,0,0,0.08)] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]'
                     }`}
-                    style={{
-                      backgroundColor: theme.palette.id === palette.id ? '#1E1B2E' : '#1C1F26',
-                      backgroundImage: theme.palette.id === palette.id
-                        ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
-                        : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-                      boxShadow: theme.palette.id === palette.id
-                        ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
-                        : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-                      border: theme.palette.id === palette.id 
-                        ? '1px solid rgba(139, 92, 246, 0.2)'
-                        : '1px solid rgba(47, 58, 74, 0.1)',
-                      transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (theme.palette.id !== palette.id) {
-                        e.currentTarget.style.backgroundColor = '#1E2128'
-                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
-                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
-                        e.currentTarget.style.transform = 'translateY(-0.5px)'
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (theme.palette.id !== palette.id) {
-                        e.currentTarget.style.backgroundColor = '#1C1F26'
-                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
-                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
-                        e.currentTarget.style.transform = 'translateY(0)'
-                      }
-                    }}
                   >
                     <div className="flex gap-1 mb-2">
                       {palette.colors.map((color, index) => (
@@ -376,40 +269,11 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
                   <button
                     key={palette.id}
                     onClick={() => updateTheme({ palette })}
-                    className={`p-3 rounded-lg transition-all ${
+                    className={`p-3 rounded-lg transition-all duration-200 border ${
                       theme.palette.id === palette.id
-                        ? ''
-                        : 'hover:bg-opacity-80'
+                        ? 'bg-primary/10 border-transparent'
+                        : 'bg-transparent border-border/40 hover:bg-primary/5 hover:border-primary/30 hover:shadow-[0_1px_3px_rgba(0,0,0,0.08)] active:shadow-[0_1px_2px_rgba(0,0,0,0.1)]'
                     }`}
-                    style={{
-                      backgroundColor: theme.palette.id === palette.id ? '#1E1B2E' : '#1C1F26',
-                      backgroundImage: theme.palette.id === palette.id
-                        ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
-                        : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-                      boxShadow: theme.palette.id === palette.id
-                        ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
-                        : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-                      border: theme.palette.id === palette.id 
-                        ? '1px solid rgba(139, 92, 246, 0.2)'
-                        : '1px solid rgba(47, 58, 74, 0.1)',
-                      transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (theme.palette.id !== palette.id) {
-                        e.currentTarget.style.backgroundColor = '#1E2128'
-                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
-                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
-                        e.currentTarget.style.transform = 'translateY(-0.5px)'
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (theme.palette.id !== palette.id) {
-                        e.currentTarget.style.backgroundColor = '#1C1F26'
-                        e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
-                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
-                        e.currentTarget.style.transform = 'translateY(0)'
-                      }
-                    }}
                   >
                     <div className="flex gap-1 mb-2">
                       {palette.colors.map((color, index) => (
@@ -436,10 +300,10 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
               <button
                 key={style}
                 onClick={() => updateTheme({ borderStyle: style as any })}
-                className={`py-2 px-3 rounded-lg text-xs transition-all ${
+                className={`py-2 px-3 rounded-lg text-xs transition-all duration-200 border ${
                   theme.borderStyle === style
-                    ? 'bg-gray-700 text-white'
-                    : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                    ? 'bg-primary/10 border-transparent text-primary'
+                    : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground'
                 }`}
               >
                 {style.charAt(0).toUpperCase() + style.slice(1)}
@@ -474,43 +338,21 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => updateTheme({ cornerStyle: 'rounded' })}
-            className={`py-2 px-3 rounded-lg text-xs transition-all ${
+            className={`py-2 px-3 rounded-lg text-xs transition-all duration-200 border ${
               theme.cornerStyle === 'rounded'
-                ? 'text-white'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-primary/10 border-transparent text-primary'
+                : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground'
             }`}
-            style={{
-              backgroundColor: theme.cornerStyle === 'rounded' ? '#14171C' : '#1C1F26',
-              backgroundImage: theme.cornerStyle === 'rounded'
-                ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
-                : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-              boxShadow: theme.cornerStyle === 'rounded'
-                ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
-                : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-              border: '1px solid rgba(47, 58, 74, 0.15)',
-              transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-            }}
           >
             Rounded corners
           </button>
           <button
             onClick={() => updateTheme({ cornerStyle: 'sharp' })}
-            className={`py-2 px-3 rounded-lg text-xs transition-all ${
+            className={`py-2 px-3 rounded-lg text-xs transition-all duration-200 border ${
               theme.cornerStyle === 'sharp'
-                ? 'text-white'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-primary/10 border-transparent text-primary'
+                : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground'
             }`}
-            style={{
-              backgroundColor: theme.cornerStyle === 'sharp' ? '#14171C' : '#1C1F26',
-              backgroundImage: theme.cornerStyle === 'sharp'
-                ? 'linear-gradient(135deg, #12151A 0%, #14171C 100%)'
-                : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-              boxShadow: theme.cornerStyle === 'sharp'
-                ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
-                : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-              border: '1px solid rgba(47, 58, 74, 0.15)',
-              transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-            }}
           >
             Sharp corners
           </button>
@@ -529,36 +371,11 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
               <button
                 key={bg.id}
                 onClick={() => updateTheme({ background: bg.id as any })}
-                className={`flex flex-col items-center gap-2 p-2 rounded-lg transition-all`}
-                style={{
-                  backgroundColor: theme.background === bg.id ? '#1E1B2E' : '#1C1F26',
-                  backgroundImage: theme.background === bg.id
-                    ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
-                    : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-                  boxShadow: theme.background === bg.id
-                    ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
-                    : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-                  border: theme.background === bg.id 
-                    ? '1px solid rgba(139, 92, 246, 0.2)'
-                    : '1px solid rgba(47, 58, 74, 0.1)',
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-                onMouseEnter={(e) => {
-                  if (theme.background !== bg.id) {
-                    e.currentTarget.style.backgroundColor = '#1E2128'
-                    e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
-                    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
-                    e.currentTarget.style.transform = 'translateY(-0.5px)'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (theme.background !== bg.id) {
-                    e.currentTarget.style.backgroundColor = '#1C1F26'
-                    e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
-                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
-                    e.currentTarget.style.transform = 'translateY(0)'
-                  }
-                }}
+                className={`flex flex-col items-center gap-2 p-2 rounded-lg transition-all duration-200 border ${
+                  theme.background === bg.id
+                    ? 'bg-primary/10 border-transparent'
+                    : 'bg-transparent border-border/40 hover:bg-primary/5 hover:border-primary/30'
+                }`}
               >
                 <div
                   className="w-6 h-6 rounded border border-gray-600"
@@ -689,10 +506,10 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
                   <button
                     key={alignment}
                     onClick={() => updateTheme({ titleAlignment: alignment as any })}
-                    className={`py-2 px-3 rounded-lg text-xs transition-all ${
+                    className={`py-2 px-3 rounded-lg text-xs transition-all duration-200 border ${
                       (theme.titleAlignment || 'center') === alignment
-                        ? 'bg-gray-700 text-white'
-                        : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                        ? 'bg-primary/10 border-transparent text-primary'
+                        : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground'
                     }`}
                   >
                     {alignment.charAt(0).toUpperCase() + alignment.slice(1)}
@@ -710,10 +527,10 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
                     <button
                       key={position}
                       onClick={() => updateTheme({ legendPosition: position as any })}
-                      className={`py-2 px-3 rounded-lg text-xs transition-all ${
+                      className={`py-2 px-3 rounded-lg text-xs transition-all duration-200 border ${
                         (theme.legendPosition || 'right') === position
-                          ? 'bg-gray-700 text-white'
-                          : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                          ? 'bg-primary/10 border-transparent text-primary'
+                          : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground'
                       }`}
                     >
                       {position.charAt(0).toUpperCase() + position.slice(1)}
@@ -750,20 +567,20 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
               <div className="flex gap-2">
                 <button
                   onClick={() => updateTheme({ decimalPlaces: 'auto' })}
-                  className={`flex-1 py-2 px-3 rounded-lg text-xs transition-all ${
+                  className={`flex-1 py-2 px-3 rounded-lg text-xs transition-all duration-200 border ${
                     (theme.decimalPlaces || 'auto') === 'auto'
-                      ? 'bg-gray-700 text-white'
-                      : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                      ? 'bg-primary/10 border-transparent text-primary'
+                      : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground'
                   }`}
                 >
                   Auto
                 </button>
                 <button
                   onClick={() => updateTheme({ decimalPlaces: 'fixed', fixedDecimalCount: 0 })}
-                  className={`flex-1 py-2 px-3 rounded-lg text-xs transition-all ${
+                  className={`flex-1 py-2 px-3 rounded-lg text-xs transition-all duration-200 border ${
                     theme.decimalPlaces === 'fixed'
-                      ? 'bg-gray-700 text-white'
-                      : 'bg-gray-800/50 text-gray-400 hover:text-white'
+                      ? 'bg-primary/10 border-transparent text-primary'
+                      : 'bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground'
                   }`}
                 >
                   Fixed
@@ -783,7 +600,7 @@ export function ColorPalette({ theme, onChange, chartType }: ColorPaletteProps) 
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

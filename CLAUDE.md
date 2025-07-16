@@ -119,3 +119,36 @@ const labelStyle = isInside ?
 When working with neon or bright color palettes, avoid using `getDataLabelStyle()` with bar color contrast for labels positioned outside chart elements. The `isColorLight()` function can misclassify bright neon colors, causing readability issues.
 
 **Safe approach**: Always use background-based contrast for external labels, regardless of chart element colors.
+
+## Modal Layout Best Practices
+
+### Edit Data Modal Responsive Design
+
+**Problem**: Large modals with fixed dimensions can overflow on smaller screens, causing layout issues and poor user experience.
+
+**Solution**: Implement responsive modal layout with proper constraints:
+
+```typescript
+// Modal container with responsive sizing
+className="max-w-7xl w-[95%] max-w-[95vw] h-[90vh] max-h-[900px] sm:h-[85vh] sm:max-h-[800px] flex flex-col"
+
+// Responsive grid layout
+className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-6 min-h-0 overflow-hidden"
+
+// Table section with scroll constraints
+className="overflow-auto h-full max-h-[300px] sm:max-h-[400px] lg:max-h-[500px]"
+```
+
+**Key Principles**:
+1. **Viewport-relative sizing**: Use `vh` units for height, `vw` for width constraints
+2. **Responsive breakpoints**: Stack content on mobile (`grid-cols-1`), side-by-side on desktop (`lg:grid-cols-5`)
+3. **Overflow management**: Add `overflow-hidden` to parent, `overflow-auto` to scrollable sections
+4. **Flexible constraints**: Use `min-h-0` to prevent flex items from expanding beyond container
+5. **Progressive enhancement**: Smaller constraints on mobile, larger on desktop
+
+**Mobile-First Approach**:
+- Mobile: Single column layout with compact spacing
+- Tablet: Slightly larger modal dimensions
+- Desktop: Full side-by-side layout with maximum space utilization
+
+This ensures modals work properly across all device sizes while maintaining functionality and visual hierarchy.

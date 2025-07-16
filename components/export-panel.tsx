@@ -130,26 +130,26 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="bg-gray-800 border-gray-700 w-full max-w-2xl max-h-[90vh] overflow-auto">
+      <Card className="bg-card border-border w-full max-w-2xl max-h-[90vh] overflow-auto">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-white">Export Chart</CardTitle>
+          <CardTitle className="text-foreground font-satoshi font-medium text-lg">Export Chart</CardTitle>
           <Button
             onClick={onClose}
             size="sm"
             variant="outline"
-            className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600"
+            className="bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground"
           >
             <X className="w-4 h-4" />
           </Button>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex space-x-1 bg-gray-700 rounded-lg p-1">
+          <div className="flex space-x-1 bg-secondary/30 rounded-lg p-1">
             {(["png", "svg", "embed", "link"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  activeTab === tab ? "bg-purple-600 text-white" : "text-gray-300 hover:text-white hover:bg-gray-600"
+                className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 border font-satoshi ${
+                  activeTab === tab ? "bg-primary/10 border-transparent text-primary" : "bg-transparent border-transparent text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground"
                 }`}
               >
                 {tab === "link" ? "SHARE" : tab.toUpperCase()}
@@ -161,30 +161,30 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
             <div className="space-y-4">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Export Quality</label>
+                  <label className="block text-sm font-medium text-foreground mb-2 font-satoshi">Export Quality</label>
                   <Select value={exportQuality} onValueChange={setExportQuality}>
-                    <SelectTrigger className="w-full bg-gray-700 border-gray-600 text-white">
+                    <SelectTrigger className="w-full bg-input border-border text-foreground font-satoshi">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-700 border-gray-600">
-                      <SelectItem value="1x" className="text-white hover:bg-gray-600">Standard (1x)</SelectItem>
-                      <SelectItem value="2x" className="text-white hover:bg-gray-600">High Quality (2x)</SelectItem>
-                      <SelectItem value="3x" className="text-white hover:bg-gray-600">Ultra HD (3x)</SelectItem>
+                    <SelectContent className="bg-card border-border">
+                      <SelectItem value="1x" className="text-foreground hover:bg-secondary/20 font-satoshi">Standard (1x)</SelectItem>
+                      <SelectItem value="2x" className="text-foreground hover:bg-secondary/20 font-satoshi">High Quality (2x)</SelectItem>
+                      <SelectItem value="3x" className="text-foreground hover:bg-secondary/20 font-satoshi">Ultra HD (3x)</SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className="text-xs text-gray-400 mt-1">Higher quality creates larger file sizes</p>
+                  <p className="text-xs text-muted-foreground mt-1 font-satoshi">Higher quality creates larger file sizes</p>
                 </div>
                 
                 <div className="text-center">
-                  <div className="w-32 h-32 bg-gray-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                    <Download className="w-8 h-8 text-gray-400" />
+                  <div className="w-32 h-32 bg-secondary/30 border border-border rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <Download className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <p className="text-gray-300 mb-4">Download your chart as a high-quality PNG image</p>
+                  <p className="text-muted-foreground mb-4 font-satoshi">Download your chart as a high-quality PNG image</p>
                   
                   <div className="flex gap-3 justify-center">
                     <Button 
                       onClick={() => downloadAsImage("png")} 
-                      className="bg-purple-600 hover:bg-purple-700"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-satoshi"
                       disabled={isExporting}
                     >
                       {isExporting ? (
@@ -203,7 +203,7 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
                     <Button 
                       onClick={copyImageToClipboard}
                       variant="outline"
-                      className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                      className="bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground font-satoshi"
                       disabled={isExporting}
                     >
                       {copiedImage ? (
@@ -227,15 +227,15 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
           {activeTab === "svg" && (
             <div className="space-y-4">
               <div className="text-center">
-                <div className="w-32 h-32 bg-gray-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                  <Code className="w-8 h-8 text-gray-400" />
+                <div className="w-32 h-32 bg-secondary/30 border border-border rounded-lg mx-auto mb-4 flex items-center justify-center">
+                  <Code className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <p className="text-gray-300 mb-4">Download your chart as a scalable SVG vector</p>
+                <p className="text-muted-foreground mb-4 font-satoshi">Download your chart as a scalable SVG vector</p>
                 
                 <div className="flex gap-3 justify-center">
                   <Button 
                     onClick={() => downloadAsImage("svg")} 
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-satoshi"
                     disabled={isExporting}
                   >
                     {isExporting ? (
@@ -254,7 +254,7 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
                   <Button 
                     onClick={copyImageToClipboard}
                     variant="outline"
-                    className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600 hover:text-white"
+                    className="bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground font-satoshi"
                     disabled={isExporting}
                   >
                     {copiedImage ? (
@@ -277,17 +277,17 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
           {activeTab === "embed" && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Embed Code</label>
+                <label className="block text-sm font-medium text-foreground mb-2 font-satoshi">Embed Code</label>
                 <div className="relative">
                   <textarea
                     value={generateEmbedCode()}
                     readOnly
-                    className="w-full h-40 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm font-mono resize-none"
+                    className="w-full h-40 bg-input border border-border rounded-lg px-3 py-2 text-foreground text-sm font-mono resize-none font-satoshi"
                   />
                   <Button
                     onClick={() => copyToClipboard(generateEmbedCode(), 'embedCode')}
                     size="sm"
-                    className="absolute top-2 right-2 bg-purple-600 hover:bg-purple-700"
+                    className="absolute top-2 right-2 bg-primary hover:bg-primary/90 text-primary-foreground font-satoshi"
                   >
                     <Copy className="w-4 h-4 mr-1" />
                     {copiedEmbedCode ? "Copied!" : "Copy"}
@@ -300,17 +300,17 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
           {activeTab === "link" && (
             <div className="space-y-8">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Shareable Link</label>
+                <label className="block text-sm font-medium text-foreground mb-2 font-satoshi">Shareable Link</label>
                 <div className="relative">
                   <input
                     value={generateShareableLink()}
                     readOnly
-                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm pr-20"
+                    className="w-full bg-input border border-border rounded-lg px-3 py-2 text-foreground text-sm pr-20 font-satoshi"
                   />
                   <Button
                     onClick={() => copyToClipboard(generateShareableLink(), 'shareableLink')}
                     size="sm"
-                    className="absolute top-1 right-1 bg-purple-600 hover:bg-purple-700"
+                    className="absolute top-1 right-1 bg-primary hover:bg-primary/90 text-primary-foreground font-satoshi"
                   >
                     <Copy className="w-4 h-4 mr-1" />
                     {copiedShareableLink ? "Copied!" : "Copy"}
@@ -319,17 +319,17 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Embed Link</label>
+                <label className="block text-sm font-medium text-foreground mb-2 font-satoshi">Embed Link</label>
                 <div className="relative">
                   <input
                     value={generateEmbedLink()}
                     readOnly
-                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm pr-20"
+                    className="w-full bg-input border border-border rounded-lg px-3 py-2 text-foreground text-sm pr-20 font-satoshi"
                   />
                   <Button
                     onClick={() => copyToClipboard(generateEmbedLink(), 'embedLink')}
                     size="sm"
-                    className="absolute top-1 right-1 bg-purple-600 hover:bg-purple-700"
+                    className="absolute top-1 right-1 bg-primary hover:bg-primary/90 text-primary-foreground font-satoshi"
                   >
                     <Copy className="w-4 h-4 mr-1" />
                     {copiedEmbedLink ? "Copied!" : "Copy"}
@@ -340,8 +340,8 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
             </div>
           )}
 
-          <div className="border-t border-gray-700 pt-4">
-            <div className="flex items-center justify-between text-sm text-gray-400">
+          <div className="border-t border-border pt-4">
+            <div className="flex items-center justify-between text-sm text-muted-foreground font-satoshi">
               <span>Chart: {config.title}</span>
               <span>{config.data.length} data points</span>
             </div>

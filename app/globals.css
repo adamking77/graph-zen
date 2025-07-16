@@ -1,73 +1,142 @@
+/* Satoshi Font Face Declarations */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Regular.woff2') format('woff2'),
+       url('/fonts/Satoshi-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Medium.woff2') format('woff2'),
+       url('/fonts/Satoshi-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Bold.woff2') format('woff2'),
+       url('/fonts/Satoshi-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Variable.woff2') format('woff2');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind base;
+/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind components;
+/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    /* Original GraphZen Guidelines - Navy + Purple */
+    --background: 213 25% 11%;          /* Navy base #1a1d29 */
+    --foreground: 210 40% 94%;          /* Primary text #e2e8f0 */
+    --card: 216 24% 14%;                /* Card background #212530 */
+    --card-foreground: 210 40% 94%;     /* Card text */
+    --popover: 216 24% 14%;             /* Popover background */
+    --popover-foreground: 210 40% 94%;  /* Popover text */
+    --primary: 210 60% 55%;             /* More noticeable sophisticated blue #4a8cc7 */
+    --primary-foreground: 210 40% 94%;  /* Light text on sophisticated blue */
+    --secondary: 217 19% 27%;           /* Muted card #3a4553 */
+    --secondary-foreground: 215 16% 47%; /* Secondary text #64748b */
+    --muted: 217 19% 27%;               /* Muted backgrounds */
+    --muted-foreground: 215 16% 47%;    /* Muted text #64748b */
+    --accent: 210 60% 55%;              /* More noticeable sophisticated blue #4a8cc7 */
+    --accent-foreground: 210 40% 94%;   /* Light text on accent */
+    --destructive: 0 84% 60%;           /* Error red */
+    --destructive-foreground: 210 40% 98%; /* Text on error */
+    --border: 215 19% 20%;              /* Subtle borders #2a2d3a */
+    --input: 217 19% 18%;               /* Input backgrounds #1e2128 */
+    --ring: 210 60% 55%;                /* Focus rings more noticeable sophisticated blue */
+    --radius: 0.5rem;                   /* 8px radius */
+    
+    /* Professional Chart Colors */
+    --chart-1: 250 91% 67%;             /* Purple #6366f1 */
+    --chart-2: 200 95% 58%;             /* Blue */
+    --chart-3: 156 95% 58%;             /* Teal */
+    --chart-4: 280 95% 58%;             /* Violet */
+    --chart-5: 348 95% 58%;             /* Pink */
+    
+    /* Premium Design System */
+    --navy-50: 215 25% 97%;             /* Lightest navy tint */
+    --navy-100: 214 24% 89%;            /* Light navy */
+    --navy-200: 215 22% 78%;            /* Lighter navy */
+    --navy-300: 215 20% 65%;            /* Medium-light navy */
+    --navy-400: 215 18% 52%;            /* Medium navy */
+    --navy-500: 215 19% 35%;            /* Base navy */
+    --navy-600: 216 21% 27%;            /* Darker navy */
+    --navy-700: 216 23% 20%;            /* Dark navy */
+    --navy-800: 217 24% 15%;            /* Very dark navy */
+    --navy-900: 213 25% 11%;            /* Deepest navy (background) */
+    
+    --orange-50: 39 100% 97%;           /* Lightest orange tint */
+    --orange-100: 38 100% 91%;          /* Light orange */
+    --orange-200: 36 100% 83%;          /* Lighter orange */
+    --orange-300: 34 100% 74%;          /* Medium-light orange */
+    --orange-400: 33 100% 66%;          /* Medium orange */
+    --orange-500: 32 95% 58%;           /* Base orange (primary) */
+    --orange-600: 30 94% 52%;           /* Darker orange */
+    --orange-700: 28 92% 46%;           /* Dark orange */
+    --orange-800: 26 90% 40%;           /* Very dark orange */
+    --orange-900: 24 88% 34%;           /* Deepest orange */
   }
-
+  
+  /* Dark theme is default - using same values for consistency */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --background: 213 25% 11%;
+    --foreground: 210 40% 94%;
+    --card: 216 24% 14%;
+    --card-foreground: 210 40% 94%;
+    --popover: 216 24% 14%;
+    --popover-foreground: 210 40% 94%;
+    --primary: 210 60% 55%;
+    --primary-foreground: 210 40% 94%;
+    --secondary: 217 19% 27%;
+    --secondary-foreground: 215 16% 47%;
+    --muted: 217 19% 27%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 60% 55%;
+    --accent-foreground: 210 40% 94%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --border: 215 19% 20%;
+    --input: 217 19% 18%;
+    --ring: 210 60% 55%;
+    --chart-1: 250 91% 67%;
+    --chart-2: 200 95% 58%;
+    --chart-3: 156 95% 58%;
+    --chart-4: 280 95% 58%;
+    --chart-5: 348 95% 58%;
   }
 }
 
 @layer base {
   * {
+    /* stylelint-disable-next-line at-rule-no-unknown */
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    /* stylelint-disable-next-line at-rule-no-unknown */
+    @apply bg-background text-foreground font-satoshi;
   }
 }
 
+/* Professional Animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -79,6 +148,145 @@
   }
 }
 
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation Classes */
 .animate-in {
-  animation: fade-in 0.5s ease-out;
+  animation: fade-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Design Utilities */
+.gradient-navy {
+  background: linear-gradient(135deg, hsl(var(--navy-800)) 0%, hsl(var(--navy-900)) 100%);
+}
+
+.gradient-card {
+  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--navy-800)) 100%);
+}
+
+.shadow-premium {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-premium-lg {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.10);
+}
+
+.border-premium {
+  border: 1px solid hsl(var(--border));
+}
+
+/* Transition Defaults */
+.transition-premium {
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Professional Focus States */
+.focus-premium:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--ring)), 0 0 0 4px hsl(var(--background));
+}
+
+/* Responsive Zone Layout System */
+/* Desktop First (1200px+) */
+.zone1-expanded {
+  width: 240px !important;
+  min-width: 240px !important;
+  max-width: 240px !important;
+}
+
+.zone1-collapsed {
+  width: 60px !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+}
+
+.zone2-width {
+  width: 360px !important;
+  min-width: 360px !important;
+  max-width: 360px !important;
+}
+
+/* Tablet (768px - 1199px) */
+@media (max-width: 1199px) {
+  .zone1-expanded {
+    width: 220px !important;
+    min-width: 220px !important;
+    max-width: 220px !important;
+  }
+  
+  .zone2-width {
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
+  }
+}
+
+/* Mobile (below 768px) */
+@media (max-width: 767px) {
+  .zone1-expanded {
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+  }
+  
+  .zone2-width {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+  }
+}
+
+/* Touch-friendly spacing for iPad and tablets */
+@media (max-width: 1199px) and (min-width: 768px) {
+  /* Increase button padding for touch targets */
+  button {
+    padding: 12px 16px !important;
+    min-height: 44px !important;
+  }
+  
+  /* Increase spacing in navigation */
+  .navigation-item {
+    padding: 16px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  /* Better touch targets for inputs */
+  input, select, textarea {
+    padding: 12px 16px !important;
+    min-height: 44px !important;
+  }
+  
+  /* Chart preview margins for touch scrolling */
+  .chart-preview-container {
+    margin: 16px !important;
+  }
 }

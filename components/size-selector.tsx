@@ -44,7 +44,7 @@ export function SizeSelector({ value, onChange }: SizeSelectorProps) {
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between gap-3 bg-gray-800/50 border border-gray-700/50 rounded-lg px-4 py-3 text-sm text-gray-300 hover:bg-gray-800/70 hover:border-gray-600/50 transition-all duration-200"
+          className="w-full flex items-center justify-between gap-3 bg-transparent border border-border/40 rounded-lg px-4 py-3 text-sm text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200"
         >
           <div className="flex items-center gap-3">
             <CurrentIcon className="w-4 h-4 text-gray-400" />
@@ -57,7 +57,7 @@ export function SizeSelector({ value, onChange }: SizeSelectorProps) {
         </button>
 
         {isOpen && (
-          <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-gray-800/95 backdrop-blur-md border border-gray-700/60 rounded-lg shadow-xl overflow-hidden">
+          <div className="absolute top-full left-0 right-0 z-50 mt-2 bg-card border border-border rounded-lg shadow-xl overflow-hidden">
             <div className="p-2">
               <div className="text-xs font-medium text-gray-400 px-3 py-2 uppercase tracking-wider">
                 Presets
@@ -71,10 +71,10 @@ export function SizeSelector({ value, onChange }: SizeSelectorProps) {
                   <button
                     key={key}
                     onClick={() => handlePresetSelect(key)}
-                    className={`w-full flex items-center gap-3 px-3 py-3 text-sm rounded-lg transition-all duration-200 ${
+                    className={`w-full flex items-center gap-3 px-3 py-3 text-sm rounded-lg transition-all duration-200 border ${
                       isSelected 
-                        ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30' 
-                        : 'text-gray-300 hover:bg-gray-700/50 hover:text-gray-200'
+                        ? 'bg-primary/10 border-transparent text-primary' 
+                        : 'bg-transparent border-transparent text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground'
                     }`}
                   >
                     <Icon className={`w-4 h-4 ${isSelected ? 'text-purple-400' : 'text-gray-400'}`} />

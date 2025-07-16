@@ -285,42 +285,19 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
   }) => (
     <button
       onClick={() => toggleSection(section)}
-      className="w-full flex items-center justify-between p-3 rounded-lg transition-all group"
-      style={{
-        backgroundColor: expandedSections[section] ? '#12151A' : '#1C1F26',
-        backgroundImage: expandedSections[section] 
-          ? 'linear-gradient(135deg, #11141A 0%, #13161B 100%)'
-          : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-        boxShadow: expandedSections[section] 
-          ? 'inset 0 1px 2px rgba(0,0,0,0.12), inset 0 0.5px 1px rgba(0,0,0,0.06)'
-          : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-        border: '1px solid rgba(47, 58, 74, 0.15)',
-        transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-      }}
-      onMouseEnter={(e) => {
-        if (!expandedSections[section]) {
-          e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
-          e.currentTarget.style.transform = 'translateY(-0.5px)'
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!expandedSections[section]) {
-          e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
-          e.currentTarget.style.transform = 'translateY(0)'
-        }
-      }}
+      className="w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 group hover:bg-secondary/30"
     >
       <div className="flex items-center gap-3">
-        <div className="text-purple-400">{icon}</div>
+        <div className="text-primary">{icon}</div>
         <div className="text-left">
-          <h3 className="text-white text-sm font-medium">{title}</h3>
+          <h3 className="text-foreground text-base font-medium">{title}</h3>
           {description && (
-            <p className="text-xs text-gray-400">{description}</p>
+            <p className="text-sm text-muted-foreground">{description}</p>
           )}
         </div>
       </div>
-      <div className={`transform transition-transform ${expandedSections[section] ? 'rotate-180' : ''}`}>
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className={`transform transition-transform duration-200 ${expandedSections[section] ? 'rotate-180' : ''}`}>
+        <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </div>
@@ -328,18 +305,12 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
   )
 
   return (
-    <div 
-      className="h-full flex flex-col overflow-hidden" 
-      style={{ 
-        backgroundColor: '#16191E',
-        backgroundImage: 'linear-gradient(135deg, #16191E 0%, #14171C 100%)'
-      }}
-    >
+    <div className="h-full flex flex-col overflow-hidden bg-background">
       {/* Configuration Sections */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
         
         {/* ESSENTIALS SECTION */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           <SectionHeader 
             title="Essentials" 
             icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
@@ -348,57 +319,32 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
           />
           
           {expandedSections.essentials && (
-            <div className="space-y-4 pl-2">
+            <div className="space-y-6">
               {/* Chart Type Selection */}
-              <div className="space-y-3">
-                <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
-                  <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+              <div className="space-y-4">
+                <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+                  <div className="w-1 h-4 bg-primary rounded-full"></div>
                   Chart Type
                 </h4>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   {chartTypes.map((type) => {
                     const Icon = type.icon
+                    const isSelected = config.type === type.value
                     return (
                       <button
                         key={type.value}
                         onClick={() => updateConfig({ type: type.value as "horizontal-bar" | "vertical-bar" | "pie" | "donut" | "line" | "combo" })}
-                        className={`flex items-center gap-2 p-3 rounded-lg transition-all duration-200 text-xs ${
-                          config.type === type.value
-                            ? "text-purple-300"
-                            : "text-gray-300 hover:text-white"
+                        className={`flex items-center gap-3 p-4 rounded-lg transition-premium border group ${
+                          isSelected
+                            ? "bg-primary/10 border-primary/30 text-primary"
+                            : "bg-secondary/30 border-secondary/30 text-muted-foreground hover:text-foreground hover:bg-secondary/50 hover:border-secondary/50"
                         }`}
-                        style={{
-                          backgroundColor: config.type === type.value ? '#1E1B2E' : '#1C1F26',
-                          backgroundImage: config.type === type.value 
-                            ? 'linear-gradient(135deg, #1E1B2E 0%, #1A1729 100%)'
-                            : 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)',
-                          boxShadow: config.type === type.value
-                            ? 'inset 0 1px 2px rgba(0,0,0,0.15), inset 0 0.5px 1px rgba(0,0,0,0.08), 0 0 0 1px rgba(139, 92, 246, 0.15)'
-                            : '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset',
-                          border: config.type === type.value 
-                            ? '1px solid rgba(139, 92, 246, 0.2)'
-                            : '1px solid rgba(47, 58, 74, 0.1)',
-                          transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                        }}
-                        onMouseEnter={(e) => {
-                          if (config.type !== type.value) {
-                            e.currentTarget.style.backgroundColor = '#1E2128'
-                            e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1E2128 0%, #1C1F26 100%)'
-                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.015) inset'
-                            e.currentTarget.style.transform = 'translateY(-0.5px)'
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (config.type !== type.value) {
-                            e.currentTarget.style.backgroundColor = '#1C1F26'
-                            e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, #1C1F26 0%, #1A1D24 100%)'
-                            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08), 0 0.5px 1px rgba(255,255,255,0.01) inset'
-                            e.currentTarget.style.transform = 'translateY(0)'
-                          }
-                        }}
                       >
-                        <Icon className="w-4 h-4" />
-                        <span className="font-light tracking-wide">{type.label}</span>
+                        <Icon className="w-5 h-5" />
+                        <div className="text-left">
+                          <div className="text-sm font-medium">{type.label}</div>
+                          <div className="text-xs opacity-70">{type.description}</div>
+                        </div>
                       </button>
                     )
                   })}
@@ -409,15 +355,8 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                   const selectedType = chartTypes.find(t => t.value === config.type)
                   if (selectedType) {
                     return (
-                      <div 
-                        className="rounded-lg p-3"
-                        style={{
-                          backgroundColor: '#1E2530',
-                          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)',
-                          border: '1px solid rgba(139, 92, 246, 0.2)'
-                        }}
-                      >
-                        <p className="text-xs text-purple-200">{selectedType.description}</p>
+                      <div className="rounded-lg p-3 bg-card border border-border">
+                        <p className="text-xs text-muted-foreground">{selectedType.description}</p>
                       </div>
                     )
                   }
@@ -426,54 +365,34 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
               </div>
 
               {/* Chart Configuration */}
-              <div className="space-y-3">
-                <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
-                  <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+              <div className="space-y-4">
+                <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+                  <div className="w-1 h-4 bg-primary rounded-full"></div>
                   Title & Subtitle
                 </h4>
-                <div className="space-y-3">
-                  <input
-                    type="text"
-                    value={config.title}
-                    onChange={(e) => updateConfig({ title: e.target.value })}
-                    className="w-full text-white placeholder-gray-400 rounded-lg px-3 py-2 text-sm transition-all focus:outline-none"
-                    style={{
-                      backgroundColor: '#1E2530',
-                      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
-                      border: '1px solid rgba(47, 58, 74, 0.3)'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.3), 0 0 0 2px rgba(139, 92, 246, 0.3)'
-                      e.target.style.borderColor = 'rgba(139, 92, 246, 0.5)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.2)'
-                      e.target.style.borderColor = 'rgba(47, 58, 74, 0.3)'
-                    }}
-                    placeholder="Enter chart title"
-                    suppressHydrationWarning
-                  />
-                  <input
-                    type="text"
-                    value={config.subtitle}
-                    onChange={(e) => updateConfig({ subtitle: e.target.value })}
-                    className="w-full text-white placeholder-gray-400 rounded-lg px-3 py-2 text-sm transition-all focus:outline-none"
-                    style={{
-                      backgroundColor: '#1E2530',
-                      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
-                      border: '1px solid rgba(47, 58, 74, 0.3)'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.3), 0 0 0 2px rgba(139, 92, 246, 0.3)'
-                      e.target.style.borderColor = 'rgba(139, 92, 246, 0.5)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.2)'
-                      e.target.style.borderColor = 'rgba(47, 58, 74, 0.3)'
-                    }}
-                    placeholder="Enter subtitle (optional)"
-                    suppressHydrationWarning
-                  />
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm text-muted-foreground">Chart Title</label>
+                    <input
+                      type="text"
+                      value={config.title}
+                      onChange={(e) => updateConfig({ title: e.target.value })}
+                      className="w-full bg-input border-premium text-foreground placeholder-muted-foreground rounded-lg px-4 py-3 text-sm transition-premium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                      placeholder="Enter chart title"
+                      suppressHydrationWarning
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm text-muted-foreground">Subtitle (Optional)</label>
+                    <input
+                      type="text"
+                      value={config.subtitle}
+                      onChange={(e) => updateConfig({ subtitle: e.target.value })}
+                      className="w-full bg-input border-premium text-foreground placeholder-muted-foreground rounded-lg px-4 py-3 text-sm transition-premium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                      placeholder="Enter subtitle (optional)"
+                      suppressHydrationWarning
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -490,51 +409,39 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
           />
           
           {expandedSections.data && (
-            <div className="space-y-4 pl-2">
+            <div className="space-y-6">
               {/* Data Points */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
-                    <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+                  <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+                    <div className="w-1 h-4 bg-primary rounded-full"></div>
                     Data Points
                   </h4>
                   <DataEditorDialog config={config} onConfigChange={onChange}>
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-7 px-3">
+                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8 px-3">
                       <Plus className="w-3 h-3 mr-1" />
                       Edit Data
                     </Button>
                   </DataEditorDialog>
                 </div>
                 
-                <div 
-                  className="rounded-lg p-3"
-                  style={{
-                    backgroundColor: '#1E2530',
-                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
-                    border: '1px solid rgba(47, 58, 74, 0.2)'
-                  }}
-                >
+                <div className="bg-secondary/30 border-premium rounded-lg p-4">
                   <div className="space-y-2">
                     {config.data.slice(0, 3).map((item, index) => (
                       <div
                         key={index}
-                        className="flex gap-2 items-center p-2 rounded"
-                        style={{
-                          backgroundColor: '#1A1F26',
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(255,255,255,0.02) inset',
-                          border: '1px solid rgba(47, 58, 74, 0.3)'
-                        }}
+                        className="flex gap-3 items-center p-3 rounded-lg bg-background/50 border border-secondary/50"
                       >
-                        <div className="flex-1 text-xs text-white truncate">
+                        <div className="flex-1 text-sm text-foreground truncate">
                           {item.scenario}
                         </div>
-                        <div className="text-xs text-purple-300 font-light text-right">
+                        <div className="text-sm text-primary font-medium">
                           {formatNumber(item.value)}
                         </div>
                       </div>
                     ))}
                     {config.data.length > 3 && (
-                      <div className="text-xs text-gray-400 text-center py-1">
+                      <div className="text-xs text-muted-foreground text-center py-2">
                         +{config.data.length - 3} more items...
                       </div>
                     )}
@@ -543,32 +450,17 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
               </div>
 
               {/* Quick Import */}
-              <div className="space-y-3">
-                <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
-                  <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+              <div className="space-y-4">
+                <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+                  <div className="w-1 h-4 bg-primary rounded-full"></div>
                   Quick Import
                 </h4>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center justify-center gap-2 p-3 border-dashed rounded-lg text-gray-300 hover:text-white transition-all text-xs"
-                    style={{
-                      backgroundColor: '#1A1F26',
-                      border: '2px dashed rgba(107, 114, 128, 0.5)',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.7)'
-                      e.currentTarget.style.backgroundColor = '#1E2530'
-                      e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2), 0 1px 2px rgba(255,255,255,0.05) inset'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(107, 114, 128, 0.5)'
-                      e.currentTarget.style.backgroundColor = '#1A1F26'
-                      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'
-                    }}
+                    className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-secondary/50 rounded-lg text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-premium text-sm"
                   >
-                    <Upload className="w-3 h-3" />
+                    <Upload className="w-4 h-4" />
                     CSV File
                   </button>
                   <button
@@ -577,24 +469,9 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                       setPasteInput(sampleData)
                       handlePasteImport()
                     }}
-                    className="flex items-center justify-center gap-2 p-3 border-dashed rounded-lg text-gray-300 hover:text-white transition-all text-xs"
-                    style={{
-                      backgroundColor: '#1A1F26',
-                      border: '2px dashed rgba(107, 114, 128, 0.5)',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.7)'
-                      e.currentTarget.style.backgroundColor = '#1E2530'
-                      e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2), 0 1px 2px rgba(255,255,255,0.05) inset'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(107, 114, 128, 0.5)'
-                      e.currentTarget.style.backgroundColor = '#1A1F26'
-                      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'
-                    }}
+                    className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-secondary/50 rounded-lg text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-premium text-sm"
                   >
-                    <FileText className="w-3 h-3" />
+                    <FileText className="w-4 h-4" />
                     Sample Data
                   </button>
                 </div>
@@ -620,7 +497,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
           />
           
           {expandedSections.appearance && (
-            <div className="pl-2">
+            <div className="space-y-6">
               {/* Size Selector */}
               <div className="mb-4">
                 <SizeSelector 
@@ -665,42 +542,42 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
           />
           
           {expandedSections.advanced && (
-            <div className="space-y-4 pl-2">
+            <div className="space-y-6">
               {/* Import Data Options */}
-              <div className="space-y-3">
-                <h4 className="text-white text-xs font-medium tracking-wide flex items-center gap-2">
-                  <div className="w-1 h-3 bg-purple-500 rounded-full"></div>
+              <div className="space-y-4">
+                <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+                  <div className="w-1 h-4 bg-primary rounded-full"></div>
                   Import Options
                 </h4>
                 
                 {/* Import Mode Tabs */}
-                <div className="grid grid-cols-3 gap-1 bg-gray-800/30 rounded-lg p-1">
+                <div className="grid grid-cols-3 gap-1 bg-secondary/30 rounded-lg p-1">
                   <button
                     onClick={() => setImportMode('csv')}
-                    className={`py-2 px-3 rounded text-xs transition-all ${
+                    className={`py-2 px-3 rounded text-sm transition-premium ${
                       importMode === 'csv'
-                        ? 'bg-purple-600 text-white'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     CSV File
                   </button>
                   <button
                     onClick={() => setImportMode('paste')}
-                    className={`py-2 px-3 rounded text-xs transition-all ${
+                    className={`py-2 px-3 rounded text-sm transition-premium ${
                       importMode === 'paste'
-                        ? 'bg-purple-600 text-white'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     Copy/Paste
                   </button>
                   <button
                     onClick={() => setImportMode('json')}
-                    className={`py-2 px-3 rounded text-xs transition-all ${
+                    className={`py-2 px-3 rounded text-sm transition-premium ${
                       importMode === 'json'
-                        ? 'bg-purple-600 text-white'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     JSON
