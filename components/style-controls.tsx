@@ -26,6 +26,7 @@ export function StyleControls({ theme, chartType, onChange }: StyleControlsProps
               value={theme.sortOrder || 'none'}
               onChange={(e) => updateTheme({ sortOrder: e.target.value as any, sortHighToLow: e.target.value === 'value-desc' })}
               className="w-full bg-background border border-border/40 rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+              suppressHydrationWarning
             >
               <option value="none">No sorting</option>
               <option value="value-desc">Value: High → Low</option>
@@ -124,6 +125,7 @@ export function StyleControls({ theme, chartType, onChange }: StyleControlsProps
               value={theme.abbreviation || 'auto'}
               onChange={(e) => updateTheme({ abbreviation: e.target.value as any })}
               className="w-full bg-background border border-border/40 rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+              suppressHydrationWarning
             >
               <option value="auto">Auto</option>
               <option value="none">None</option>
