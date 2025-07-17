@@ -63,13 +63,13 @@ const colorPalettes: ColorPalette[] = [
   {
     id: 'sage-green',
     name: 'Sage',
-    colors: ['#4B5563', '#6B7280', '#9CA3AF', '#D1D5DB'],
+    colors: ['#57534E', '#78716C', '#A8A29E', '#D6D3D1'],
     type: 'monochrome'
   },
   {
     id: 'warm-gray',
     name: 'Warm Gray',
-    colors: ['#57534E', '#78716C', '#A8A29E', '#D6D3D1'],
+    colors: ['#4B5563', '#6B7280', '#9CA3AF', '#D1D5DB'],
     type: 'monochrome'
   },
   {
