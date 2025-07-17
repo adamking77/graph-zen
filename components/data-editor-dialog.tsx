@@ -35,26 +35,10 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
     // Filter out rows with null values for preview
     const validData = newData.filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
     
-    // Calculate dynamic dimensions based on data volume
-    const dataLength = validData.length
-    const baseDimensions = { width: 500, height: 400 }
-    let dynamicHeight = baseDimensions.height
-    
-    if (config.type === 'vertical-bar' || config.type === 'horizontal-bar') {
-      dynamicHeight = Math.min(600, Math.max(400, dataLength * 35 + 250))
-    } else if (config.type === 'line') {
-      dynamicHeight = Math.min(550, Math.max(400, dataLength * 25 + 300))
-    }
     
     setPreviewConfig({
       ...config,
       data: validData,
-      dimensions: {
-        width: baseDimensions.width,
-        height: dynamicHeight,
-        preset: 'modal-preview',
-        aspectRatio: `${baseDimensions.width}:${dynamicHeight}`
-      },
       isModalContext: true
     })
     setChartKey(prev => prev + 1)
@@ -68,26 +52,10 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
     // Filter out rows with null values for preview
     const validData = newData.filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
     
-    // Calculate dynamic dimensions based on data volume
-    const dataLength = validData.length
-    const baseDimensions = { width: 500, height: 400 }
-    let dynamicHeight = baseDimensions.height
-    
-    if (config.type === 'vertical-bar' || config.type === 'horizontal-bar') {
-      dynamicHeight = Math.min(600, Math.max(400, dataLength * 35 + 250))
-    } else if (config.type === 'line') {
-      dynamicHeight = Math.min(550, Math.max(400, dataLength * 25 + 300))
-    }
     
     setPreviewConfig({
       ...config,
       data: validData,
-      dimensions: {
-        width: baseDimensions.width,
-        height: dynamicHeight,
-        preset: 'modal-preview',
-        aspectRatio: `${baseDimensions.width}:${dynamicHeight}`
-      },
       isModalContext: true
     })
     setChartKey(prev => prev + 1)
@@ -102,26 +70,10 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
     // Filter out rows with null values for preview
     const validData = newData.filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
     
-    // Calculate dynamic dimensions based on data volume
-    const dataLength = validData.length
-    const baseDimensions = { width: 500, height: 400 }
-    let dynamicHeight = baseDimensions.height
-    
-    if (config.type === 'vertical-bar' || config.type === 'horizontal-bar') {
-      dynamicHeight = Math.min(600, Math.max(400, dataLength * 35 + 250))
-    } else if (config.type === 'line') {
-      dynamicHeight = Math.min(550, Math.max(400, dataLength * 25 + 300))
-    }
     
     setPreviewConfig({
       ...config,
       data: validData,
-      dimensions: {
-        width: baseDimensions.width,
-        height: dynamicHeight,
-        preset: 'modal-preview',
-        aspectRatio: `${baseDimensions.width}:${dynamicHeight}`
-      },
       isModalContext: true
     })
     setChartKey(prev => prev + 1)
@@ -153,19 +105,19 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
         {children}
       </DialogTrigger>
       <DialogContent 
-        className="max-w-7xl w-[95%] max-w-[95vw] h-[90vh] max-h-[900px] sm:h-[85vh] sm:max-h-[800px] md:h-[80vh] md:max-h-[700px] flex flex-col bg-card border-border shadow-xl"
+        className="max-w-7xl w-[95%] max-w-[95vw] h-[85vh] max-h-[750px] sm:h-[90vh] sm:max-h-[850px] md:h-[95vh] md:max-h-[950px] flex flex-col bg-card border-border shadow-xl"
       >
         <DialogHeader className="pb-2 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-foreground text-lg font-medium font-satoshi">Edit Chart Data</DialogTitle>
+            <DialogTitle className="sr-only">Edit Chart Data</DialogTitle>
             {layoutState.isMobile && (
-              <div className="flex gap-2">
+              <div className="flex gap-2 bg-secondary/30 p-1 rounded-lg">
                 <button
                   onClick={() => setMobileView('data')}
-                  className={`flex items-center gap-1 px-3 py-1 rounded-md text-sm transition-colors ${
+                  className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                     mobileView === 'data' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-transparent text-muted-foreground hover:text-foreground'
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-background/50'
                   }`}
                 >
                   <Table className="w-4 h-4" />
@@ -173,10 +125,10 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
                 </button>
                 <button
                   onClick={() => setMobileView('preview')}
-                  className={`flex items-center gap-1 px-3 py-1 rounded-md text-sm transition-colors ${
+                  className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                     mobileView === 'preview' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-transparent text-muted-foreground hover:text-foreground'
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-background/50'
                   }`}
                 >
                   <Eye className="w-4 h-4" />
@@ -187,15 +139,15 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
           </div>
         </DialogHeader>
         
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-6 min-h-0 overflow-hidden">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-7 gap-6 min-h-0 overflow-hidden">
           {/* Data Table - Takes up 3/5 of the space */}
-          <div className={`col-span-1 lg:col-span-3 flex flex-col space-y-4 min-w-0 ${
+          <div className={`col-span-1 lg:col-span-4 flex flex-col space-y-4 min-w-0 flex-1 ${
             layoutState.isMobile && mobileView !== 'data' ? 'hidden' : ''
           }`}>
             <div className="flex items-center justify-between">
-              <Label className="text-foreground text-sm font-medium flex items-center gap-2 font-satoshi">
-                <div className="w-1 h-3 bg-primary rounded-full"></div>
-                Data Points
+              <Label className="text-foreground text-lg font-medium flex items-center gap-2 font-satoshi">
+                <div className="w-1 h-4 bg-primary rounded-full"></div>
+                Edit Chart Data
               </Label>
               <button 
                 onClick={addRow}
@@ -206,8 +158,8 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
               </button>
             </div>
             
-            <div className="rounded-lg bg-input border border-border">
-              <div className="overflow-auto h-full max-h-[300px] sm:max-h-[400px] lg:max-h-[500px]">
+            <div className="rounded-lg bg-input border border-border flex-1 flex flex-col min-h-0">
+              <div className="overflow-auto flex-1 min-h-0 max-h-[350px] sm:max-h-[450px] lg:max-h-[600px]">
                 {/* Table Header */}
                 <div className="grid grid-cols-12 gap-2 sm:gap-3 p-2 sm:p-4 text-sm font-medium border-b border-border sticky top-0 bg-secondary/30 font-satoshi">
                   <div className="col-span-1 text-center text-muted-foreground">#</div>
@@ -263,20 +215,19 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
           </div>
 
           {/* Live Preview - Takes up 2/5 of the space */}
-          <div className={`col-span-1 lg:col-span-2 flex flex-col space-y-4 min-w-0 ${
+          <div className={`col-span-1 lg:col-span-3 flex flex-col space-y-4 min-w-0 ${
             layoutState.isMobile && mobileView !== 'preview' ? 'hidden' : ''
           }`}>
             <Label className="text-foreground text-sm font-medium flex items-center gap-2 font-satoshi">
               <div className="w-1 h-3 bg-primary rounded-full"></div>
               Live Preview
             </Label>
-            <div className="rounded-lg p-1 bg-transparent min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] overflow-auto">
-              <div className="w-full h-full">
+            <div className="rounded-lg p-1 bg-transparent flex-1 flex flex-col min-h-0">
+              <div className="w-full h-full flex-1 min-h-0">
                 <ChartPreview 
                   key={chartKey}
                   config={{
                     ...previewConfig,
-                    dimensions: previewConfig.dimensions,
                     isModalContext: true,
                     theme: {
                       ...previewConfig.theme,

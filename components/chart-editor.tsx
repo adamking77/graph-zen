@@ -418,7 +418,7 @@ export function ChartEditor({ config, onChange }: ChartEditorProps) {
                     Data Points
                   </h4>
                   <DataEditorDialog config={config} onConfigChange={onChange}>
-                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8 px-3">
+                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8 px-3" style={{outline: 'none', boxShadow: 'none'}} onFocus={(e) => e.target.blur()}>
                       <Plus className="w-3 h-3 mr-1" />
                       Edit Data
                     </Button>

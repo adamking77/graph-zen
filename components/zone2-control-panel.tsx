@@ -259,6 +259,8 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
               variant="primary"
               size="sm"
               className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
+              style={{outline: 'none', boxShadow: 'none'}}
+              onFocus={(e) => e.currentTarget.blur()}
               hapticFeedback="light"
             >
               <Plus className="w-3 h-3 mr-1" />

@@ -129,27 +129,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   // Calculate container dimensions with viewport-aware responsive sizing
   const getContainerDimensions = () => {
     const aspectRatio = dimensions.width / dimensions.height
-    // Dynamic dimensions for modal context that scale with data volume
+    // Modal context: use flexible dimensions that work with container
     if (config.isModalContext) {
-      const dataLength = config.data.length
-      const baseWidth = 500  // Increased from 350
-      const baseHeight = 400 // Increased from 280
-      
-      // Calculate dynamic height based on data volume and chart type
-      let dynamicHeight = baseHeight
-      if (config.type === 'vertical-bar' || config.type === 'horizontal-bar') {
-        // Bar charts need more height for more data points
-        dynamicHeight = Math.min(600, Math.max(baseHeight, dataLength * 35 + 250))
-      } else if (config.type === 'line') {
-        // Line charts can handle more data in same space but benefit from some scaling
-        dynamicHeight = Math.min(550, Math.max(baseHeight, dataLength * 25 + 300))
-      }
-      
       return {
-        width: Math.min(dimensions.width, baseWidth),
-        height: Math.min(dimensions.height, dynamicHeight),
-        availableWidth: Math.min(dimensions.width, baseWidth),
-        availableHeight: Math.min(dimensions.height, dynamicHeight)
+        width: '100%',
+        height: 'auto',
+        chartWidth: 480,  // Reasonable width for modal preview
+        chartHeight: 360, // Good aspect ratio, let content determine actual height
+        availableWidth: 440,  // Account for padding
+        availableHeight: 320  // Base height, charts can grow as needed
       }
     }
     
@@ -253,8 +241,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return { padding: '2px' } // Match border-2 thickness
   }
   
-  // Get dynamic padding based on border presence
+  // Get dynamic padding based on border presence and modal context
   const getChartPadding = () => {
+    if (config.isModalContext) {
+      return 'p-2' // Minimal padding for modal preview
+    }
     const hasBorder = config.theme?.borderStyle !== 'none'
     return hasBorder ? 'p-6' : 'p-4'
   }
@@ -267,7 +258,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const total = config.data.reduce((sum, item) => sum + item.value, 0)
     
     return (
-      <div className={`${config.isModalContext ? 'mb-2' : 'mb-8'} ${alignmentClass}`}>
+      <div className={`${config.isModalContext ? 'mb-4' : 'mb-8'} ${alignmentClass}`}>
         <h1 className={`${config.isModalContext ? 'text-lg' : 'text-xl'} font-medium ${isDark ? 'text-white' : 'text-gray-900'} mb-1`}>
           {config.title}
           {showTotal && (
@@ -1728,8 +1719,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       
       {/* Chart Area */}
       <div 
-        className={`flex-1 overflow-hidden flex items-center justify-center bg-background border-border rounded-xl chart-responsive ${
-          config.isModalContext ? 'py-2 px-3 mx-1 my-1' : 'container-responsive'
+        className={`flex-1 overflow-hidden flex items-start justify-center bg-background border-border rounded-xl chart-responsive ${
+          config.isModalContext ? 'p-2' : 'container-responsive'
         }`}
       >
         {config.theme?.borderStyle === 'gradient' ? (
@@ -1752,7 +1743,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   {renderChartTitle()}
                   
                   {/* Chart Content */}
-                  <div className="flex-1">
+                  <div 
+                    className="flex-1" 
+                    style={{}}
+                  >
                     {renderChart()}
                   </div>
                 </div>
@@ -1775,7 +1769,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 {renderChartTitle()}
                 
                 {/* Chart Content */}
-                <div className="flex-1">
+                <div 
+                  className="flex-1" 
+                  style={config.isModalContext ? { marginTop: '12px' } : {}}
+                >
                   {renderChart()}
                 </div>
               </div>
