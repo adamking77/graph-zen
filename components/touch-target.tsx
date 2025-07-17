@@ -71,6 +71,7 @@ export const TouchTarget = forwardRef<HTMLButtonElement, TouchTargetProps>(
     }
     
     return (
+      // @ts-expect-error - Motion gesture types conflict
       <motion.button
         ref={ref}
         type={type}

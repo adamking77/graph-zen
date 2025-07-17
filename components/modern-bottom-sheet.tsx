@@ -140,6 +140,7 @@ export function ModernBottomSheet({
           />
           
           {/* Sheet */}
+          {/* @ts-expect-error - Motion gesture types conflict */}
           <motion.div
             ref={sheetRef}
             {...bind()}
