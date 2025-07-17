@@ -179,12 +179,12 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
             return (
               <TouchTarget
                 key={type.value}
-                variant={isSelected ? "outline" : "ghost"}
+                variant="custom"
                 size="md"
                 onClick={() => updateConfig({ type: type.value as any })}
                 className={`flex flex-col items-center gap-1 h-16 border transition-all duration-200 ${
                   isSelected
-                    ? "bg-primary/10 border-primary/30 text-primary"
+                    ? "bg-primary/10 border-transparent text-primary"
                     : "bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground"
                 }`}
                 hapticFeedback="light"
@@ -305,17 +305,17 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
         </h4>
         <div className="grid grid-cols-2 gap-2">
           <TouchTarget
-            variant="outline"
+            variant="custom"
             size="sm"
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border rounded-lg"
+            className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 border rounded-lg"
             hapticFeedback="light"
           >
             <Upload className="w-4 h-4" />
             <span className="text-xs">CSV File</span>
           </TouchTarget>
           <TouchTarget
-            variant="outline"
+            variant="custom"
             size="sm"
             onClick={() => {
               const sampleData = "Product A\t$2.4M\nProduct B\t$1.8M\nProduct C\t$3.1M\nProduct D\t$850K\nProduct E\t$1.2M\nProduct F\t$640K"
@@ -326,7 +326,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
                 updateConfig({ data: parsedData })
               }
             }}
-            className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border rounded-lg"
+            className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 border rounded-lg"
             hapticFeedback="light"
           >
             <FileText className="w-4 h-4" />
