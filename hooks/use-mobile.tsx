@@ -2,8 +2,9 @@ import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768
 const TABLET_BREAKPOINT = 1024
-const DESKTOP_BREAKPOINT = 1400
-const LARGE_DESKTOP_BREAKPOINT = 1600
+const DESKTOP_BREAKPOINT = 1280
+const LARGE_DESKTOP_BREAKPOINT = 1536
+const EXTRA_LARGE_DESKTOP_BREAKPOINT = 1920
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
@@ -22,7 +23,7 @@ export function useIsMobile() {
 }
 
 export function useBreakpoint() {
-  const [breakpoint, setBreakpoint] = React.useState<'mobile' | 'tablet' | 'desktop' | 'large' | 'xlarge'>('desktop')
+  const [breakpoint, setBreakpoint] = React.useState<'mobile' | 'tablet' | 'desktop' | 'large' | 'xlarge' | 'xxlarge'>('desktop')
 
   React.useEffect(() => {
     const updateBreakpoint = () => {
@@ -35,8 +36,10 @@ export function useBreakpoint() {
         setBreakpoint('desktop')
       } else if (width < LARGE_DESKTOP_BREAKPOINT) {
         setBreakpoint('large')
-      } else {
+      } else if (width < EXTRA_LARGE_DESKTOP_BREAKPOINT) {
         setBreakpoint('xlarge')
+      } else {
+        setBreakpoint('xxlarge')
       }
     }
 
@@ -55,7 +58,7 @@ export function useLayoutState() {
     isMobile: breakpoint === 'mobile',
     isTablet: breakpoint === 'tablet',
     isDesktop: breakpoint === 'desktop',
-    isLargeDesktop: breakpoint === 'large' || breakpoint === 'xlarge',
+    isLargeDesktop: breakpoint === 'large' || breakpoint === 'xlarge' || breakpoint === 'xxlarge',
     showZone1: breakpoint !== 'mobile' && breakpoint !== 'tablet',
     showZone2: breakpoint !== 'mobile',
     breakpoint
@@ -94,7 +97,8 @@ export function useSpaceAwareLayoutState(containerSize: { width: number; height:
         tablet: { zone1: 0, zone2: 320 },
         desktop: { zone1: 240, zone2: 360 },
         large: { zone1: 256, zone2: 384 },
-        xlarge: { zone1: 272, zone2: 416 }
+        xlarge: { zone1: 272, zone2: 416 },
+        xxlarge: { zone1: 288, zone2: 448 }
       }
       
       // Start with base breakpoint
@@ -128,7 +132,7 @@ export function useSpaceAwareLayoutState(containerSize: { width: number; height:
           layoutMode = 'sidebar'
           // If not enough space for current breakpoint, downgrade
           if (availableChartWidth < minChartWidth || availableChartHeight < minChartHeight) {
-            if (baseBreakpoint === 'xlarge' || baseBreakpoint === 'large') {
+            if (baseBreakpoint === 'xxlarge' || baseBreakpoint === 'xlarge' || baseBreakpoint === 'large') {
               effectiveBreakpoint = 'desktop'
               zones = zoneConfigs.desktop
             } else if (baseBreakpoint === 'desktop') {
@@ -147,7 +151,7 @@ export function useSpaceAwareLayoutState(containerSize: { width: number; height:
           isMobile: layoutMode === 'mobile',
           isTablet: layoutMode === 'stacked' || effectiveBreakpoint === 'tablet',
           isDesktop: layoutMode === 'sidebar' && effectiveBreakpoint === 'desktop',
-          isLargeDesktop: layoutMode === 'sidebar' && (effectiveBreakpoint === 'large' || effectiveBreakpoint === 'xlarge'),
+          isLargeDesktop: layoutMode === 'sidebar' && (effectiveBreakpoint === 'large' || effectiveBreakpoint === 'xlarge' || effectiveBreakpoint === 'xxlarge'),
           showZone1: layoutMode !== 'mobile',
           showZone2: layoutMode !== 'mobile',
           breakpoint: effectiveBreakpoint,
@@ -163,7 +167,7 @@ export function useSpaceAwareLayoutState(containerSize: { width: number; height:
         isMobile: baseBreakpoint === 'mobile',
         isTablet: baseBreakpoint === 'tablet',
         isDesktop: baseBreakpoint === 'desktop',
-        isLargeDesktop: baseBreakpoint === 'large' || baseBreakpoint === 'xlarge',
+        isLargeDesktop: baseBreakpoint === 'large' || baseBreakpoint === 'xlarge' || baseBreakpoint === 'xxlarge',
         showZone1: baseBreakpoint !== 'mobile' && baseBreakpoint !== 'tablet',
         showZone2: baseBreakpoint !== 'mobile',
         breakpoint: baseBreakpoint,

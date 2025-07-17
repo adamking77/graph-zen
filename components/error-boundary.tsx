@@ -65,7 +65,7 @@ function DefaultErrorFallback({
         <div className="flex justify-center">
           <AlertTriangle className="h-16 w-16 text-red-500" />
         </div>
-        <h2 className="text-2xl font-semibold text-white">
+        <h2 className="text-fluid-2xl font-semibold text-white">
           Something went wrong
         </h2>
         <p className="text-gray-400">

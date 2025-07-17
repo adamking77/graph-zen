@@ -14,7 +14,6 @@ import { useEmbedMode } from "@/hooks/use-embed-mode"
 import { useSpaceAwareLayoutState } from "@/hooks/use-mobile"
 import { SIZE_PRESETS } from "@/lib/chart-constants"
 import { ModernBottomSheet } from "@/components/modern-bottom-sheet"
-import { FloatingActionButton } from "@/components/floating-action-button"
 
 export interface ChartData {
   scenario: string
@@ -191,8 +190,8 @@ export default function ChartGeneratorPage() {
         </div>
       </main>
       
-      {/* Floating Action Button for Mobile */}
-      <FloatingActionButton
+      {/* Floating Action Button for Mobile - Removed as redundant */}
+      {/* <FloatingActionButton
         actions={[
           {
             icon: (
@@ -227,7 +226,7 @@ export default function ChartGeneratorPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
           </svg>
         }
-      />
+      /> */}
     </div>
   )
 
@@ -242,7 +241,7 @@ export default function ChartGeneratorPage() {
       {showMobileNav && layoutState.isMobile && (
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/50" onClick={() => setShowMobileNav(false)} />
-          <div className="absolute left-0 top-0 h-full w-72 max-w-[75vw] bg-card border-r border-border">
+          <div className="absolute left-0 top-0 h-full w-72 max-w-[85vw] sm:max-w-[75vw] bg-card border-r border-border">
             <ErrorBoundary>
               <Zone1Navigation 
                 activeSection={activeSection} 

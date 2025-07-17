@@ -220,66 +220,66 @@
 
 /* Zone 1: Navigation Sidebar */
 .zone1-expanded {
-  width: 15rem !important;        /* 240px equivalent */
-  min-width: 15rem !important;
-  max-width: 15rem !important;
+  width: clamp(12rem, 15rem, 18rem) !important;        /* 192px-240px-288px responsive */
+  min-width: 12rem !important;
+  max-width: 18rem !important;
 }
 
 .zone1-collapsed {
-  width: 3.75rem !important;      /* 60px equivalent */
-  min-width: 3.75rem !important;
-  max-width: 3.75rem !important;
+  width: clamp(3rem, 3.75rem, 4rem) !important;      /* 48px-60px-64px responsive */
+  min-width: 3rem !important;
+  max-width: 4rem !important;
 }
 
 /* Zone 2: Control Panel */
 .zone2-width {
-  width: 22.5rem !important;      /* 360px equivalent */
-  min-width: 22.5rem !important;
-  max-width: 22.5rem !important;
+  width: clamp(20rem, 22.5rem, 26rem) !important;      /* 320px-360px-416px responsive */
+  min-width: 20rem !important;
+  max-width: 26rem !important;
 }
 
 /* Tablet optimizations (768px - 1199px) */
 @media (max-width: 1199px) and (min-width: 768px) {
   .zone1-expanded {
-    width: 13.75rem !important;    /* 220px equivalent */
-    min-width: 13.75rem !important;
-    max-width: 13.75rem !important;
+    width: clamp(12rem, 13.75rem, 15rem) !important;    /* 192px-220px-240px responsive */
+    min-width: 12rem !important;
+    max-width: 15rem !important;
   }
   
   .zone2-width {
-    width: 20rem !important;       /* 320px equivalent */
-    min-width: 20rem !important;
-    max-width: 20rem !important;
+    width: clamp(18rem, 20rem, 22rem) !important;       /* 288px-320px-352px responsive */
+    min-width: 18rem !important;
+    max-width: 22rem !important;
   }
 }
 
 /* Large desktop optimizations (1400px+) */
 @media (min-width: 1400px) {
   .zone1-expanded {
-    width: 16rem !important;       /* 256px for better proportions */
-    min-width: 16rem !important;
-    max-width: 16rem !important;
+    width: clamp(15rem, 16rem, 17rem) !important;       /* 240px-256px-272px responsive */
+    min-width: 15rem !important;
+    max-width: 17rem !important;
   }
   
   .zone2-width {
-    width: 24rem !important;       /* 384px for better proportions */
-    min-width: 24rem !important;
-    max-width: 24rem !important;
+    width: clamp(22rem, 24rem, 26rem) !important;       /* 352px-384px-416px responsive */
+    min-width: 22rem !important;
+    max-width: 26rem !important;
   }
 }
 
 /* Extra large desktop (1600px+) */
 @media (min-width: 1600px) {
   .zone1-expanded {
-    width: 17rem !important;       /* 272px for ultra-wide screens */
-    min-width: 17rem !important;
-    max-width: 17rem !important;
+    width: clamp(16rem, 17rem, 18rem) !important;       /* 256px-272px-288px for ultra-wide screens */
+    min-width: 16rem !important;
+    max-width: 18rem !important;
   }
   
   .zone2-width {
-    width: 26rem !important;       /* 416px for ultra-wide screens */
-    min-width: 26rem !important;
-    max-width: 26rem !important;
+    width: clamp(24rem, 26rem, 28rem) !important;       /* 384px-416px-448px for ultra-wide screens */
+    min-width: 24rem !important;
+    max-width: 28rem !important;
   }
 }
 

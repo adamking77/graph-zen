@@ -73,7 +73,7 @@ export function Navigation({ activeSection = "chart", onSectionChange }: Navigat
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <BarChart3 className="w-4 h-4 text-primary-foreground" />
               </div>
-              <span className="text-foreground font-semibold text-lg">GraphZen</span>
+              <span className="text-foreground font-semibold text-fluid-lg">GraphZen</span>
             </div>
           )}
           <Button

@@ -153,7 +153,7 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
         {children}
       </DialogTrigger>
       <DialogContent 
-        className="max-w-7xl w-[95%] max-w-[95vw] h-[90vh] max-h-[900px] sm:h-[85vh] sm:max-h-[800px] flex flex-col bg-card border-border shadow-xl"
+        className="max-w-7xl w-[95%] max-w-[95vw] h-[90vh] max-h-[900px] sm:h-[85vh] sm:max-h-[800px] md:h-[80vh] md:max-h-[700px] flex flex-col bg-card border-border shadow-xl"
       >
         <DialogHeader className="pb-2 flex-shrink-0">
           <div className="flex items-center justify-between">

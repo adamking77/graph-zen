@@ -130,9 +130,9 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="bg-card border-border w-full max-w-2xl max-h-[90vh] overflow-auto">
+      <Card className="bg-card border-border w-full max-w-2xl max-w-[95vw] max-h-[90vh] overflow-auto">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-foreground font-satoshi font-medium text-lg">Export Chart</CardTitle>
+          <CardTitle className="text-foreground font-satoshi font-medium text-fluid-lg">Export Chart</CardTitle>
           <Button
             onClick={onClose}
             size="sm"
