@@ -205,7 +205,10 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
 
       {/* Title & Subtitle */}
       <div className="space-y-3">
-        <h3 className="text-sm font-normal text-foreground">Title & Subtitle</h3>
+        <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+          <div className="w-1 h-4 bg-primary rounded-full"></div>
+          Title & Subtitle
+        </h4>
         <div className="space-y-3">
           <div className="space-y-1">
             <label className="text-xs text-muted-foreground">Chart Title</label>
@@ -253,7 +256,10 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
       {/* Data Points */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-normal text-foreground">Data Points</h3>
+          <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+            <div className="w-1 h-4 bg-primary rounded-full"></div>
+            Current Data
+          </h4>
           <DataEditorDialog config={config} onConfigChange={onChange}>
             <TouchTarget
               variant="primary"
@@ -269,39 +275,40 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
           </DataEditorDialog>
         </div>
         
-        <div className="bg-secondary/30 border-border rounded-lg p-3">
-          <div className="space-y-2">
-            {config.data.slice(0, 5).map((item, index) => (
-              <div
-                key={index}
-                className="flex gap-2 items-center justify-between p-2 rounded-lg bg-background/50 border border-secondary/50"
-              >
-                <div className="text-sm text-foreground truncate">
-                  {item.scenario}
-                </div>
-                <div className="text-sm text-primary font-medium">
-                  {formatNumber(item.value)}
-                </div>
+        <div className="space-y-2">
+          {config.data.slice(0, 5).map((item, index) => (
+            <div
+              key={index}
+              className="w-full bg-input border-border text-foreground rounded-lg px-3 py-2 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary flex gap-2 items-center justify-between"
+            >
+              <div className="text-sm text-foreground truncate">
+                {item.scenario}
               </div>
-            ))}
-            {config.data.length > 5 && (
-              <div className="text-xs text-muted-foreground text-center py-1">
-                +{config.data.length - 5} more items...
+              <div className="text-sm text-primary font-medium">
+                {formatNumber(item.value)}
               </div>
-            )}
-          </div>
+            </div>
+          ))}
+          {config.data.length > 5 && (
+            <div className="text-xs text-muted-foreground text-center py-1">
+              +{config.data.length - 5} more items...
+            </div>
+          )}
         </div>
       </div>
 
       {/* Quick Import */}
       <div className="space-y-3">
-        <h3 className="text-sm font-normal text-foreground">Quick Import</h3>
+        <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+          <div className="w-1 h-4 bg-primary rounded-full"></div>
+          Quick Import
+        </h4>
         <div className="grid grid-cols-2 gap-2">
           <TouchTarget
             variant="outline"
             size="sm"
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center justify-center gap-1 h-12 border border-dashed bg-transparent border-border/40 rounded-lg text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+            className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border rounded-lg"
             hapticFeedback="light"
           >
             <Upload className="w-4 h-4" />
@@ -319,7 +326,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
                 updateConfig({ data: parsedData })
               }
             }}
-            className="flex items-center justify-center gap-1 h-12 border border-dashed bg-transparent border-border/40 rounded-lg text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+            className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border rounded-lg"
             hapticFeedback="light"
           >
             <FileText className="w-4 h-4" />
@@ -348,7 +355,10 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
 
       {/* Color Palette */}
       <div className="space-y-3">
-        <h3 className="text-sm font-normal text-foreground">Color Palette</h3>
+        <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+          <div className="w-1 h-4 bg-primary rounded-full"></div>
+          Color Palette
+        </h4>
         <ColorPalette 
           theme={config.theme || defaultTheme}
           chartType={config.type}
@@ -362,7 +372,10 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
     <div className="space-y-6">
       {/* Import Options */}
       <div className="space-y-3">
-        <h3 className="text-sm font-normal text-foreground">Import Options</h3>
+        <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+          <div className="w-1 h-4 bg-primary rounded-full"></div>
+          Import Options
+        </h4>
         
         {/* Import Mode Tabs */}
         <div className="grid grid-cols-3 gap-2">
