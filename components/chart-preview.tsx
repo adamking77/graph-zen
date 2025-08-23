@@ -412,7 +412,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   >
                     {showDataLabels && (() => {
                       const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : getDisplayValue(item)
-                      const isInside = percentage > 30
+                      // For horizontal bars, always use white text on colored backgrounds
+                      // Only use background-based contrast if bar is too small to contain text
+                      const isInside = percentage > 15  // Lowered threshold
                       const labelStyle = isInside ? 
                         { className: 'text-xs font-medium', style: { color: '#ffffff' } } :
                         { className: 'text-xs font-medium', style: { color: isDark ? '#f3f4f6' : '#1f2937' } }
