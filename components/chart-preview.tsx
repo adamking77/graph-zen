@@ -350,9 +350,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     // This ensures consistent automatic dark/light text behavior
     const textColor = isLightColor ? '#1f2937' : '#ffffff'
     
-    // Use smaller text for pie and donut charts
-    const textSize = (chartType === 'pie' || chartType === 'donut') ? 'text-xs' : 'text-xs'
-    const fontWeight = (chartType === 'pie' || chartType === 'donut') ? 'font-light' : 'font-medium'
+    // Use appropriate text size for pie and donut charts
+    const textSize = (chartType === 'pie' || chartType === 'donut') ? 'text-sm' : 'text-xs'
+    const fontWeight = (chartType === 'pie' || chartType === 'donut') ? 'font-medium' : 'font-medium'
     
     return {
       className: `${textSize} ${fontWeight}`,
@@ -546,7 +546,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       // Portrait layout: stack chart and legend vertically
       return (
         <div className="flex flex-col items-center justify-center gap-6 h-full">
-          <div className="relative w-full max-w-64 aspect-square">
+          <div className="relative w-full max-w-80 aspect-square">
             <svg 
               viewBox="-100 -100 400 400" 
               className="w-full h-full transform rotate-0"
@@ -561,17 +561,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
                 const color = colors[index % colors.length]
 
-                const x1 = 100 + 115 * Math.cos(((startAngle - 90) * Math.PI) / 180)
-                const y1 = 100 + 115 * Math.sin(((startAngle - 90) * Math.PI) / 180)
-                const x2 = 100 + 115 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
-                const y2 = 100 + 115 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
+                const x1 = 100 + 140 * Math.cos(((startAngle - 90) * Math.PI) / 180)
+                const y1 = 100 + 140 * Math.sin(((startAngle - 90) * Math.PI) / 180)
+                const x2 = 100 + 140 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
+                const y2 = 100 + 140 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
 
                 const largeArcFlag = angle > 180 ? 1 : 0
 
                 return (
                   <g key={index}>
                     <path
-                      d={`M 100 100 L ${x1} ${y1} A 115 115 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                      d={`M 100 100 L ${x1} ${y1} A 140 140 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                       fill={color}
                       filter="url(#pieShadow)"
                       className="cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105"
@@ -599,21 +599,21 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       const midAngleRad = (midAngle * Math.PI) / 180
                       
                       // Position labels outside the pie
-                      const labelDistance = 155 // Distance from center for labels
+                      const labelDistance = 180 // Distance from center for labels
                       const labelX = 100 + labelDistance * Math.cos(midAngleRad)
                       const labelY = 100 + labelDistance * Math.sin(midAngleRad)
                       
                       const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : getDisplayValue(item)
                       // For external pie labels, use background-based contrast
                       const labelStyle = {
-                        className: 'text-xs font-medium',
+                        className: 'text-sm font-medium',
                         style: { 
                           color: isDark ? '#f3f4f6' : '#1f2937'
                         }
                       }
                       
                       return (
-                        <foreignObject x={labelX - 35} y={labelY - 10} width="70" height="20">
+                        <foreignObject x={labelX - 40} y={labelY - 12} width="80" height="24">
                           <div 
                             className={`${labelStyle.className} text-center w-full`}
                             style={labelStyle.style}
@@ -665,7 +665,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const chartFirst = legendPosition !== 'left'
     return (
       <div className={`flex items-center justify-center gap-8 h-full ${chartFirst ? '' : 'flex-row-reverse'}`}>
-        <div className="relative w-full h-full max-w-80 max-h-80">
+        <div className="relative w-full h-full max-w-96 max-h-96">
           <svg 
             viewBox="-100 -100 400 400" 
             className="w-full h-full transform rotate-0"
@@ -680,17 +680,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               const startAngle = config.data.slice(0, index).reduce((sum, d) => sum + (d.value / total) * 360, 0)
               const color = colors[index % colors.length]
 
-              const x1 = 100 + 115 * Math.cos(((startAngle - 90) * Math.PI) / 180)
-              const y1 = 100 + 115 * Math.sin(((startAngle - 90) * Math.PI) / 180)
-              const x2 = 100 + 115 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
-              const y2 = 100 + 115 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
+              const x1 = 100 + 140 * Math.cos(((startAngle - 90) * Math.PI) / 180)
+              const y1 = 100 + 140 * Math.sin(((startAngle - 90) * Math.PI) / 180)
+              const x2 = 100 + 140 * Math.cos(((startAngle + angle - 90) * Math.PI) / 180)
+              const y2 = 100 + 140 * Math.sin(((startAngle + angle - 90) * Math.PI) / 180)
 
               const largeArcFlag = angle > 180 ? 1 : 0
 
               return (
                 <g key={index}>
                   <path
-                    d={`M 100 100 L ${x1} ${y1} A 115 115 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                    d={`M 100 100 L ${x1} ${y1} A 140 140 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                     fill={color}
                     filter="url(#pieShadowLandscape)"
                     className="cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105"
@@ -719,21 +719,21 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const midAngleRad = (midAngle * Math.PI) / 180
                     
                     // Position labels outside the pie
-                    const labelDistance = 155 // Distance from center for labels
+                    const labelDistance = 180 // Distance from center for labels
                     const labelX = 100 + labelDistance * Math.cos(midAngleRad)
                     const labelY = 100 + labelDistance * Math.sin(midAngleRad)
                     
                     const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : getDisplayValue(item)
                     // For external pie labels, use background-based contrast
                     const labelStyle = {
-                      className: 'text-xs font-medium',
+                      className: 'text-sm font-medium',
                       style: { 
                         color: isDark ? '#f3f4f6' : '#1f2937'
                       }
                     }
                     
                     return (
-                      <foreignObject x={labelX - 35} y={labelY - 10} width="70" height="20">
+                      <foreignObject x={labelX - 40} y={labelY - 12} width="80" height="24">
                         <div 
                           className={`${labelStyle.className} text-center w-full`}
                           style={labelStyle.style}
@@ -796,7 +796,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       // Portrait layout: stack chart and legend vertically
       return (
         <div className="flex flex-col items-center justify-center gap-6 h-full">
-          <div className="relative w-full max-w-64 aspect-square">
+          <div className="relative w-full max-w-80 aspect-square">
             <svg 
               viewBox="-100 -100 400 400" 
               className="w-full h-full"
@@ -813,8 +813,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
                 const centerX = 100
                 const centerY = 100
-                const outerRadius = 115
-                const innerRadius = 80
+                const outerRadius = 140
+                const innerRadius = 100
 
                 // Calculate angles for the donut segments
                 const startAngleRad = ((startAngle - 90) * Math.PI) / 180
@@ -873,7 +873,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       const midAngleRad = (midAngle * Math.PI) / 180
                       
                       // Position labels outside the donut
-                      const labelDistance = 155 // Distance from center for labels
+                      const labelDistance = 180 // Distance from center for labels
                       const labelX = centerX + labelDistance * Math.cos(midAngleRad)
                       const labelY = centerY + labelDistance * Math.sin(midAngleRad)
                       
@@ -884,14 +884,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : getDisplayValue(item)
                       // For external donut labels, use background-based contrast
                       const labelStyle = {
-                        className: 'text-xs font-medium',
+                        className: 'text-sm font-medium',
                         style: { 
                           color: isDark ? '#f3f4f6' : '#1f2937'
                         }
                       }
                       
                       return (
-                        <foreignObject x={labelX - 35} y={labelY - 10} width="70" height="20">
+                        <foreignObject x={labelX - 40} y={labelY - 12} width="80" height="24">
                           <div 
                             className={`${labelStyle.className} text-center w-full`}
                             style={labelStyle.style}
@@ -957,7 +957,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const chartFirst = legendPosition !== 'left'
     return (
       <div className={`flex items-center justify-center gap-8 h-full ${chartFirst ? '' : 'flex-row-reverse'}`}>
-        <div className="relative w-full h-full max-w-80 max-h-80">
+        <div className="relative w-full h-full max-w-96 max-h-96">
           <svg 
             viewBox="-100 -100 400 400" 
             className="w-full h-full"
@@ -974,8 +974,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
               const centerX = 100
               const centerY = 100
-              const outerRadius = 115
-              const innerRadius = 80
+              const outerRadius = 140
+              const innerRadius = 100
 
               // Calculate angles for the donut segments
               const startAngleRad = ((startAngle - 90) * Math.PI) / 180
@@ -1035,7 +1035,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const midAngleRad = (midAngle * Math.PI) / 180
                     
                     // Position labels outside the donut
-                    const labelDistance = 155 // Distance from center for labels
+                    const labelDistance = 180 // Distance from center for labels
                     const labelX = centerX + labelDistance * Math.cos(midAngleRad)
                     const labelY = centerY + labelDistance * Math.sin(midAngleRad)
                     
@@ -1046,14 +1046,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : getDisplayValue(item)
                     // For external donut labels, use background-based contrast
                     const labelStyle = {
-                      className: 'text-xs font-medium',
+                      className: 'text-sm font-medium',
                       style: { 
                         color: isDark ? '#f3f4f6' : '#1f2937'
                       }
                     }
                     
                     return (
-                      <foreignObject x={labelX - 35} y={labelY - 10} width="70" height="20">
+                      <foreignObject x={labelX - 40} y={labelY - 12} width="80" height="24">
                         <div 
                           className={`${labelStyle.className} text-center w-full`}
                           style={labelStyle.style}
