@@ -14,4 +14,4 @@ sleep 2
 
 # Start the dev server on port 8080
 echo "Starting Next.js dev server on port 8080..."
-PORT=8080 npm run dev
+npm run dev:8080

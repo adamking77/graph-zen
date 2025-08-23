@@ -16,6 +16,39 @@ interface DataEditorDialogProps {
   children: React.ReactNode
 }
 
+// Smart number parsing to handle percentages, currency symbols, and suffixes
+const parseSmartNumber = (str: string): number => {
+  if (!str || typeof str !== 'string') return 0
+  
+  // Remove common currency symbols and whitespace
+  let cleaned = str.replace(/[\$£€¥₹,\s]/g, '')
+  
+  // Handle percentages
+  if (cleaned.includes('%')) {
+    const num = parseFloat(cleaned.replace('%', ''))
+    return isNaN(num) ? 0 : num
+  }
+  
+  // Handle K, M, B suffixes (case insensitive)
+  const lastChar = cleaned.slice(-1).toLowerCase()
+  const numPart = cleaned.slice(0, -1)
+  
+  if (lastChar === 'k') {
+    const num = parseFloat(numPart)
+    return isNaN(num) ? 0 : num * 1000
+  } else if (lastChar === 'm') {
+    const num = parseFloat(numPart)
+    return isNaN(num) ? 0 : num * 1000000
+  } else if (lastChar === 'b') {
+    const num = parseFloat(numPart)
+    return isNaN(num) ? 0 : num * 1000000000
+  }
+  
+  // Regular number
+  const num = parseFloat(cleaned)
+  return isNaN(num) ? 0 : num
+}
+
 export function DataEditorDialog({ config, onConfigChange, children }: DataEditorDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [editedData, setEditedData] = useState<ChartData[]>(config.data)
@@ -27,7 +60,8 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
   const addRow = () => {
     const newRow: ChartData = {
       scenario: `New Item ${editedData.length + 1}`,
-      value: null as any
+      value: null as any,
+      displayValue: ''
     }
     const newData = [...editedData, newRow]
     setEditedData(newData)
@@ -61,10 +95,17 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
     setChartKey(prev => prev + 1)
   }
 
-  const updateRow = (index: number, field: keyof ChartData, value: string | number) => {
-    const newData = editedData.map((item, i) => 
-      i === index ? { ...item, [field]: value } : item
-    )
+  const updateRow = (index: number, field: keyof ChartData, value: string | number, displayValue?: string) => {
+    const newData = editedData.map((item, i) => {
+      if (i === index) {
+        const updatedItem = { ...item, [field]: value }
+        if (field === 'value' && displayValue !== undefined) {
+          updatedItem.displayValue = displayValue
+        }
+        return updatedItem
+      }
+      return item
+    })
     setEditedData(newData)
     
     // Filter out rows with null values for preview
@@ -80,8 +121,17 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
   }
 
   const handleSave = () => {
-    // Filter out rows with null values before saving
-    const validData = editedData.filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
+    // Filter out rows with null values and clean up displayValue
+    const validData = editedData
+      .filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
+      .map(item => {
+        const cleanedItem = { ...item }
+        // Remove displayValue if it's just the number as a string or empty
+        if (!item.displayValue || item.displayValue === String(item.value) || item.displayValue.trim() === '') {
+          delete cleanedItem.displayValue
+        }
+        return cleanedItem
+      })
     onConfigChange({ ...config, data: validData })
     setIsOpen(false)
   }
@@ -191,10 +241,20 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
                       </div>
                       <div className="col-span-4 sm:col-span-3">
                         <input
-                          type="number"
-                          value={item.value === null ? '' : item.value}
-                          onChange={(e) => updateRow(index, 'value', e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
-                          placeholder="Value"
+                          type="text"
+                          value={item.displayValue || (item.value === null ? '' : String(item.value))}
+                          onChange={(e) => {
+                            const inputValue = e.target.value
+                            
+                            if (inputValue === '') {
+                              updateRow(index, 'value', null as any, '')
+                            } else {
+                              const parsedValue = parseSmartNumber(inputValue)
+                              // Store both the parsed numeric value and the display string
+                              updateRow(index, 'value', parsedValue, inputValue)
+                            }
+                          }}
+                          placeholder="Enter value (e.g., 100, 50%, $1000, 5K)"
                           className="w-full bg-input border border-border text-foreground placeholder-muted-foreground rounded-lg px-2 sm:px-3 py-2 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:shadow-[0_0_8px_rgba(99,102,241,0.12)] font-satoshi"
                         />
                       </div>

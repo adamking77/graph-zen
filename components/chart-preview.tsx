@@ -46,6 +46,7 @@ interface TooltipData {
   y: number
   label: string
   value: number
+  displayValue?: string
   percentage?: number
   color: string
 }
@@ -76,7 +77,7 @@ function Tooltip({ data, formatNumber }: TooltipProps) {
           <span className="text-white text-sm font-medium">{data.label}</span>
         </div>
         <div className="text-gray-300 text-xs">
-          <div>Value: {formatNumber(data.value)}</div>
+          <div>Value: {data.displayValue || formatNumber(data.value)}</div>
           {data.percentage && (
             <div>Percentage: {data.percentage.toFixed(1)}%</div>
           )}
@@ -298,6 +299,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     }
   }
 
+  // Helper function to get display value (user's formatted input or formatted number)
+  const getDisplayValue = (item: ChartData): string => {
+    return item.displayValue || formatNumber(item.value)
+  }
+
   // Sort data function
   const sortData = (data: ChartData[]) => {
     const sortOrder = config.theme?.sortOrder || (config.theme?.sortHighToLow ? 'value-desc' : 'none')
@@ -345,9 +351,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   // Helper to determine if color is light
   const isColorLight = (color: string) => {
     const hex = color.replace('#', '')
-    const r = parseInt(hex.substr(0, 2), 16)
-    const g = parseInt(hex.substr(2, 2), 16)  
-    const b = parseInt(hex.substr(4, 2), 16)
+    const r = parseInt(hex.substring(0, 2), 16)
+    const g = parseInt(hex.substring(2, 4), 16)  
+    const b = parseInt(hex.substring(4, 6), 16)
     const brightness = (r * 299 + g * 587 + b * 114) / 1000
     return brightness > 128
   }
@@ -397,6 +403,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         y: rect.top + rect.height / 2,
                         label: item.scenario,
                         value: item.value,
+                        displayValue: getDisplayValue(item),
                         percentage: (item.value / totalValue) * 100,
                         color: color
                       })
@@ -404,7 +411,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     onMouseLeave={() => setTooltip(null)}
                   >
                     {showDataLabels && (() => {
-                      const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                      const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : getDisplayValue(item)
                       const isInside = percentage > 30
                       const labelStyle = isInside ? 
                         { className: 'text-xs font-medium', style: { color: '#ffffff' } } :
@@ -470,13 +477,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       y: rect.top,
                       label: item.scenario,
                       value: item.value,
+                      displayValue: getDisplayValue(item),
                       color: color
                     })
                   }}
                   onMouseLeave={() => setTooltip(null)}
                 >
                   {showDataLabels && (() => {
-                    const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                    const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : getDisplayValue(item)
                     const isInside = barHeight > 40
                     const labelStyle = isInside ? 
                       { className: 'text-xs font-medium', style: { color: '#ffffff' } } :
@@ -579,7 +587,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       const labelX = 100 + labelDistance * Math.cos(midAngleRad)
                       const labelY = 100 + labelDistance * Math.sin(midAngleRad)
                       
-                      const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
+                      const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : getDisplayValue(item)
                       // For external pie labels, use background-based contrast
                       const labelStyle = {
                         className: 'text-xs font-medium',
@@ -626,7 +634,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       </span>
                     </div>
                     <div className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs font-medium`}>
-                      {formatNumber(item.value)}
+                      {getDisplayValue(item)}
                     </div>
                   </div>
                 </div>
@@ -681,6 +689,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         y: e.clientY,
                         label: item.scenario,
                         value: item.value,
+                        displayValue: getDisplayValue(item),
                         percentage: (item.value / total) * 100,
                         color: color
                       })
@@ -698,7 +707,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const labelX = 100 + labelDistance * Math.cos(midAngleRad)
                     const labelY = 100 + labelDistance * Math.sin(midAngleRad)
                     
-                    const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
+                    const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : getDisplayValue(item)
                     // For external pie labels, use background-based contrast
                     const labelStyle = {
                       className: 'text-xs font-medium',
@@ -745,7 +754,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     </span>
                   </div>
                   <div className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs font-medium`}>
-                    {formatNumber(item.value)}
+                    {getDisplayValue(item)}
                   </div>
                 </div>
               </div>
@@ -856,7 +865,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       const lineStartX = centerX + outerRadius * Math.cos(midAngleRad)
                       const lineStartY = centerY + outerRadius * Math.sin(midAngleRad)
                       
-                      const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
+                      const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : getDisplayValue(item)
                       // For external donut labels, use background-based contrast
                       const labelStyle = {
                         className: 'text-xs font-medium',
@@ -917,7 +926,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       </span>
                     </div>
                     <div className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs font-medium`}>
-                      {formatNumber(item.value)}
+                      {getDisplayValue(item)}
                     </div>
                   </div>
                 </div>
@@ -996,6 +1005,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         y: e.clientY,
                         label: item.scenario,
                         value: item.value,
+                        displayValue: getDisplayValue(item),
                         percentage: (item.value / total) * 100,
                         color: color
                       })
@@ -1017,7 +1027,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const lineStartX = centerX + outerRadius * Math.cos(midAngleRad)
                     const lineStartY = centerY + outerRadius * Math.sin(midAngleRad)
                     
-                    const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : formatNumber(item.value)
+                    const labelValue = showPercentages ? `${((item.value / total) * 100).toFixed(1)}%` : getDisplayValue(item)
                     // For external donut labels, use background-based contrast
                     const labelStyle = {
                       className: 'text-xs font-medium',
@@ -1078,7 +1088,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     </span>
                   </div>
                   <div className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs font-medium`}>
-                    {formatNumber(item.value)}
+                    {getDisplayValue(item)}
                   </div>
                 </div>
               </div>
@@ -1233,6 +1243,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       y: e.clientY,
                       label: item.scenario,
                       value: item.value,
+                      displayValue: getDisplayValue(item),
                       color: primaryColor
                     })
                   }}
@@ -1247,7 +1258,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 />
                 {showDataLabels && (() => {
                   const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
-                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : getDisplayValue(item)
                   // For line chart labels, use background-based contrast like pie chart
                   const labelStyle = {
                     className: 'text-xs font-medium',
@@ -1492,6 +1503,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       y: e.clientY,
                       label: `${item.scenario} (Bar)`,
                       value: item.value,
+                      displayValue: getDisplayValue(item),
                       color: primaryColor
                     })
                   }}
@@ -1499,7 +1511,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 />
                 {showDataLabels && (() => {
                   const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
-                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : getDisplayValue(item)
                   const isInside = barHeight > 40
                   
                   return (
@@ -1553,6 +1565,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       y: e.clientY,
                       label: `${item.scenario} (Line)`,
                       value: item.value,
+                      displayValue: getDisplayValue(item),
                       color: lineColor
                     })
                   }}
@@ -1567,7 +1580,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 />
                 {showDataLabels && (() => {
                   const totalValue = config.data.reduce((sum, d) => sum + d.value, 0)
-                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : formatNumber(item.value)
+                  const labelValue = showPercentages ? `${((item.value / totalValue) * 100).toFixed(1)}%` : getDisplayValue(item)
                   
                   return (
                     <foreignObject x={x - 30} y={y - 50} width="60" height="25">

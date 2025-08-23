@@ -18,6 +18,7 @@ import { ModernBottomSheet } from "@/components/modern-bottom-sheet"
 export interface ChartData {
   scenario: string
   value: number
+  displayValue?: string
 }
 
 export interface ChartDimensions {
