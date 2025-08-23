@@ -251,6 +251,20 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return hasBorder ? 'p-6' : 'p-4'
   }
 
+  // Determine if container should use overflow-hidden (avoid clipping external labels)
+  const getOverflowBehavior = () => {
+    const showDataLabels = config.theme?.showDataLabels !== false
+    const isPieOrDonut = config.type === 'pie' || config.type === 'donut'
+    
+    // For pie/donut charts with data labels, allow overflow to show external labels
+    if (isPieOrDonut && showDataLabels) {
+      return 'overflow-visible'
+    }
+    
+    // Default behavior for other chart types
+    return 'overflow-hidden'
+  }
+
   // Helper function to render chart title with alignment
   const renderChartTitle = () => {
     const alignment = config.theme?.titleAlignment || 'center'
@@ -534,7 +548,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         <div className="flex flex-col items-center justify-center gap-6 h-full">
           <div className="relative w-full max-w-64 aspect-square">
             <svg 
-              viewBox="-50 -50 300 300" 
+              viewBox="-100 -100 400 400" 
               className="w-full h-full transform rotate-0"
             >
               <defs>
@@ -585,7 +599,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       const midAngleRad = (midAngle * Math.PI) / 180
                       
                       // Position labels outside the pie
-                      const labelDistance = 135 // Distance from center for labels
+                      const labelDistance = 155 // Distance from center for labels
                       const labelX = 100 + labelDistance * Math.cos(midAngleRad)
                       const labelY = 100 + labelDistance * Math.sin(midAngleRad)
                       
@@ -653,7 +667,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       <div className={`flex items-center justify-center gap-8 h-full ${chartFirst ? '' : 'flex-row-reverse'}`}>
         <div className="relative w-full h-full max-w-80 max-h-80">
           <svg 
-            viewBox="-50 -50 300 300" 
+            viewBox="-100 -100 400 400" 
             className="w-full h-full transform rotate-0"
           >
             <defs>
@@ -705,7 +719,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const midAngleRad = (midAngle * Math.PI) / 180
                     
                     // Position labels outside the pie
-                    const labelDistance = 135 // Distance from center for labels
+                    const labelDistance = 155 // Distance from center for labels
                     const labelX = 100 + labelDistance * Math.cos(midAngleRad)
                     const labelY = 100 + labelDistance * Math.sin(midAngleRad)
                     
@@ -784,7 +798,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         <div className="flex flex-col items-center justify-center gap-6 h-full">
           <div className="relative w-full max-w-64 aspect-square">
             <svg 
-              viewBox="-50 -50 300 300" 
+              viewBox="-100 -100 400 400" 
               className="w-full h-full"
             >
               <defs>
@@ -859,7 +873,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       const midAngleRad = (midAngle * Math.PI) / 180
                       
                       // Position labels outside the donut
-                      const labelDistance = 135 // Distance from center for labels
+                      const labelDistance = 155 // Distance from center for labels
                       const labelX = centerX + labelDistance * Math.cos(midAngleRad)
                       const labelY = centerY + labelDistance * Math.sin(midAngleRad)
                       
@@ -945,7 +959,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       <div className={`flex items-center justify-center gap-8 h-full ${chartFirst ? '' : 'flex-row-reverse'}`}>
         <div className="relative w-full h-full max-w-80 max-h-80">
           <svg 
-            viewBox="-50 -50 300 300" 
+            viewBox="-100 -100 400 400" 
             className="w-full h-full"
           >
             <defs>
@@ -1021,7 +1035,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     const midAngleRad = (midAngle * Math.PI) / 180
                     
                     // Position labels outside the donut
-                    const labelDistance = 135 // Distance from center for labels
+                    const labelDistance = 155 // Distance from center for labels
                     const labelX = centerX + labelDistance * Math.cos(midAngleRad)
                     const labelY = centerY + labelDistance * Math.sin(midAngleRad)
                     
@@ -1734,7 +1748,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       
       {/* Chart Area */}
       <div 
-        className={`flex-1 overflow-hidden flex items-start justify-center bg-background border-border rounded-xl chart-responsive ${
+        className={`flex-1 ${getOverflowBehavior()} flex items-start justify-center bg-background border-border rounded-xl chart-responsive ${
           config.isModalContext ? 'p-2' : 'container-responsive'
         }`}
       >
