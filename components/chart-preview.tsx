@@ -2518,17 +2518,16 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           {allSeries.map((seriesItem, index) => {
             const color = getSeriesColor(seriesItem, allSeries)
             const isVisible = seriesItem.visible !== false
-            const visType = seriesItem.visualizationType || (index === 0 ? 'bar' : 'line')
             
             return (
               <div key={`legend-${index}`} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
                 <div className="flex items-center gap-1">
                   <div 
-                    className={`w-3 h-3 ${visType === 'bar' ? 'rounded' : 'rounded-full'}`}
+                    className="w-3 h-3 rounded"
                     style={{ backgroundColor: color }} 
                   />
                   <span className="text-xs text-muted-foreground">
-                    {visType === 'bar' ? '📊' : '📈'}
+                    📊
                   </span>
                 </div>
                 <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>

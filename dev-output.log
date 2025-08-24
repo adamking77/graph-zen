@@ -1,0 +1,14 @@
+
+> my-v0-project@0.1.1 dev:8080
+> next dev -p 8080 -H 0.0.0.0
+
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use 0.0.0.0:8080
+    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:8080) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 8080
+}
+[?25h
