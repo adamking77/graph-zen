@@ -1089,9 +1089,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 return (
                   <g key={`defs-${seriesIndex}`}>
                     <linearGradient id={`lineGradient-${seriesIndex}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor={color} stopOpacity="0.35" />
-                      <stop offset="50%" stopColor={color} stopOpacity="0.15" />
-                      <stop offset="100%" stopColor={color} stopOpacity="0.05" />
+                      <stop offset="0%" stopColor={color} stopOpacity="0.6" />
+                      <stop offset="50%" stopColor={color} stopOpacity="0.35" />
+                      <stop offset="100%" stopColor={color} stopOpacity="0.15" />
                     </linearGradient>
                     <linearGradient id={`lineStroke-${seriesIndex}`} x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor={color} stopOpacity="0.88" />
@@ -1155,7 +1155,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     fill={`url(#lineGradient-${seriesIndex})`}
                     className="transition-all duration-700"
                     style={{ 
-                      opacity: 0.3,
+                      opacity: 0.5,
                       animation: `fadeInUp 1s ease-out ${seriesIndex * 200}ms both`
                     }}
                   />
@@ -2126,9 +2126,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           >
             <defs>
               <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor={primaryColor} stopOpacity="0.35" />
-                <stop offset="50%" stopColor={primaryColor} stopOpacity="0.15" />
-                <stop offset="100%" stopColor={primaryColor} stopOpacity="0.05" />
+                <stop offset="0%" stopColor={primaryColor} stopOpacity="0.6" />
+                <stop offset="50%" stopColor={primaryColor} stopOpacity="0.35" />
+                <stop offset="100%" stopColor={primaryColor} stopOpacity="0.15" />
               </linearGradient>
               <linearGradient id="lineStroke" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor={primaryColor} stopOpacity="0.88" />
@@ -2166,7 +2166,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               fill="url(#lineGradient)"
               className="transition-all duration-700"
               style={{ 
-                opacity: 0.6,
+                opacity: 0.8,
                 animation: 'fadeInUp 1s ease-out'
               }}
             />
@@ -2403,8 +2403,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 return (
                   <g key={`lineDefs-${seriesIndex}`}>
                     <linearGradient id={`lineGradient-${seriesIndex}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor={color} stopOpacity="0.35" />
-                      <stop offset="50%" stopColor={color} stopOpacity="0.15" />
+                      <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+                      <stop offset="50%" stopColor={color} stopOpacity="0.12" />
                       <stop offset="100%" stopColor={color} stopOpacity="0.05" />
                     </linearGradient>
                     <linearGradient id={`lineStroke-${seriesIndex}`} x1="0%" y1="0%" x2="100%" y2="0%">
@@ -2506,9 +2506,21 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               if (points.length === 0) return null
 
               const linePath = createSmoothPath(points)
+              const areaPath = linePath + ` L ${points[points.length - 1].x} ${chartHeight - padding} L ${points[0].x} ${chartHeight - padding} Z`
 
               return (
                 <g key={`line-series-${seriesIndex}`}>
+                  {/* Area under the curve */}
+                  <path
+                    d={areaPath}
+                    fill={`url(#lineGradient-${seriesIndex})`}
+                    className="transition-all duration-700"
+                    style={{ 
+                      opacity: 0.5,
+                      animation: `fadeInUp 1s ease-out ${(barSeries.length * maxDataPoints * 100 + seriesIndex * 200)}ms both`
+                    }}
+                  />
+
                   {/* Main line */}
                   <path
                     d={linePath}
@@ -2767,6 +2779,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     }
 
     const linePath = createSmoothPath(linePoints)
+    const areaPath = linePath + ` L ${linePoints[linePoints.length - 1].x} ${chartHeight - padding} L ${linePoints[0].x} ${chartHeight - padding} Z`
 
     return (
       <div className="h-full w-full flex flex-col overflow-hidden">
@@ -2783,6 +2796,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 <stop offset="0%" stopColor={`${primaryColor}f5`} />
                 <stop offset="50%" stopColor={`${primaryColor}e8`} />
                 <stop offset="100%" stopColor={primaryColor} />
+              </linearGradient>
+              <linearGradient id="comboLineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor={lineColor} stopOpacity="0.25" />
+                <stop offset="50%" stopColor={lineColor} stopOpacity="0.12" />
+                <stop offset="100%" stopColor={lineColor} stopOpacity="0.05" />
               </linearGradient>
               <linearGradient id="comboLineStroke" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor={lineColor} />
@@ -2861,6 +2879,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 })()}
               </g>
             ))}
+
+            {/* Area under the line */}
+            <path
+              d={areaPath}
+              fill="url(#comboLineGradient)"
+              className="transition-all duration-700"
+              style={{ 
+                opacity: 0.25,
+                animation: 'fadeInUp 1s ease-out 0.3s both'
+              }}
+            />
 
             {/* Line */}
             <path
