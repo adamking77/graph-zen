@@ -308,6 +308,25 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
                       />
                     </div>
                     <div className="flex items-center gap-2">
+                      {/* Series Visibility Toggle */}
+                      <button
+                        onClick={() => {
+                          const updatedSeries = [...series]
+                          updatedSeries[seriesIndex] = { 
+                            ...seriesItem, 
+                            visible: seriesItem.visible !== false ? false : true
+                          }
+                          updateConfig({ series: updatedSeries })
+                        }}
+                        className={`text-xs px-1.5 py-0.5 rounded transition-colors ${
+                          seriesItem.visible !== false 
+                            ? 'text-foreground hover:bg-muted/50' 
+                            : 'text-muted-foreground hover:bg-muted/30'
+                        }`}
+                        title={seriesItem.visible !== false ? 'Hide series' : 'Show series'}
+                      >
+                        {seriesItem.visible !== false ? '👁️' : '🙈'}
+                      </button>
                       <span className="text-xs text-muted-foreground">
                         {seriesItem.data.length} items
                       </span>

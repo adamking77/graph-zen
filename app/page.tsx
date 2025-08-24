@@ -25,6 +25,7 @@ export interface ChartDataSeries {
   name: string
   data: ChartData[]
   color?: string
+  visible?: boolean  // Toggle visibility of this series
 }
 
 export interface ChartDimensions {

@@ -417,28 +417,24 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     }
   }
 
-  // Enhanced color distribution for multi-series charts
+  // Enhanced color distribution for multi-series charts with maximum visual separation
   const getEnhancedSeriesColor = (seriesIndex: number, colors: string[], totalSeries: number) => {
     const paletteSize = colors.length
     
-    // For small palettes (< 5 colors), use offset logic to maximize visual separation
-    if (paletteSize < 5 && totalSeries > paletteSize) {
-      // Use alternating pattern to separate similar colors
-      const baseIndex = seriesIndex % paletteSize
-      const offset = Math.floor(seriesIndex / paletteSize) * 2
-      return colors[(baseIndex + offset) % paletteSize]
+    // Use maximum spacing algorithm for better visual distinction
+    if (totalSeries <= paletteSize) {
+      // Use evenly spaced colors from the palette for maximum visual separation
+      const spacing = Math.max(1, Math.floor(paletteSize / totalSeries))
+      return colors[(seriesIndex * spacing) % paletteSize]
     }
     
-    // For larger palettes or fewer series, use standard cycling with visual hierarchy
-    if (seriesIndex === 0) {
-      // Primary series gets the first color (strongest in palette)
-      return colors[0]
-    }
+    // For more series than colors, use alternating pattern with offset
+    const baseIndex = seriesIndex % paletteSize
+    const cycle = Math.floor(seriesIndex / paletteSize)
     
-    // Secondary series skip first color for better visual distinction
-    const adjustedIndex = seriesIndex - 1
-    const secondaryStartIndex = 1
-    return colors[secondaryStartIndex + (adjustedIndex % (paletteSize - 1))]
+    // Use prime number offset to avoid clustering similar colors
+    const offset = (cycle * 3) % paletteSize // Using 3 as it's prime and gives good distribution
+    return colors[(baseIndex + offset) % paletteSize]
   }
 
   // Get visual prominence settings for series hierarchy
@@ -616,7 +612,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   }
 
   const renderMultiSeriesHorizontalBars = () => {
-    const series = config.series || []
+    const allSeries = config.series || []
+    const series = allSeries.filter(s => s.visible !== false) // Only show visible series
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     
     // Get all unique categories from all series
@@ -626,65 +623,86 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     // Find max value across all series
     const maxValue = Math.max(...series.flatMap(s => s.data.map(d => d.value)))
     
+    const barHeight = 24 // Height of each individual bar
+    const barGap = 2 // Gap between bars in same category
+    const categoryGap = 16 // Gap between categories
+    const totalBarsPerCategory = series.length
+    const categoryHeight = totalBarsPerCategory * barHeight + (totalBarsPerCategory - 1) * barGap
+    
     return (
       <div className="flex items-center justify-center h-full">
         <div className="w-full max-w-full space-y-4">
           {sortedCategories.map((category, categoryIndex) => (
             <div key={category} className="space-y-1">
+              {/* Category Label */}
               <div className="text-xs text-muted-foreground mb-2">{category}</div>
-              {series.map((seriesItem, seriesIndex) => {
-                const dataPoint = seriesItem.data.find(d => d.scenario === category)
-                if (!dataPoint) return null
-                
-                const percentage = (dataPoint.value / maxValue) * 100
-                const color = seriesItem.color || getEnhancedSeriesColor(seriesIndex, colors, series.length)
-                
-                return (
-                  <div key={seriesIndex} className="relative flex items-center gap-3 group">
-                    <div className="w-20 text-right">
-                      <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} truncate block`}>
+              
+              {/* Grouped Horizontal Bars for this category */}
+              <div className="flex items-start gap-3">
+                {/* Category labels column */}
+                <div className="w-16 flex flex-col gap-1">
+                  {series.map((seriesItem, seriesIndex) => (
+                    <div key={seriesIndex} style={{ height: `${barHeight}px` }} className="flex items-center justify-end">
+                      <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} truncate`}>
                         {seriesItem.name}
                       </span>
                     </div>
-                    <div 
-                      className="flex-1 relative bg-muted/30 rounded-sm overflow-hidden"
-                      style={{ height: '24px' }}
-                    >
-                      <div
-                        className="h-full rounded-sm transition-all duration-700 ease-out flex items-center justify-end pr-2 hover:opacity-80 cursor-pointer"
-                        style={{
-                          width: `${percentage}%`,
-                          background: `linear-gradient(90deg, ${color}f2, ${color}e6, ${color})`,
-                          boxShadow: `0 2px 4px ${color}20`,
-                          animation: `growHorizontal 800ms ease-out ${(categoryIndex * series.length + seriesIndex) * 150}ms both`,
-                          '--target-width': `${percentage}%`
-                        } as any}
-                        onMouseEnter={(e) => {
-                          const rect = e.currentTarget.getBoundingClientRect()
-                          setTooltip({
-                            x: rect.right,
-                            y: rect.top + rect.height / 2,
-                            label: `${seriesItem.name}: ${dataPoint.scenario}`,
-                            value: dataPoint.value,
-                            displayValue: dataPoint.displayValue || formatNumber(dataPoint.value),
-                            color: color
-                          })
-                        }}
-                        onMouseLeave={() => setTooltip(null)}
+                  ))}
+                </div>
+                
+                {/* Bars column */}
+                <div className="flex-1 flex flex-col gap-1">
+                  {series.map((seriesItem, seriesIndex) => {
+                    const dataPoint = seriesItem.data.find(d => d.scenario === category)
+                    if (!dataPoint) {
+                      return <div key={seriesIndex} style={{ height: `${barHeight}px` }} />
+                    }
+                    
+                    const percentage = (dataPoint.value / maxValue) * 100
+                    const color = seriesItem.color || getEnhancedSeriesColor(seriesIndex, colors, series.length)
+                    
+                    return (
+                      <div 
+                        key={seriesIndex}
+                        className="relative bg-muted/30 rounded-sm overflow-hidden"
+                        style={{ height: `${barHeight}px` }}
                       >
-                        {showDataLabels && percentage > 15 && (
-                          <div 
-                            className="text-xs font-medium text-center w-full"
-                            style={{ color: '#ffffff' }}
-                          >
-                            {dataPoint.displayValue || formatNumber(dataPoint.value)}
-                          </div>
-                        )}
+                        <div
+                          className="h-full rounded-sm transition-all duration-700 ease-out flex items-center justify-end pr-2 hover:opacity-80 cursor-pointer"
+                          style={{
+                            width: `${percentage}%`,
+                            background: `linear-gradient(90deg, ${color}f2, ${color}e6, ${color})`,
+                            boxShadow: `0 2px 4px ${color}20`,
+                            animation: `growHorizontal 800ms ease-out ${(categoryIndex * series.length + seriesIndex) * 150}ms both`,
+                            '--target-width': `${percentage}%`
+                          } as any}
+                          onMouseEnter={(e) => {
+                            const rect = e.currentTarget.getBoundingClientRect()
+                            setTooltip({
+                              x: rect.right,
+                              y: rect.top + rect.height / 2,
+                              label: `${seriesItem.name}: ${dataPoint.scenario}`,
+                              value: dataPoint.value,
+                              displayValue: dataPoint.displayValue || formatNumber(dataPoint.value),
+                              color: color
+                            })
+                          }}
+                          onMouseLeave={() => setTooltip(null)}
+                        >
+                          {showDataLabels && percentage > 15 && (
+                            <div 
+                              className="text-xs font-medium text-center w-full"
+                              style={{ color: '#ffffff' }}
+                            >
+                              {dataPoint.displayValue || formatNumber(dataPoint.value)}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                )
-              })}
+                    )
+                  })}
+                </div>
+              </div>
             </div>
           ))}
           
@@ -809,7 +827,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   }
 
   const renderMultiSeriesVerticalBars = () => {
-    const series = config.series || []
+    const allSeries = config.series || []
+    const series = allSeries.filter(s => s.visible !== false) // Only show visible series
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     
     // Get all unique categories from all series
@@ -906,12 +925,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   }
 
   const renderMultiSeriesLineChart = () => {
-    const series = config.series || []
+    const allSeries = config.series || []
+    const series = allSeries.filter(s => s.visible !== false) // Only show visible series
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     
-    // Get all unique categories from all series
-    const allCategories = [...new Set(series.flatMap(s => s.data.map(d => d.scenario)))]
-    const sortedCategories = allCategories.sort() // Sort categories alphabetically for consistency
+    // Use position-based approach: find the maximum number of data points across all series
+    const maxDataPoints = Math.max(...series.map(s => s.data.length))
+    
+    // Create unified category labels based on the series with most complete data
+    const longestSeries = series.reduce((longest, current) => 
+      current.data.length > longest.data.length ? current : longest
+    )
+    const categoryLabels = longestSeries.data.map(d => d.scenario)
     
     // Find max value across all series
     const maxValue = Math.max(...series.flatMap(s => s.data.map(d => d.value)))
@@ -1008,14 +1033,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               const color = seriesItem.color || getEnhancedSeriesColor(seriesIndex, colors, series.length)
               const visualHierarchy = getSeriesVisualHierarchy(seriesIndex)
               
-              // Create points for this series
-              const points = sortedCategories.map((category, categoryIndex) => {
-                const dataPoint = seriesItem.data.find(d => d.scenario === category)
+              // Create points for this series using position-based mapping
+              const points = seriesItem.data.map((dataPoint, dataIndex) => {
                 if (!dataPoint) return null
                 
-                const x = padding + (categoryIndex / (sortedCategories.length - 1)) * (chartWidth - 2 * padding)
+                const x = maxDataPoints > 1 
+                  ? padding + (dataIndex / (maxDataPoints - 1)) * (chartWidth - 2 * padding)
+                  : chartWidth / 2 // Center single point
                 const y = chartHeight - padding - ((dataPoint.value / maxValue) * (chartHeight - 2 * padding))
-                return { x, y, dataPoint, categoryIndex }
+                return { x, y, dataPoint, categoryIndex: dataIndex }
               }).filter(Boolean) as { x: number; y: number; dataPoint: any; categoryIndex: number }[]
 
               if (points.length === 0) return null
@@ -1144,7 +1170,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         {/* X-axis labels */}
         <div className="flex justify-center py-1 px-2 min-h-0">
           <div className="flex justify-between" style={{ width: `${chartWidth - 2 * padding}px` }}>
-            {sortedCategories.map((category, index) => (
+            {categoryLabels.map((category, index) => (
               <span
                 key={index}
                 className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} text-center max-w-20 truncate`}
@@ -2196,12 +2222,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   }
 
   const renderMultiSeriesComboChart = () => {
-    const series = config.series || []
+    const allSeries = config.series || []
+    const series = allSeries.filter(s => s.visible !== false) // Only show visible series
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     
-    // Get all unique categories from all series
-    const allCategories = [...new Set(series.flatMap(s => s.data.map(d => d.scenario)))]
-    const sortedCategories = allCategories.sort() // Sort categories alphabetically for consistency
+    // Use position-based approach: find the maximum number of data points across all series
+    const maxDataPoints = Math.max(...series.map(s => s.data.length))
+    
+    // Create unified category labels based on the series with most complete data
+    const longestSeries = series.reduce((longest, current) => 
+      current.data.length > longest.data.length ? current : longest
+    )
+    const categoryLabels = longestSeries.data.map(d => d.scenario)
     
     // Find max value across all series
     const maxValue = Math.max(...series.flatMap(s => s.data.map(d => d.value)))
@@ -2214,20 +2246,20 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const barWidth = 20 // Narrow width for grouped bars in combo chart
 
     // Enhanced color selection for combo chart - bars and lines get visually distinct colors
-    const getBarColor = (seriesIndex: number) => {
-      // Use enhanced distribution for bar series, starting from index 0
-      const barColors = colors.slice(0, Math.ceil(colors.length / 2))
-      return getEnhancedSeriesColor(seriesIndex, barColors, barSeries.length)
-    }
-    const getLineColor = (seriesIndex: number) => {
-      // Use enhanced distribution for line series, starting from second half of palette
-      const lineColors = colors.slice(Math.ceil(colors.length / 2))
-      return getEnhancedSeriesColor(seriesIndex, lineColors.length > 0 ? lineColors : colors, lineSeries.length)
+    const getSeriesColor = (seriesItem: any, allSeries: any[]) => {
+      // If series has custom color, use it
+      if (seriesItem.color) return seriesItem.color
+      
+      // Find the original index of this series in the full series array
+      const originalIndex = allSeries.findIndex(s => s === seriesItem)
+      
+      // Use enhanced color distribution based on original position
+      return getEnhancedSeriesColor(originalIndex, colors, allSeries.length)
     }
     
-    // Split series into bars (first half) and lines (second half)
-    const barSeries = series.slice(0, Math.ceil(series.length / 2))
-    const lineSeries = series.slice(Math.ceil(series.length / 2))
+    // Simple combo chart: First series as bars, remaining series as lines
+    const barSeries = series.slice(0, 1) // Only first series as bars
+    const lineSeries = series.slice(1) // All remaining series as lines
 
     // Create smooth curve path helper
     const createSmoothPath = (points: { x: number; y: number }[]) => {
@@ -2262,7 +2294,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             <defs>
               {/* Bar gradients */}
               {barSeries.map((seriesItem, seriesIndex) => {
-                const color = seriesItem.color || getBarColor(seriesIndex)
+                const color = getSeriesColor(seriesItem, allSeries)
                 return (
                   <linearGradient key={`barGradient-${seriesIndex}`} id={`barGradient-${seriesIndex}`} x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stopColor={`${color}f5`} />
@@ -2274,7 +2306,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               
               {/* Line gradients */}
               {lineSeries.map((seriesItem, seriesIndex) => {
-                const color = seriesItem.color || getLineColor(seriesIndex)
+                const color = getSeriesColor(seriesItem, allSeries)
                 return (
                   <g key={`lineDefs-${seriesIndex}`}>
                     <linearGradient id={`lineGradient-${seriesIndex}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -2316,18 +2348,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
               </g>
             )}
 
-            {/* Render bars */}
-            {sortedCategories.map((category, categoryIndex) => (
-              <g key={`category-${categoryIndex}`}>
-                {barSeries.map((seriesItem, seriesIndex) => {
-                  const dataPoint = seriesItem.data.find(d => d.scenario === category)
+            {/* Render bars using position-based mapping */}
+            {barSeries.map((seriesItem, seriesIndex) => (
+              <g key={`bar-series-${seriesIndex}`}>
+                {seriesItem.data.map((dataPoint, dataIndex) => {
                   if (!dataPoint) return null
                   
-                  const color = seriesItem.color || getBarColor(seriesIndex)
+                  const color = getSeriesColor(seriesItem, allSeries)
                   const totalBars = barSeries.length
-                  const categoryWidth = (chartWidth - 2 * padding) / sortedCategories.length
+                  const categoryWidth = (chartWidth - 2 * padding) / maxDataPoints
                   const groupWidth = totalBars * barWidth + (totalBars - 1) * 2 // 2px gap between bars
-                  const groupStartX = padding + categoryIndex * categoryWidth + (categoryWidth - groupWidth) / 2
+                  const groupStartX = padding + dataIndex * categoryWidth + (categoryWidth - groupWidth) / 2
                   const barX = groupStartX + seriesIndex * (barWidth + 2)
                   
                   const barHeight = (dataPoint.value / maxValue) * (chartHeight - 2 * padding)
@@ -2335,7 +2366,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
                   return (
                     <rect
-                      key={`bar-${categoryIndex}-${seriesIndex}`}
+                      key={`bar-${dataIndex}-${seriesIndex}`}
                       x={barX}
                       y={barY}
                       width={barWidth}
@@ -2344,7 +2375,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       className="cursor-pointer transition-all duration-300 hover:opacity-80"
                       style={{
                         filter: `drop-shadow(0 2px 4px ${color}30)`,
-                        animation: `slideUp 800ms ease-out ${(categoryIndex * totalBars + seriesIndex) * 100}ms both`
+                        animation: `slideUp 800ms ease-out ${(dataIndex * totalBars + seriesIndex) * 100}ms both`
                       }}
                       onMouseEnter={(e) => {
                         setTooltip({
@@ -2365,17 +2396,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
 
             {/* Render lines */}
             {lineSeries.map((seriesItem, seriesIndex) => {
-              const color = seriesItem.color || getLineColor(seriesIndex)
+              const color = getSeriesColor(seriesItem, allSeries)
               
-              // Create points for this line series
-              const points = sortedCategories.map((category, categoryIndex) => {
-                const dataPoint = seriesItem.data.find(d => d.scenario === category)
+              // Create points for this line series using position-based mapping
+              const points = seriesItem.data.map((dataPoint, dataIndex) => {
                 if (!dataPoint) return null
                 
-                const categoryWidth = (chartWidth - 2 * padding) / sortedCategories.length
-                const x = padding + categoryIndex * categoryWidth + categoryWidth / 2 // Center of category
+                const categoryWidth = (chartWidth - 2 * padding) / maxDataPoints
+                const x = maxDataPoints > 1 
+                  ? padding + dataIndex * categoryWidth + categoryWidth / 2 // Center of category
+                  : chartWidth / 2 // Center single point
                 const y = chartHeight - padding - ((dataPoint.value / maxValue) * (chartHeight - 2 * padding))
-                return { x, y, dataPoint, categoryIndex }
+                return { x, y, dataPoint, categoryIndex: dataIndex }
               }).filter(Boolean) as { x: number; y: number; dataPoint: any; categoryIndex: number }[]
 
               if (points.length === 0) return null
@@ -2397,7 +2429,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       strokeLinejoin: 'round',
                       strokeDasharray: '1000',
                       strokeDashoffset: '1000',
-                      animation: `drawLine 2s ease-out ${(barSeries.length * sortedCategories.length * 100 + seriesIndex * 200)}ms forwards`
+                      animation: `drawLine 2s ease-out ${(barSeries.length * maxDataPoints * 100 + seriesIndex * 200)}ms forwards`
                     }}
                   />
 
@@ -2412,7 +2444,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         className="cursor-pointer transition-all duration-300 hover:r-7 hover:opacity-80"
                         style={{
                           filter: `drop-shadow(0 2px 4px ${color}40)`,
-                          animation: `bounceIn 0.6s ease-out ${(barSeries.length * sortedCategories.length * 100 + seriesIndex * 200 + pointIndex * 100)}ms backwards`
+                          animation: `bounceIn 0.6s ease-out ${(barSeries.length * maxDataPoints * 100 + seriesIndex * 200 + pointIndex * 100)}ms backwards`
                         }}
                         onMouseEnter={(e) => {
                           setTooltip({
@@ -2470,7 +2502,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         {/* X-axis labels */}
         <div className="flex justify-center py-1 px-2 min-h-0">
           <div className="flex justify-between" style={{ width: `${chartWidth - 2 * padding}px` }}>
-            {sortedCategories.map((category, index) => (
+            {categoryLabels.map((category, index) => (
               <span
                 key={index}
                 className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} text-center max-w-20 truncate`}
@@ -2481,34 +2513,25 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           </div>
         </div>
 
-        {/* Legend */}
+        {/* Enhanced Legend - Shows all series with visibility and type indicators */}
         <div className="flex justify-center gap-4 py-1 px-2 min-h-0 flex-wrap">
-          {/* Bar series legend */}
-          {barSeries.map((seriesItem, index) => {
-            const color = seriesItem.color || getBarColor(index)
+          {allSeries.map((seriesItem, index) => {
+            const color = getSeriesColor(seriesItem, allSeries)
+            const isVisible = seriesItem.visible !== false
+            const visType = seriesItem.visualizationType || (index === 0 ? 'bar' : 'line')
+            
             return (
-              <div key={`bar-legend-${index}`} className="flex items-center gap-2">
-                <div 
-                  className="w-3 h-3 rounded" 
-                  style={{ backgroundColor: color }} 
-                />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {seriesItem.name}
-                </span>
-              </div>
-            )
-          })}
-          
-          {/* Line series legend */}
-          {lineSeries.map((seriesItem, index) => {
-            const color = seriesItem.color || getLineColor(index)
-            return (
-              <div key={`line-legend-${index}`} className="flex items-center gap-2">
-                <div 
-                  className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: color }} 
-                />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <div key={`legend-${index}`} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
+                <div className="flex items-center gap-1">
+                  <div 
+                    className={`w-3 h-3 ${visType === 'bar' ? 'rounded' : 'rounded-full'}`}
+                    style={{ backgroundColor: color }} 
+                  />
+                  <span className="text-xs text-muted-foreground">
+                    {visType === 'bar' ? '📊' : '📈'}
+                  </span>
+                </div>
+                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
                   {seriesItem.name}
                 </span>
               </div>
