@@ -45,6 +45,7 @@ export interface ChartConfig {
   dimensions?: ChartDimensions
   theme?: ColorTheme
   isModalContext?: boolean
+  isSeriesEditingMode?: boolean // Flag for series editing context
 }
 
 

@@ -374,7 +374,13 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
                   {/* Edit Data Button for each series */}
                   <div className="mt-3">
                     <DataEditorDialog 
-                      config={{...config, data: seriesItem.data}} 
+                      config={{
+                        ...config, 
+                        data: seriesItem.data,
+                        series: [{ ...seriesItem, data: seriesItem.data }],
+                        multiSeries: false, // Force single-series preview mode
+                        isSeriesEditingMode: true // Flag to indicate series editing context
+                      }} 
                       onConfigChange={(updatedConfig) => {
                         const updatedSeries = [...series]
                         updatedSeries[seriesIndex] = { ...seriesItem, data: updatedConfig.data }

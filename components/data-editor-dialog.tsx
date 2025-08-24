@@ -52,10 +52,49 @@ const parseSmartNumber = (str: string): number => {
 export function DataEditorDialog({ config, onConfigChange, children }: DataEditorDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [editedData, setEditedData] = useState<ChartData[]>(config.data)
-  const [previewConfig, setPreviewConfig] = useState<ChartConfig>({ ...config, data: editedData })
+  
+  // Initialize preview config based on editing mode
+  const initializePreviewConfig = (initialData: ChartData[]) => {
+    if (config.isSeriesEditingMode && config.series) {
+      const updatedSeries = config.series.map(s => ({ ...s, data: initialData }))
+      return {
+        ...config,
+        data: initialData,
+        series: updatedSeries,
+        multiSeries: false,
+        isModalContext: true
+      }
+    } else {
+      return { ...config, data: initialData, isModalContext: true }
+    }
+  }
+  
+  const [previewConfig, setPreviewConfig] = useState<ChartConfig>(initializePreviewConfig(editedData))
   const [chartKey, setChartKey] = useState(0)
   const [mobileView, setMobileView] = useState<'data' | 'preview'>('data')
   const layoutState = useLayoutState()
+  
+  // Helper function to build preview config with updated data
+  const buildPreviewConfig = (validData: ChartData[]) => {
+    if (config.isSeriesEditingMode && config.series) {
+      // Series editing mode: update the series data and ensure proper structure
+      const updatedSeries = config.series.map(s => ({ ...s, data: validData }))
+      return {
+        ...config,
+        data: validData, // Keep for compatibility
+        series: updatedSeries,
+        multiSeries: false, // Force single-series preview
+        isModalContext: true
+      }
+    } else {
+      // Regular single data mode
+      return {
+        ...config,
+        data: validData,
+        isModalContext: true
+      }
+    }
+  }
 
   const addRow = () => {
     const newRow: ChartData = {
@@ -69,12 +108,7 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
     // Filter out rows with null values for preview
     const validData = newData.filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
     
-    
-    setPreviewConfig({
-      ...config,
-      data: validData,
-      isModalContext: true
-    })
+    setPreviewConfig(buildPreviewConfig(validData))
     setChartKey(prev => prev + 1)
   }
 
@@ -86,12 +120,7 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
     // Filter out rows with null values for preview
     const validData = newData.filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
     
-    
-    setPreviewConfig({
-      ...config,
-      data: validData,
-      isModalContext: true
-    })
+    setPreviewConfig(buildPreviewConfig(validData))
     setChartKey(prev => prev + 1)
   }
 
@@ -111,12 +140,7 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
     // Filter out rows with null values for preview
     const validData = newData.filter(item => item.value !== null && item.value !== undefined && item.scenario.trim() !== '')
     
-    
-    setPreviewConfig({
-      ...config,
-      data: validData,
-      isModalContext: true
-    })
+    setPreviewConfig(buildPreviewConfig(validData))
     setChartKey(prev => prev + 1)
   }
 
@@ -138,7 +162,7 @@ export function DataEditorDialog({ config, onConfigChange, children }: DataEdito
 
   const handleCancel = () => {
     setEditedData(config.data)
-    setPreviewConfig({ ...config, data: config.data })
+    setPreviewConfig(initializePreviewConfig(config.data))
     setIsOpen(false)
   }
 

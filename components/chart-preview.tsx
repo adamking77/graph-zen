@@ -661,7 +661,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="w-full max-w-full space-y-6">
+        <div className="w-full max-w-full space-y-6 relative">
           {/* Interleave data points by position */}
           {Array.from({ length: maxDataPoints }, (_, position) => {
             // Get all data points at this position from all datasets
@@ -769,6 +769,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             })}
           </div>
         </div>
+        
+        {/* Reference Lines Overlay */}
+        <svg
+          className="absolute inset-0 pointer-events-none"
+          style={{ width: '100%', height: '100%' }}
+        >
+          {renderReferenceLines('horizontal', series.flatMap(s => s.data?.map(d => d.value) || []), { 
+            width: containerSize.width || 800, 
+            height: containerSize.height || 600, 
+            padding: 160 // Account for labels on left
+          })}
+        </svg>
       </div>
     )
   }
@@ -890,7 +902,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const barWidth = 32 // Better width for visibility
     
     return (
-      <div className="h-full flex flex-col justify-center">
+      <div className="h-full flex flex-col justify-center relative">
         <div className="flex items-end justify-center gap-10 flex-wrap">
           {/* Interleave data points by position */}
           {Array.from({ length: maxDataPoints }, (_, position) => {
@@ -998,6 +1010,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             )
           })}
         </div>
+        
+        {/* Reference Lines Overlay */}
+        <svg
+          className="absolute inset-0 pointer-events-none"
+          style={{ width: '100%', height: '100%' }}
+        >
+          {renderReferenceLines('vertical', series.flatMap(s => s.data?.map(d => d.value) || []), { 
+            width: containerSize.width || 800, 
+            height: containerSize.height || 600, 
+            padding: 60 // Account for bottom labels
+          })}
+        </svg>
       </div>
     )
   }
