@@ -113,6 +113,36 @@ export function StyleControls({ theme, chartType, onChange }: StyleControlsProps
               />
             </button>
           </div>
+
+          {hasGridLines && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="text-muted-foreground text-sm">📊</div>
+                <span className="text-foreground text-sm">Average line</span>
+              </div>
+              <button
+                onClick={() => {
+                  const currentReferenceLines = theme.referenceLines || {}
+                  const currentAverage = currentReferenceLines.average || { enabled: false, color: '#6366F1' }
+                  updateTheme({ 
+                    referenceLines: {
+                      ...currentReferenceLines,
+                      average: { ...currentAverage, enabled: !currentAverage.enabled }
+                    }
+                  })
+                }}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                  theme.referenceLines?.average?.enabled ? 'bg-primary' : 'bg-muted'
+                }`}
+              >
+                <span
+                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                    theme.referenceLines?.average?.enabled ? 'translate-x-5' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -173,124 +203,6 @@ export function StyleControls({ theme, chartType, onChange }: StyleControlsProps
         </div>
       </div>
 
-      {/* Reference Lines - Only show for charts that support them */}
-      {hasGridLines && (
-        <div>
-          <h3 className="text-sm font-normal text-foreground mb-3">Reference Lines</h3>
-          <div className="space-y-3">
-            {/* Average Line Toggle */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="text-muted-foreground text-sm">📊</div>
-                <span className="text-foreground text-sm">Average line</span>
-              </div>
-              <button
-                onClick={() => {
-                  const currentReferenceLines = theme.referenceLines || {}
-                  const currentAverage = currentReferenceLines.average || { enabled: false, color: '#6366F1' }
-                  updateTheme({ 
-                    referenceLines: {
-                      ...currentReferenceLines,
-                      average: { ...currentAverage, enabled: !currentAverage.enabled }
-                    }
-                  })
-                }}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                  theme.referenceLines?.average?.enabled ? 'bg-primary' : 'bg-muted'
-                }`}
-              >
-                <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                    theme.referenceLines?.average?.enabled ? 'translate-x-5' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-
-            {/* Target Line Input */}
-            <div>
-              <label className="block text-xs text-muted-foreground mb-2">Target value line</label>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  placeholder="Enter target value"
-                  className="flex-1 bg-background border border-border/40 rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
-                  suppressHydrationWarning={true}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      const value = parseFloat((e.target as HTMLInputElement).value)
-                      if (!isNaN(value)) {
-                        const currentReferenceLines = theme.referenceLines || {}
-                        const currentHorizontal = currentReferenceLines.horizontal || []
-                        updateTheme({ 
-                          referenceLines: {
-                            ...currentReferenceLines,
-                            horizontal: [...currentHorizontal, { value, color: '#F59E0B', style: 'solid' as const }]
-                          }
-                        })
-                        ;(e.target as HTMLInputElement).value = ''
-                      }
-                    }
-                  }}
-                />
-                <button
-                  onClick={(e) => {
-                    const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement
-                    const value = parseFloat(input.value)
-                    if (!isNaN(value)) {
-                      const currentReferenceLines = theme.referenceLines || {}
-                      const currentHorizontal = currentReferenceLines.horizontal || []
-                      updateTheme({ 
-                        referenceLines: {
-                          ...currentReferenceLines,
-                          horizontal: [...currentHorizontal, { value, color: '#F59E0B', style: 'solid' as const }]
-                        }
-                      })
-                      input.value = ''
-                    }
-                  }}
-                  className="px-3 py-2 bg-primary text-primary-foreground rounded-lg text-xs hover:bg-primary/90 transition-colors"
-                >
-                  Add
-                </button>
-              </div>
-            </div>
-
-            {/* Show existing reference lines */}
-            {theme.referenceLines?.horizontal && theme.referenceLines.horizontal.length > 0 && (
-              <div className="space-y-2">
-                <label className="block text-xs text-muted-foreground">Active lines</label>
-                {theme.referenceLines.horizontal.map((line, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/40">
-                    <div 
-                      className="w-3 h-3 rounded-full flex-shrink-0" 
-                      style={{ backgroundColor: line.color }} 
-                    />
-                    <span className="text-xs text-foreground flex-1">
-                      Target: {line.value}
-                    </span>
-                    <button
-                      onClick={() => {
-                        const currentReferenceLines = theme.referenceLines || {}
-                        const updatedHorizontal = currentReferenceLines.horizontal?.filter((_, i) => i !== index) || []
-                        updateTheme({ 
-                          referenceLines: {
-                            ...currentReferenceLines,
-                            horizontal: updatedHorizontal
-                          }
-                        })
-                      }}
-                      className="text-xs text-muted-foreground hover:text-destructive transition-colors"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
