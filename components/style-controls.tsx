@@ -215,6 +215,7 @@ export function StyleControls({ theme, chartType, onChange }: StyleControlsProps
                   type="number"
                   placeholder="Enter target value"
                   className="flex-1 bg-background border border-border/40 rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                  suppressHydrationWarning={true}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       const value = parseFloat((e.target as HTMLInputElement).value)

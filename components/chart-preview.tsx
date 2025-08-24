@@ -454,14 +454,19 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     if (!seriesItem.data || seriesItem.data.length === 0) return null
     
     const validData = seriesItem.data.filter((d: any) => d && typeof d.value === 'number')
+    if (validData.length === 0) return null
+    
     const total = validData.reduce((sum: number, d: any) => sum + d.value, 0)
     const categoryCount = validData.length
+    const avgValue = total / categoryCount
     
     return {
       categoryCount,
       total,
+      avgValue,
       formattedTotal: formatNumber(total),
-      categories: validData.map((d: any) => d.scenario).join(', ')
+      formattedAvg: formatNumber(avgValue),
+      categories: validData.map((d: any) => d.scenario || d.label || 'Unnamed').slice(0, 3).join(', ')
     }
   }
 
@@ -735,17 +740,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           ))}
           
           {/* Series Legend */}
-          <div className="flex justify-center gap-4 mt-6 pt-4 border-t border-border/30">
+          <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} ${layoutState.isMobile ? 'mt-4 pt-2' : 'mt-6 pt-4'} border-t border-border/30 flex-wrap`}>
             {series.map((seriesItem, index) => {
               const color = getUnifiedSeriesColor(seriesItem, series, colors)
               const isVisible = seriesItem.visible !== false
               return (
-                <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
+                <div key={index} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
                   <div 
-                    className="w-3 h-3 rounded" 
+                    className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
                     style={{ backgroundColor: color }} 
                   />
-                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
+                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate max-w-none`}>
                     {seriesItem.name}
                   </span>
                 </div>
@@ -933,17 +938,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           ))}
         </div>
         
-        <div className="flex justify-center gap-4 mt-3">
+        <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} ${layoutState.isMobile ? 'mt-2' : 'mt-3'} flex-wrap`}>
           {series.map((seriesItem, index) => {
             const color = getUnifiedSeriesColor(seriesItem, series, colors)
             const isVisible = seriesItem.visible !== false
             return (
-              <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
+              <div key={index} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
                 <div 
-                  className="w-3 h-3 rounded" 
+                  className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
                   style={{ backgroundColor: color }} 
                 />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
+                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate max-w-none`}>
                   {seriesItem.name}
                 </span>
               </div>
@@ -1017,7 +1022,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           >
             <defs>
               {series.map((seriesItem, seriesIndex) => {
-                const color = seriesItem.color || getEnhancedSeriesColor(seriesIndex, colors, series.length)
+                const color = getUnifiedSeriesColor(seriesItem, series, colors)
                 return (
                   <g key={`defs-${seriesIndex}`}>
                     <linearGradient id={`lineGradient-${seriesIndex}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -1212,17 +1217,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-4 py-1 px-2 min-h-0 flex-wrap">
+        <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} py-1 px-2 min-h-0 flex-wrap`}>
           {series.map((seriesItem, index) => {
             const color = getUnifiedSeriesColor(seriesItem, series, colors)
             const isVisible = seriesItem.visible !== false
             return (
-              <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
+              <div key={index} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
                 <div 
-                  className="w-3 h-3 rounded" 
+                  className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
                   style={{ backgroundColor: color }} 
                 />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
+                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate max-w-none`}>
                   {seriesItem.name}
                 </span>
               </div>
@@ -2538,42 +2543,39 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         </div>
 
         {/* Enhanced Legend - Shows all series with comprehensive data information */}
-        <div className="py-3">
-          <div className={`grid ${layoutState.isMobile ? 'grid-cols-1 gap-2' : layoutState.isTablet ? 'grid-cols-2 gap-3' : 'grid-cols-3 gap-4'} justify-items-center`}>
-            {allSeries.map((seriesItem, index) => {
-              const color = getSeriesColor(seriesItem, allSeries)
-              const isVisible = seriesItem.visible !== false
-              const dataSummary = getSeriesDataSummary(seriesItem)
-              const isBarSeries = index === 0 // First series is bars in combo chart
-              
-              return (
-                <div key={`legend-${index}`} className={`flex items-center gap-3 ${!isVisible ? 'opacity-50' : ''} bg-card/50 rounded-lg p-3 border border-border/30 min-w-0 w-full max-w-xs`}>
+        <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} py-2 px-2 min-h-0 flex-wrap`}>
+          {allSeries.map((seriesItem, index) => {
+            const color = getSeriesColor(seriesItem, allSeries)
+            const isVisible = seriesItem.visible !== false
+            const dataSummary = getSeriesDataSummary(seriesItem)
+            const hasMultipleSeries = allSeries.length > 1
+            
+            return (
+              <div key={`legend-${index}`} className={`flex ${layoutState.isMobile ? 'flex-col gap-0.5' : 'items-center gap-2'} ${!isVisible ? 'opacity-50' : ''} ${hasMultipleSeries && dataSummary ? 'bg-background/50 rounded-md px-2 py-1' : ''}`}>
+                <div className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'}`}>
                   <div 
-                    className={`${layoutState.isMobile ? 'w-3 h-3' : 'w-4 h-4'} ${isBarSeries ? 'rounded' : 'rounded-full'} flex-shrink-0 shadow-sm`}
-                    style={{ 
-                      background: `linear-gradient(135deg, ${color}f8, ${color}e6, ${color}d4)`,
-                      boxShadow: `0 2px 4px ${color}40`
-                    }} 
+                    className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded flex-shrink-0`}
+                    style={{ backgroundColor: color }} 
                   />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'} font-medium ${!isVisible ? 'line-through' : ''} truncate`}>
-                        {seriesItem.name}
-                      </span>
-                      <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-600'} ml-2`}>
-                        {isBarSeries ? 'Bars' : 'Line'}
-                      </span>
-                    </div>
-                    {dataSummary && (
-                      <div className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-600'} font-medium mt-1`}>
-                        {dataSummary.categoryCount} categories • {dataSummary.formattedTotal}
-                      </div>
+                  <span className={`text-xs font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} ${!isVisible ? 'line-through' : ''}`}>
+                    {seriesItem.name}
+                  </span>
+                </div>
+                
+                {hasMultipleSeries && dataSummary && (
+                  <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} ${layoutState.isMobile ? 'ml-3.5' : ''}`}>
+                    <span className="font-medium">Total: {dataSummary.formattedTotal}</span>
+                    {dataSummary.categoryCount > 1 && (
+                      <span className="ml-2">({dataSummary.categoryCount} categories)</span>
+                    )}
+                    {!layoutState.isMobile && dataSummary.categoryCount > 1 && (
+                      <span className="ml-2">Avg: {dataSummary.formattedAvg}</span>
                     )}
                   </div>
-                </div>
-              )
-            })}
-          </div>
+                )}
+              </div>
+            )
+          })}
         </div>
 
         <style jsx>{`
