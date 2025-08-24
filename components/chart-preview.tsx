@@ -437,6 +437,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     return colors[(baseIndex + offset) % paletteSize]
   }
 
+  // Unified color assignment function for all chart types - ensures legends match chart elements
+  const getUnifiedSeriesColor = (seriesItem: any, allSeries: any[], colors: string[]) => {
+    // If series has custom color, use it
+    if (seriesItem.color) return seriesItem.color
+    
+    // Find the original index of this series in the full series array
+    const originalIndex = allSeries.findIndex(s => s === seriesItem)
+    
+    // Use enhanced color distribution based on original position
+    return getEnhancedSeriesColor(originalIndex, colors, allSeries.length)
+  }
+
   // Get visual prominence settings for series hierarchy
   const getSeriesVisualHierarchy = (seriesIndex: number) => ({
     opacity: seriesIndex === 0 ? 1.0 : 0.85, // Primary series slightly more prominent
@@ -652,14 +664,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 
                 {/* Bars column */}
                 <div className="flex-1 flex flex-col gap-1">
-                  {series.map((seriesItem, seriesIndex) => {
+                  {series.filter(s => s.visible !== false).map((seriesItem, seriesIndex) => {
                     const dataPoint = seriesItem.data.find(d => d.scenario === category)
                     if (!dataPoint) {
                       return <div key={seriesIndex} style={{ height: `${barHeight}px` }} />
                     }
                     
                     const percentage = (dataPoint.value / maxValue) * 100
-                    const color = seriesItem.color || getEnhancedSeriesColor(seriesIndex, colors, series.length)
+                    const color = getUnifiedSeriesColor(seriesItem, series, colors)
                     
                     return (
                       <div 
@@ -709,14 +721,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           {/* Series Legend */}
           <div className="flex justify-center gap-4 mt-6 pt-4 border-t border-border/30">
             {series.map((seriesItem, index) => {
-              const color = seriesItem.color || getEnhancedSeriesColor(index, colors, series.length)
+              const color = getUnifiedSeriesColor(seriesItem, series, colors)
+              const isVisible = seriesItem.visible !== false
               return (
-                <div key={index} className="flex items-center gap-2">
+                <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
                   <div 
                     className="w-3 h-3 rounded" 
                     style={{ backgroundColor: color }} 
                   />
-                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
                     {seriesItem.name}
                   </span>
                 </div>
@@ -848,13 +861,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         <div className="flex items-end justify-center gap-8">
           {sortedCategories.map((category, categoryIndex) => (
             <div key={category} className="flex items-end gap-1">
-              {series.map((seriesItem, seriesIndex) => {
+              {series.filter(s => s.visible !== false).map((seriesItem, seriesIndex) => {
                 const dataPoint = seriesItem.data.find(d => d.scenario === category)
                 if (!dataPoint) return <div key={seriesIndex} style={{ width: barWidth }} />
                 
                 const percentage = (dataPoint.value / maxValue) * 100
                 const barHeight = Math.max((percentage / 100) * maxBarHeight, 15)
-                const color = seriesItem.color || getEnhancedSeriesColor(seriesIndex, colors, series.length)
+                const color = getUnifiedSeriesColor(seriesItem, series, colors)
                 
                 return (
                   <div key={seriesIndex} className="flex flex-col items-center gap-2">
@@ -906,14 +919,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         
         <div className="flex justify-center gap-4 mt-3">
           {series.map((seriesItem, index) => {
-            const color = seriesItem.color || colors[index % colors.length]
+            const color = getUnifiedSeriesColor(seriesItem, series, colors)
+            const isVisible = seriesItem.visible !== false
             return (
-              <div key={index} className="flex items-center gap-2">
+              <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
                 <div 
                   className="w-3 h-3 rounded" 
                   style={{ backgroundColor: color }} 
                 />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
                   {seriesItem.name}
                 </span>
               </div>
@@ -1029,8 +1043,8 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             )}
 
             {/* Render each series */}
-            {series.map((seriesItem, seriesIndex) => {
-              const color = seriesItem.color || getEnhancedSeriesColor(seriesIndex, colors, series.length)
+            {series.filter(s => s.visible !== false).map((seriesItem, seriesIndex) => {
+              const color = getUnifiedSeriesColor(seriesItem, series, colors)
               const visualHierarchy = getSeriesVisualHierarchy(seriesIndex)
               
               // Create points for this series using position-based mapping
@@ -1184,14 +1198,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         {/* Legend */}
         <div className="flex justify-center gap-4 py-1 px-2 min-h-0 flex-wrap">
           {series.map((seriesItem, index) => {
-            const color = seriesItem.color || colors[index % colors.length]
+            const color = getUnifiedSeriesColor(seriesItem, series, colors)
+            const isVisible = seriesItem.visible !== false
             return (
-              <div key={index} className="flex items-center gap-2">
+              <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
                 <div 
-                  className="w-3 h-3 rounded-full" 
+                  className="w-3 h-3 rounded" 
                   style={{ backgroundColor: color }} 
                 />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
                   {seriesItem.name}
                 </span>
               </div>
@@ -2245,16 +2260,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const padding = 40
     const barWidth = 20 // Narrow width for grouped bars in combo chart
 
-    // Enhanced color selection for combo chart - bars and lines get visually distinct colors
+    // Use unified color function for combo chart consistency
     const getSeriesColor = (seriesItem: any, allSeries: any[]) => {
-      // If series has custom color, use it
-      if (seriesItem.color) return seriesItem.color
-      
-      // Find the original index of this series in the full series array
-      const originalIndex = allSeries.findIndex(s => s === seriesItem)
-      
-      // Use enhanced color distribution based on original position
-      return getEnhancedSeriesColor(originalIndex, colors, allSeries.length)
+      return getUnifiedSeriesColor(seriesItem, allSeries, colors)
     }
     
     // Simple combo chart: First series as bars, remaining series as lines
@@ -2521,15 +2529,10 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             
             return (
               <div key={`legend-${index}`} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
-                <div className="flex items-center gap-1">
-                  <div 
-                    className="w-3 h-3 rounded"
-                    style={{ backgroundColor: color }} 
-                  />
-                  <span className="text-xs text-muted-foreground">
-                    📊
-                  </span>
-                </div>
+                <div 
+                  className="w-3 h-3 rounded"
+                  style={{ backgroundColor: color }} 
+                />
                 <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
                   {seriesItem.name}
                 </span>
