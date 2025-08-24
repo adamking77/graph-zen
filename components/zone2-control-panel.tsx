@@ -235,6 +235,7 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
         </div>
       </div>
 
+
       {/* Layout Controls */}
       <LayoutControls 
         theme={config.theme || defaultTheme}
@@ -251,97 +252,296 @@ export function Zone2ControlPanel({ activeSection, config, onChange, isMobile = 
     </div>
   )
 
-  const renderData = () => (
-    <div className="space-y-6">
-      {/* Data Points */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
-            <div className="w-1 h-4 bg-primary rounded-full"></div>
-            Current Data
-          </h4>
-          <DataEditorDialog config={config} onConfigChange={onChange}>
+  const renderData = () => {
+    const supportsMultiSeries = ['vertical-bar', 'horizontal-bar', 'line', 'combo'].includes(config.type)
+    const isMultiSeries = config.multiSeries && config.series && config.series.length > 0
+    const series = config.series || []
+
+    return (
+      <div className="space-y-6">
+        {/* Multi-Series Data Input */}
+        {isMultiSeries ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+                <div className="w-1 h-4 bg-primary rounded-full"></div>
+                Comparison Data ({series.length} series)
+              </h4>
+              <button
+                onClick={() => {
+                  // Convert back to single series
+                  const primaryData = series.length > 0 ? series[0].data : config.data
+                  updateConfig({ 
+                    multiSeries: false, 
+                    series: undefined,
+                    data: primaryData
+                  })
+                }}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Switch to Single Dataset
+              </button>
+            </div>
+
+            {/* Series Input Areas */}
+            <div className="grid grid-cols-1 gap-4">
+              {series.map((seriesItem, seriesIndex) => (
+                <div key={seriesIndex} className="p-4 border border-border/40 rounded-lg bg-muted/20">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ 
+                          backgroundColor: seriesItem.color || (config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"])[seriesIndex === 0 ? 0 : (seriesIndex % 4) + 1] 
+                        }} 
+                      />
+                      <input
+                        type="text"
+                        value={seriesItem.name}
+                        onChange={(e) => {
+                          const updatedSeries = [...series]
+                          updatedSeries[seriesIndex] = { ...seriesItem, name: e.target.value }
+                          updateConfig({ series: updatedSeries })
+                        }}
+                        className="bg-transparent text-sm font-medium text-foreground border-none outline-none focus:bg-background/50 rounded px-1 py-0.5"
+                        placeholder="Series name"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">
+                        {seriesItem.data.length} items
+                      </span>
+                      {series.length > 1 && (
+                        <button
+                          onClick={() => {
+                            const updatedSeries = series.filter((_, i) => i !== seriesIndex)
+                            if (updatedSeries.length === 0) {
+                              // If removing all series, switch back to single mode
+                              updateConfig({ 
+                                multiSeries: false, 
+                                series: undefined,
+                                data: seriesItem.data
+                              })
+                            } else {
+                              updateConfig({ series: updatedSeries })
+                            }
+                          }}
+                          className="text-xs text-muted-foreground hover:text-destructive transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Data Preview for this series */}
+                  <div className="space-y-2">
+                    {seriesItem.data.slice(0, 3).map((item, index) => (
+                      <div
+                        key={index}
+                        className="w-full bg-background/50 border border-border/20 text-foreground rounded px-3 py-1.5 text-xs flex justify-between"
+                      >
+                        <span className="truncate">{item.scenario}</span>
+                        <span className="text-primary font-medium">{formatNumber(item.value)}</span>
+                      </div>
+                    ))}
+                    {seriesItem.data.length > 3 && (
+                      <div className="text-xs text-muted-foreground text-center py-1">
+                        +{seriesItem.data.length - 3} more items...
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Edit Data Button for each series */}
+                  <div className="mt-3">
+                    <DataEditorDialog 
+                      config={{...config, data: seriesItem.data}} 
+                      onConfigChange={(updatedConfig) => {
+                        const updatedSeries = [...series]
+                        updatedSeries[seriesIndex] = { ...seriesItem, data: updatedConfig.data }
+                        updateConfig({ series: updatedSeries })
+                      }}
+                    >
+                      <TouchTarget
+                        variant="custom"
+                        size="sm"
+                        className="w-full flex items-center justify-center gap-1 h-8 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 border rounded text-xs"
+                        hapticFeedback="light"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Edit {seriesItem.name} Data
+                      </TouchTarget>
+                    </DataEditorDialog>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Add Another Series Button */}
             <TouchTarget
-              variant="primary"
+              variant="custom"
               size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
-              style={{outline: 'none', boxShadow: 'none'}}
-              onFocus={(e) => e.currentTarget.blur()}
+              onClick={() => {
+                const newSeries = [
+                  ...series,
+                  {
+                    name: `Dataset ${series.length + 1}`,
+                    data: [
+                      { scenario: "Category A", value: Math.floor(Math.random() * 100) + 20 },
+                      { scenario: "Category B", value: Math.floor(Math.random() * 100) + 20 },
+                      { scenario: "Category C", value: Math.floor(Math.random() * 100) + 20 }
+                    ],
+                    color: undefined
+                  }
+                ]
+                updateConfig({ series: newSeries })
+              }}
+              className="w-full flex items-center justify-center gap-2 h-12 bg-transparent border-2 border-dashed border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/50 transition-all duration-200 rounded-lg"
               hapticFeedback="light"
             >
-              <Plus className="w-3 h-3 mr-1" />
-              Edit Data
+              <Plus className="w-4 h-4" />
+              Add Another Dataset for Comparison
             </TouchTarget>
-          </DataEditorDialog>
-        </div>
-        
-        <div className="space-y-2">
-          {config.data.slice(0, 5).map((item, index) => (
-            <div
-              key={index}
-              className="w-full bg-input border-border text-foreground rounded-lg px-3 py-2 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary flex gap-2 items-center justify-between"
-            >
-              <div className="text-sm text-foreground truncate">
-                {item.scenario}
+          </div>
+        ) : (
+          <>
+            {/* Single Series Data Input */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+                  <div className="w-1 h-4 bg-primary rounded-full"></div>
+                  Current Data
+                </h4>
+                <DataEditorDialog config={config} onConfigChange={onChange}>
+                  <TouchTarget
+                    variant="primary"
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
+                    style={{outline: 'none', boxShadow: 'none'}}
+                    onFocus={(e) => e.currentTarget.blur()}
+                    hapticFeedback="light"
+                  >
+                    <Plus className="w-3 h-3 mr-1" />
+                    Edit Data
+                  </TouchTarget>
+                </DataEditorDialog>
               </div>
-              <div className="text-sm text-primary font-medium">
-                {formatNumber(item.value)}
+              
+              <div className="space-y-2">
+                {config.data.slice(0, 5).map((item, index) => (
+                  <div
+                    key={index}
+                    className="w-full bg-input border-border text-foreground rounded-lg px-3 py-2 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary flex gap-2 items-center justify-between"
+                  >
+                    <div className="text-sm text-foreground truncate">
+                      {item.scenario}
+                    </div>
+                    <div className="text-sm text-primary font-medium">
+                      {formatNumber(item.value)}
+                    </div>
+                  </div>
+                ))}
+                {config.data.length > 5 && (
+                  <div className="text-xs text-muted-foreground text-center py-1">
+                    +{config.data.length - 5} more items...
+                  </div>
+                )}
               </div>
             </div>
-          ))}
-          {config.data.length > 5 && (
-            <div className="text-xs text-muted-foreground text-center py-1">
-              +{config.data.length - 5} more items...
-            </div>
-          )}
-        </div>
-      </div>
 
-      {/* Quick Import */}
-      <div className="space-y-3">
-        <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
-          <div className="w-1 h-4 bg-primary rounded-full"></div>
-          Quick Import
-        </h4>
-        <div className="grid grid-cols-2 gap-2">
-          <TouchTarget
-            variant="custom"
-            size="sm"
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 border rounded-lg"
-            hapticFeedback="light"
-          >
-            <Upload className="w-4 h-4" />
-            <span className="text-xs">CSV File</span>
-          </TouchTarget>
-          <TouchTarget
-            variant="custom"
-            size="sm"
-            onClick={() => {
-              const sampleData = "Product A\t$2.4M\nProduct B\t$1.8M\nProduct C\t$3.1M\nProduct D\t$850K\nProduct E\t$1.2M\nProduct F\t$640K"
-              setPasteInput(sampleData)
-              // Parse and import the sample data immediately
-              const parsedData = parsePastedData(sampleData)
-              if (parsedData.length > 0) {
-                updateConfig({ data: parsedData })
-              }
-            }}
-            className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 border rounded-lg"
-            hapticFeedback="light"
-          >
-            <FileText className="w-4 h-4" />
-            <span className="text-xs">Sample Data</span>
-          </TouchTarget>
-        </div>
-        <input
-          type="file"
-          accept=".csv,.txt"
-          ref={fileInputRef}
-          className="hidden"
-        />
+            {/* Add Comparison Data Button */}
+            {supportsMultiSeries && (
+              <div className="space-y-3">
+                <TouchTarget
+                  variant="custom"
+                  size="sm"
+                  onClick={() => {
+                    // Initialize multi-series with current data as first series
+                    const defaultSeries = [
+                      {
+                        name: "Dataset 1",
+                        data: config.data || [],
+                        color: undefined
+                      },
+                      {
+                        name: "Dataset 2", 
+                        data: [
+                          { scenario: "Category A", value: Math.floor(Math.random() * 100) + 20 },
+                          { scenario: "Category B", value: Math.floor(Math.random() * 100) + 20 },
+                          { scenario: "Category C", value: Math.floor(Math.random() * 100) + 20 }
+                        ],
+                        color: undefined
+                      }
+                    ]
+                    updateConfig({ multiSeries: true, series: defaultSeries })
+                  }}
+                  className="w-full flex items-center justify-center gap-2 h-12 bg-transparent border-2 border-dashed border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/50 transition-all duration-200 rounded-lg"
+                  hapticFeedback="light"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Comparison Data
+                </TouchTarget>
+                <p className="text-xs text-muted-foreground text-center">
+                  Compare multiple datasets side-by-side in the same chart
+                </p>
+              </div>
+            )}
+
+            {/* Quick Import */}
+            <div className="space-y-3">
+              <h4 className="text-foreground text-sm font-semibold flex items-center gap-2">
+                <div className="w-1 h-4 bg-primary rounded-full"></div>
+                Quick Import
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
+                <TouchTarget
+                  variant="custom"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 border rounded-lg"
+                  hapticFeedback="light"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span className="text-xs">CSV File</span>
+                </TouchTarget>
+                <TouchTarget
+                  variant="custom"
+                  size="sm"
+                  onClick={() => {
+                    const sampleData = "Product A\t$2.4M\nProduct B\t$1.8M\nProduct C\t$3.1M\nProduct D\t$850K\nProduct E\t$1.2M\nProduct F\t$640K"
+                    setPasteInput(sampleData)
+                    // Parse and import the sample data immediately
+                    const parsedData = parsePastedData(sampleData)
+                    if (parsedData.length > 0) {
+                      if (isMultiSeries && series.length > 0) {
+                        // Update the first series if in multi-series mode
+                        const updatedSeries = [...series]
+                        updatedSeries[0] = { ...updatedSeries[0], data: parsedData }
+                        updateConfig({ series: updatedSeries })
+                      } else {
+                        updateConfig({ data: parsedData })
+                      }
+                    }
+                  }}
+                  className="flex items-center justify-center gap-1 h-10 bg-transparent border-border/40 text-muted-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-foreground transition-all duration-200 border rounded-lg"
+                  hapticFeedback="light"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span className="text-xs">Sample Data</span>
+                </TouchTarget>
+              </div>
+              <input
+                type="file"
+                accept=".csv,.txt"
+                ref={fileInputRef}
+                className="hidden"
+              />
+            </div>
+          </>
+        )}
       </div>
-    </div>
-  )
+    )
+  }
 
   const renderAppearance = () => (
     <div className="space-y-6">
