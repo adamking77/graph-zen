@@ -649,70 +649,66 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const series = allSeries.filter(s => s.visible !== false) // Only show visible series
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     
-    // Get all unique categories from all series
-    const allCategories = [...new Set(series.flatMap(s => s.data.map(d => d.scenario)))]
-    const sortedCategories = allCategories
+    if (series.length === 0) return null
     
-    // Find max value across all series
-    const maxValue = Math.max(...series.flatMap(s => s.data.map(d => d.value)))
+    // Find max data points across all series for position-based iteration
+    const maxDataPoints = Math.max(...series.map(s => s.data?.length || 0))
     
-    const barHeight = 24 // Height of each individual bar
-    const barGap = 2 // Gap between bars in same category
-    const categoryGap = 16 // Gap between categories
-    const totalBarsPerCategory = series.length
-    const categoryHeight = totalBarsPerCategory * barHeight + (totalBarsPerCategory - 1) * barGap
+    // Find max value across all series for consistent scaling
+    const maxValue = Math.max(...series.flatMap(s => s.data?.map(d => d.value) || []))
+    
+    const barHeight = 28 // Height of each individual bar
     
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="w-full max-w-full space-y-4">
-          {sortedCategories.map((category, categoryIndex) => (
-            <div key={category} className="space-y-1">
-              {/* Category Label */}
-              <div className="text-xs text-muted-foreground mb-2">{category}</div>
-              
-              {/* Grouped Horizontal Bars for this category */}
-              <div className="flex items-start gap-3">
-                {/* Category labels column */}
-                <div className="w-16 flex flex-col gap-1">
-                  {series.map((seriesItem, seriesIndex) => (
-                    <div key={seriesIndex} style={{ height: `${barHeight}px` }} className="flex items-center justify-end">
-                      <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} truncate`}>
-                        {seriesItem.name}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Bars column */}
-                <div className="flex-1 flex flex-col gap-1">
-                  {series.filter(s => s.visible !== false).map((seriesItem, seriesIndex) => {
-                    const dataPoint = seriesItem.data.find(d => d.scenario === category)
-                    if (!dataPoint) {
-                      return <div key={seriesIndex} style={{ height: `${barHeight}px` }} />
-                    }
-                    
-                    const percentage = (dataPoint.value / maxValue) * 100
-                    const color = getUnifiedSeriesColor(seriesItem, series, colors)
-                    
-                    return (
+        <div className="w-full max-w-full space-y-6">
+          {/* Interleave data points by position */}
+          {Array.from({ length: maxDataPoints }, (_, position) => {
+            // Get all data points at this position from all datasets
+            const dataPointsAtPosition = series.map((seriesItem, seriesIndex) => ({
+              seriesItem,
+              seriesIndex,
+              dataPoint: seriesItem.data?.[position] || null
+            })).filter(item => item.dataPoint !== null) // Only show datasets that have data at this position
+            
+            if (dataPointsAtPosition.length === 0) return null // Skip if no datasets have data at this position
+            
+            return (
+              <div key={position} className="space-y-2">
+                {dataPointsAtPosition.map(({ seriesItem, seriesIndex, dataPoint }) => {
+                  const percentage = (dataPoint.value / maxValue) * 100
+                  const color = getUnifiedSeriesColor(seriesItem, series, colors)
+                  
+                  return (
+                    <div key={`${position}-${seriesIndex}`} className="flex items-center gap-3">
+                      {/* Data point label */}
+                      <div className="w-32 text-right flex-shrink-0">
+                        <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'} text-sm font-medium`}>
+                          {dataPoint.scenario}
+                        </span>
+                      </div>
+                      
+                      {/* Bar */}
                       <div 
-                        key={seriesIndex}
-                        className="relative bg-muted/30 rounded-sm overflow-hidden"
-                        style={{ height: `${barHeight}px` }}
+                        className="relative h-6 bg-muted/30 rounded-sm overflow-hidden"
+                        style={{ width: `${Math.max(percentage, 5)}%` }} // Proportional width, minimum 5%
                       >
                         <div
-                          className="h-full rounded-sm transition-all duration-700 ease-out flex items-center justify-end pr-2 hover:opacity-80 cursor-pointer"
+                          className="h-full w-full rounded-sm transition-all duration-700 ease-out flex items-center justify-center px-2 hover:opacity-80 cursor-pointer"
                           style={{
-                            width: `${percentage}%`,
                             background: `linear-gradient(90deg, ${color}f2, ${color}e6, ${color})`,
                             boxShadow: `0 2px 4px ${color}20`,
-                            animation: `growHorizontal 800ms ease-out ${(categoryIndex * series.length + seriesIndex) * 150}ms both`,
-                            '--target-width': `${percentage}%`
-                          } as any}
+                            animation: `growHorizontal 800ms ease-out ${(position * series.length + seriesIndex) * 100}ms both`,
+                          }}
                           onMouseEnter={(e) => {
                             const rect = e.currentTarget.getBoundingClientRect()
+                            const tooltipWidth = 200
+                            const screenWidth = window.innerWidth
+                            const wouldOverflow = rect.right + tooltipWidth > screenWidth - 20
+                            const xPosition = wouldOverflow ? rect.left - 10 : rect.right + 10
+                            
                             setTooltip({
-                              x: rect.right,
+                              x: xPosition,
                               y: rect.top + rect.height / 2,
                               label: `${seriesItem.name}: ${dataPoint.scenario}`,
                               value: dataPoint.value,
@@ -722,37 +718,52 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                           }}
                           onMouseLeave={() => setTooltip(null)}
                         >
+                          {/* Only show value, no series name */}
                           {showDataLabels && percentage > 15 && (
-                            <div 
-                              className="text-xs font-medium text-center w-full"
-                              style={{ color: '#ffffff' }}
-                            >
-                              {dataPoint.displayValue || formatNumber(dataPoint.value)}
-                            </div>
+                            <span className={`text-xs font-medium ${isDark ? 'text-white/90' : 'text-white'} text-center w-full`}>
+                              {showPercentages ? `${(dataPoint.value / dataPointsAtPosition.reduce((sum, item) => sum + item.dataPoint.value, 0) * 100).toFixed(1)}%` : formatNumber(dataPoint.value)}
+                            </span>
                           )}
                         </div>
                       </div>
-                    )
-                  })}
-                </div>
+                    </div>
+                  )
+                })}
               </div>
-            </div>
-          ))}
+            )
+          })}
           
-          {/* Series Legend */}
-          <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} ${layoutState.isMobile ? 'mt-4 pt-2' : 'mt-6 pt-4'} border-t border-border/30 flex-wrap`}>
+          {/* Enhanced Series Legend with data summaries */}
+          <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} py-2 px-2 min-h-0 flex-wrap`}>
             {series.map((seriesItem, index) => {
               const color = getUnifiedSeriesColor(seriesItem, series, colors)
               const isVisible = seriesItem.visible !== false
+              const dataSummary = getSeriesDataSummary(seriesItem)
+              const hasMultipleSeries = series.length > 1
+              
               return (
-                <div key={index} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
-                  <div 
-                    className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
-                    style={{ backgroundColor: color }} 
-                  />
-                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate max-w-none`}>
-                    {seriesItem.name}
-                  </span>
+                <div key={`legend-${index}`} className={`flex ${layoutState.isMobile ? 'flex-col gap-0.5' : 'items-center gap-2'} ${!isVisible ? 'opacity-50' : ''} ${hasMultipleSeries && dataSummary ? 'bg-background/50 rounded-md px-2 py-1' : ''}`}>
+                  <div className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'}`}>
+                    <div 
+                      className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded flex-shrink-0`}
+                      style={{ backgroundColor: color }} 
+                    />
+                    <span className={`text-xs font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} ${!isVisible ? 'line-through' : ''}`}>
+                      {seriesItem.name}
+                    </span>
+                  </div>
+                  
+                  {hasMultipleSeries && dataSummary && (
+                    <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} ${layoutState.isMobile ? 'ml-3.5' : ''}`}>
+                      <span className="font-medium">Total: {dataSummary.formattedTotal}</span>
+                      {dataSummary.categoryCount > 1 && (
+                        <span className="ml-2">({dataSummary.categoryCount} categories)</span>
+                      )}
+                      {!layoutState.isMobile && dataSummary.categoryCount > 1 && (
+                        <span className="ml-2">Avg: {dataSummary.formattedAvg}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               )
             })}
@@ -865,92 +876,124 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     const series = allSeries.filter(s => s.visible !== false) // Only show visible series
     const colors = config.theme?.palette.colors || ["#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B"]
     
-    // Get all unique categories from all series
-    const allCategories = [...new Set(series.flatMap(s => s.data.map(d => d.scenario)))]
-    const sortedCategories = allCategories // Could apply sorting here if needed
+    if (series.length === 0) return null
     
-    // Find max value across all series
-    const maxValue = Math.max(...series.flatMap(s => s.data.map(d => d.value)))
+    // Find max data points across all series for position-based iteration
+    const maxDataPoints = Math.max(...series.map(s => s.data?.length || 0))
+    
+    // Find max value across all series for consistent scaling
+    const maxValue = Math.max(...series.flatMap(s => s.data?.map(d => d.value) || []))
     
     // Use deterministic dimensions
     const { availableHeight } = getContainerDimensions()
-    const maxBarHeight = availableHeight * 0.6
-    const barWidth = 24 // Narrower for grouped bars
+    const maxBarHeight = availableHeight * 0.65
+    const barWidth = 32 // Better width for visibility
     
     return (
       <div className="h-full flex flex-col justify-center">
-        <div className="flex items-end justify-center gap-8">
-          {sortedCategories.map((category, categoryIndex) => (
-            <div key={category} className="flex items-end gap-1">
-              {series.filter(s => s.visible !== false).map((seriesItem, seriesIndex) => {
-                const dataPoint = seriesItem.data.find(d => d.scenario === category)
-                if (!dataPoint) return <div key={seriesIndex} style={{ width: barWidth }} />
+        <div className="flex items-end justify-center gap-10 flex-wrap">
+          {/* Interleave data points by position */}
+          {Array.from({ length: maxDataPoints }, (_, position) => {
+            // Get all data points at this position from all datasets
+            const dataPointsAtPosition = series.map((seriesItem, seriesIndex) => ({
+              seriesItem,
+              seriesIndex,
+              dataPoint: seriesItem.data?.[position] || null
+            })).filter(item => item.dataPoint !== null) // Only show datasets that have data at this position
+            
+            if (dataPointsAtPosition.length === 0) return null // Skip if no datasets have data at this position
+            
+            return (
+              <div key={position} className="flex flex-col items-center gap-4">
+                {/* Side-by-side bars for datasets at this position */}
+                <div className="flex items-end gap-1">
+                  {dataPointsAtPosition.map(({ seriesItem, seriesIndex, dataPoint }) => {
+                    const percentage = (dataPoint.value / maxValue) * 100
+                    const barHeight = Math.max((percentage / 100) * maxBarHeight, 20)
+                    const color = getUnifiedSeriesColor(seriesItem, series, colors)
+                    
+                    return (
+                      <div
+                        key={`${position}-${seriesIndex}`}
+                        className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2 hover:opacity-80 relative"
+                        style={{
+                          width: `${barWidth}px`,
+                          height: `${barHeight}px`,
+                          background: `linear-gradient(180deg, ${color}f5, ${color}e8, ${color})`,
+                          boxShadow: `0 2px 8px ${color}25`,
+                          transformOrigin: 'bottom',
+                          animation: `growVertical 800ms ease-out ${(position * series.length + seriesIndex) * 100}ms both`
+                        }}
+                        onMouseEnter={(e) => {
+                          const rect = e.currentTarget.getBoundingClientRect()
+                          setTooltip({
+                            x: rect.left + rect.width / 2,
+                            y: rect.top,
+                            label: `${seriesItem.name}: ${dataPoint.scenario}`,
+                            value: dataPoint.value,
+                            displayValue: dataPoint.displayValue || formatNumber(dataPoint.value),
+                            color: color
+                          })
+                        }}
+                        onMouseLeave={() => setTooltip(null)}
+                      >
+                        {showDataLabels && barHeight > 35 && (
+                          <div 
+                            className="text-xs font-medium text-center w-full px-1"
+                            style={{ color: '#ffffff' }}
+                          >
+                            {showPercentages ? `${(dataPoint.value / dataPointsAtPosition.reduce((sum, item) => sum + item.dataPoint.value, 0) * 100).toFixed(1)}%` : (dataPoint.displayValue || formatNumber(dataPoint.value))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
                 
-                const percentage = (dataPoint.value / maxValue) * 100
-                const barHeight = Math.max((percentage / 100) * maxBarHeight, 15)
-                const color = getUnifiedSeriesColor(seriesItem, series, colors)
-                
-                return (
-                  <div key={seriesIndex} className="flex flex-col items-center gap-2">
-                    <div
-                      className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2 hover:opacity-80"
-                      style={{
-                        width: `${barWidth}px`,
-                        height: `${barHeight}px`,
-                        background: `linear-gradient(180deg, ${color}f5, ${color}e8, ${color})`,
-                        boxShadow: `0 2px 8px ${color}25`,
-                        transformOrigin: 'bottom',
-                        animation: `growVertical 800ms ease-out ${(categoryIndex * series.length + seriesIndex) * 100}ms both`
-                      }}
-                      onMouseEnter={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect()
-                        setTooltip({
-                          x: rect.left + rect.width / 2,
-                          y: rect.top,
-                          label: `${seriesItem.name}: ${dataPoint.scenario}`,
-                          value: dataPoint.value,
-                          displayValue: dataPoint.displayValue || formatNumber(dataPoint.value),
-                          color: color
-                        })
-                      }}
-                      onMouseLeave={() => setTooltip(null)}
-                    >
-                      {showDataLabels && barHeight > 40 && (
-                        <div 
-                          className="text-xs font-medium text-center w-full"
-                          style={{ color: '#ffffff' }}
-                        >
-                          {dataPoint.displayValue || formatNumber(dataPoint.value)}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center gap-8 mt-4">
-          {sortedCategories.map((category, index) => (
-            <span key={index} className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} text-center max-w-20 truncate`}>
-              {category}
-            </span>
-          ))}
+                {/* Labels for all data points at this position */}
+                <div className="flex gap-2 text-center">
+                  {dataPointsAtPosition.map(({ dataPoint }, idx) => (
+                    <span key={idx} className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-16 truncate`}>
+                      {dataPoint.scenario}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
         </div>
         
-        <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} ${layoutState.isMobile ? 'mt-2' : 'mt-3'} flex-wrap`}>
+        {/* Enhanced Series Legend with data summaries */}
+        <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} py-2 px-2 mt-4 min-h-0 flex-wrap`}>
           {series.map((seriesItem, index) => {
             const color = getUnifiedSeriesColor(seriesItem, series, colors)
             const isVisible = seriesItem.visible !== false
+            const dataSummary = getSeriesDataSummary(seriesItem)
+            const hasMultipleSeries = series.length > 1
+            
             return (
-              <div key={index} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
-                <div 
-                  className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
-                  style={{ backgroundColor: color }} 
-                />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate max-w-none`}>
-                  {seriesItem.name}
-                </span>
+              <div key={`legend-${index}`} className={`flex ${layoutState.isMobile ? 'flex-col gap-0.5' : 'items-center gap-2'} ${!isVisible ? 'opacity-50' : ''} ${hasMultipleSeries && dataSummary ? 'bg-background/50 rounded-md px-2 py-1' : ''}`}>
+                <div className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'}`}>
+                  <div 
+                    className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded flex-shrink-0`}
+                    style={{ backgroundColor: color }} 
+                  />
+                  <span className={`text-xs font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'} ${!isVisible ? 'line-through' : ''}`}>
+                    {seriesItem.name}
+                  </span>
+                </div>
+                
+                {hasMultipleSeries && dataSummary && (
+                  <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} ${layoutState.isMobile ? 'ml-3.5' : ''}`}>
+                    <span className="font-medium">Total: {dataSummary.formattedTotal}</span>
+                    {dataSummary.categoryCount > 1 && (
+                      <span className="ml-2">({dataSummary.categoryCount} categories)</span>
+                    )}
+                    {!layoutState.isMobile && dataSummary.categoryCount > 1 && (
+                      <span className="ml-2">Avg: {dataSummary.formattedAvg}</span>
+                    )}
+                  </div>
+                )}
               </div>
             )
           })}
