@@ -694,10 +694,11 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         style={{ width: `${Math.max(percentage, 5)}%` }} // Proportional width, minimum 5%
                       >
                         <div
-                          className="h-full w-full rounded-sm transition-all duration-700 ease-out flex items-center justify-center px-2 hover:opacity-80 cursor-pointer"
+                          className="h-full w-full rounded-sm transition-all duration-700 ease-out flex items-center justify-center px-2 hover:opacity-70 cursor-pointer"
                           style={{
-                            background: `linear-gradient(90deg, ${color}f2, ${color}e6, ${color})`,
+                            background: `${color}`,
                             boxShadow: `0 2px 4px ${color}20`,
+                            opacity: '0.82',
                             animation: `growHorizontal 800ms ease-out ${(position * series.length + seriesIndex) * 100}ms both`,
                           }}
                           onMouseEnter={(e) => {
@@ -813,12 +814,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 <div className="flex-1 relative">
                 <div className={`h-8 ${isDark ? 'bg-gray-800/30' : 'bg-gray-200/40'} rounded-sm overflow-hidden`}>
                   <div
-                    className="h-full rounded-sm transition-all duration-200 ease-out flex items-center justify-end pr-3 relative cursor-pointer hover:opacity-80"
+                    className="h-full rounded-sm transition-all duration-200 ease-out flex items-center justify-end pr-3 relative cursor-pointer hover:opacity-70"
                     style={{
                       '--target-width': `${percentage}%`,
                       width: `${percentage}%`,
-                      background: `linear-gradient(90deg, ${color}f2, ${color}e6, ${color})`,
+                      background: `${color}`,
                       boxShadow: `0 2px 4px ${color}20`,
+                      opacity: '0.82',
                       animation: `growHorizontal 800ms ease-out ${index * 150}ms both`
                     } as React.CSSProperties}
                     onMouseEnter={(e) => {
@@ -927,12 +929,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     return (
                       <div
                         key={`${position}-${seriesIndex}`}
-                        className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2 hover:opacity-80 relative"
+                        className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2 hover:opacity-70 relative"
                         style={{
                           width: `${barWidth}px`,
                           height: `${barHeight}px`,
-                          background: `linear-gradient(180deg, ${color}f5, ${color}e8, ${color})`,
+                          background: `${color}`,
                           boxShadow: `0 2px 8px ${color}25`,
+                          opacity: '0.82',
                           transformOrigin: 'bottom',
                           animation: `growVertical 800ms ease-out ${(position * series.length + seriesIndex) * 100}ms both`
                         }}
@@ -1098,9 +1101,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       <stop offset="100%" stopColor={color} stopOpacity="0.05" />
                     </linearGradient>
                     <linearGradient id={`lineStroke-${seriesIndex}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor={color} />
-                      <stop offset="50%" stopColor={color} stopOpacity="0.8" />
-                      <stop offset="100%" stopColor={color} />
+                      <stop offset="0%" stopColor={color} stopOpacity="0.88" />
+                      <stop offset="50%" stopColor={color} stopOpacity="0.9" />
+                      <stop offset="100%" stopColor={color} stopOpacity="0.88" />
                     </linearGradient>
                   </g>
                 )
@@ -1190,7 +1193,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         cy={y}
                         r="6"
                         fill={color}
-                        className="cursor-pointer transition-all duration-300 hover:r-8 hover:opacity-80"
+                        className="cursor-pointer transition-all duration-300 hover:r-8 hover:opacity-70"
                         style={{
                           filter: `drop-shadow(0 2px 4px ${color}40)`,
                           animation: `bounceIn 0.6s ease-out ${(seriesIndex * 200 + pointIndex * 100)}ms backwards`
@@ -1365,12 +1368,13 @@ export function ChartPreview({ config }: ChartPreviewProps) {
             return (
               <div key={index} className="flex flex-col items-center gap-2">
                 <div
-                  className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2 hover:opacity-80"
+                  className="rounded-t cursor-pointer transition-all duration-200 flex items-end justify-center pb-2 hover:opacity-70"
                   style={{
                     width: `${barWidth}px`,
                     height: `${barHeight}px`,
-                    background: `linear-gradient(180deg, ${color}f5, ${color}e8, ${color})`,
+                    background: `${color}`,
                     boxShadow: `0 2px 8px ${color}25`,
+                    opacity: '0.82',
                     transformOrigin: 'bottom',
                     animation: `growVertical 800ms ease-out ${index * 150}ms both`
                   }}
@@ -1460,9 +1464,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   const color = colors[index % colors.length]
                   return (
                     <radialGradient key={`pieGradient-${index}`} id={`pieGradient-${index}`} cx="50%" cy="30%" r="70%">
-                      <stop offset="0%" stopColor={`${color}f8`} />
-                      <stop offset="50%" stopColor={`${color}e6`} />
-                      <stop offset="100%" stopColor={`${color}d4`} />
+                      <stop offset="0%" stopColor={`${color}f8`} stopOpacity="0.82" />
+                      <stop offset="50%" stopColor={`${color}e6`} stopOpacity="0.82" />
+                      <stop offset="100%" stopColor={`${color}d4`} stopOpacity="0.82" />
                     </radialGradient>
                   )
                 })}
@@ -1485,7 +1489,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       d={`M 100 100 L ${x1} ${y1} A 140 140 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                       fill={`url(#pieGradient-${index})`}
                       filter="url(#pieShadow)"
-                      className="cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105"
+                      className="cursor-pointer transition-all duration-300 hover:opacity-70 hover:scale-105"
                       style={{
                         transformOrigin: '100px 100px',
                         transform: 'scale(1)',
@@ -1590,9 +1594,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 const color = colors[index % colors.length]
                 return (
                   <radialGradient key={`pieLandscapeGradient-${index}`} id={`pieLandscapeGradient-${index}`} cx="50%" cy="30%" r="70%">
-                    <stop offset="0%" stopColor={`${color}f8`} />
-                    <stop offset="50%" stopColor={`${color}e6`} />
-                    <stop offset="100%" stopColor={`${color}d4`} />
+                    <stop offset="0%" stopColor={`${color}f8`} stopOpacity="0.82" />
+                    <stop offset="50%" stopColor={`${color}e6`} stopOpacity="0.82" />
+                    <stop offset="100%" stopColor={`${color}d4`} stopOpacity="0.82" />
                   </radialGradient>
                 )
               })}
@@ -1615,7 +1619,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     d={`M 100 100 L ${x1} ${y1} A 140 140 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
                     fill={`url(#pieLandscapeGradient-${index})`}
                     filter="url(#pieShadowLandscape)"
-                    className="cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105"
+                    className="cursor-pointer transition-all duration-300 hover:opacity-70 hover:scale-105"
                     style={{
                       transformOrigin: '100px 100px',
                       transform: 'scale(1)',
@@ -1732,9 +1736,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   const color = colors[index % colors.length]
                   return (
                     <radialGradient key={`donutGradient-${index}`} id={`donutGradient-${index}`} cx="50%" cy="30%" r="70%">
-                      <stop offset="0%" stopColor={`${color}f8`} />
-                      <stop offset="50%" stopColor={`${color}e6`} />
-                      <stop offset="100%" stopColor={`${color}d4`} />
+                      <stop offset="0%" stopColor={`${color}f8`} stopOpacity="0.82" />
+                      <stop offset="50%" stopColor={`${color}e6`} stopOpacity="0.82" />
+                      <stop offset="100%" stopColor={`${color}d4`} stopOpacity="0.82" />
                     </radialGradient>
                   )
                 })}
@@ -1781,7 +1785,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       d={pathData}
                       fill={`url(#donutGradient-${index})`}
                       filter="url(#donutShadowPortrait)"
-                      className="cursor-pointer transition-all duration-500 hover:opacity-80 hover:scale-105"
+                      className="cursor-pointer transition-all duration-500 hover:opacity-70 hover:scale-105"
                       style={{
                         transformOrigin: '100px 100px',
                         transform: 'scale(1)',
@@ -1904,9 +1908,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 const color = colors[index % colors.length]
                 return (
                   <radialGradient key={`donutLandscapeGradient-${index}`} id={`donutLandscapeGradient-${index}`} cx="50%" cy="30%" r="70%">
-                    <stop offset="0%" stopColor={`${color}f8`} />
-                    <stop offset="50%" stopColor={`${color}e6`} />
-                    <stop offset="100%" stopColor={`${color}d4`} />
+                    <stop offset="0%" stopColor={`${color}f8`} stopOpacity="0.82" />
+                    <stop offset="50%" stopColor={`${color}e6`} stopOpacity="0.82" />
+                    <stop offset="100%" stopColor={`${color}d4`} stopOpacity="0.82" />
                   </radialGradient>
                 )
               })}
@@ -1953,7 +1957,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     d={pathData}
                     fill={`url(#donutLandscapeGradient-${index})`}
                     filter="url(#donutShadow)"
-                    className="cursor-pointer transition-all duration-500 hover:opacity-80 hover:scale-105"
+                    className="cursor-pointer transition-all duration-500 hover:opacity-70 hover:scale-105"
                     style={{
                       transformOrigin: '100px 100px',
                       transform: 'scale(1)',
@@ -2134,9 +2138,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                 <stop offset="100%" stopColor={primaryColor} stopOpacity="0.05" />
               </linearGradient>
               <linearGradient id="lineStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={primaryColor} />
-                <stop offset="50%" stopColor={primaryColor} stopOpacity="0.8" />
-                <stop offset="100%" stopColor={primaryColor} />
+                <stop offset="0%" stopColor={primaryColor} stopOpacity="0.88" />
+                <stop offset="50%" stopColor={primaryColor} stopOpacity="0.9" />
+                <stop offset="100%" stopColor={primaryColor} stopOpacity="0.88" />
               </linearGradient>
               <filter id="lineShadow" x="-50%" y="-50%" width="200%" height="200%">
                 <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.2"/>
@@ -2199,7 +2203,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   cy={y}
                   r="6"
                   fill={primaryColor}
-                  className="cursor-pointer transition-all duration-300 hover:r-8 hover:opacity-80"
+                  className="cursor-pointer transition-all duration-300 hover:r-8 hover:opacity-70"
                   style={{
                     filter: `drop-shadow(0 2px 4px ${primaryColor}40)`,
                     animation: `bounceIn 0.6s ease-out ${index * 0.1}s backwards`
@@ -2411,9 +2415,9 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       <stop offset="100%" stopColor={color} stopOpacity="0.05" />
                     </linearGradient>
                     <linearGradient id={`lineStroke-${seriesIndex}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor={color} />
-                      <stop offset="50%" stopColor={color} stopOpacity="0.8" />
-                      <stop offset="100%" stopColor={color} />
+                      <stop offset="0%" stopColor={color} stopOpacity="0.88" />
+                      <stop offset="50%" stopColor={color} stopOpacity="0.9" />
+                      <stop offset="100%" stopColor={color} stopOpacity="0.88" />
                     </linearGradient>
                   </g>
                 )
@@ -2468,7 +2472,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                       width={barWidth}
                       height={barHeight}
                       fill={`url(#barGradient-${seriesIndex})`}
-                      className="cursor-pointer transition-all duration-300 hover:opacity-80"
+                      className="cursor-pointer transition-all duration-300 hover:opacity-70"
                       style={{
                         filter: `drop-shadow(0 2px 4px ${color}30)`,
                         animation: `slideUp 800ms ease-out ${(dataIndex * totalBars + seriesIndex) * 100}ms both`
@@ -2537,7 +2541,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                         cy={y}
                         r="5"
                         fill={color}
-                        className="cursor-pointer transition-all duration-300 hover:r-7 hover:opacity-80"
+                        className="cursor-pointer transition-all duration-300 hover:r-7 hover:opacity-70"
                         style={{
                           filter: `drop-shadow(0 2px 4px ${color}40)`,
                           animation: `bounceIn 0.6s ease-out ${(barSeries.length * maxDataPoints * 100 + seriesIndex * 200 + pointIndex * 100)}ms backwards`
@@ -2828,7 +2832,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                   rx="2"
                   fill="url(#comboBarGradient)"
                   filter="url(#comboShadow)"
-                  className="cursor-pointer transition-all duration-200 hover:opacity-80"
+                  className="cursor-pointer transition-all duration-200 hover:opacity-70"
                   style={{
                     animation: `slideUp 0.8s ease-out ${index * 0.15}s backwards`
                   }}
