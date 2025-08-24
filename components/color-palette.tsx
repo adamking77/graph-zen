@@ -32,6 +32,13 @@ export interface ColorTheme {
   abbreviation?: 'auto' | 'none' | 'k' | 'm'
   decimalPlaces?: 'auto' | 'fixed'
   fixedDecimalCount?: number
+  // Reference lines
+  referenceLines?: {
+    horizontal?: Array<{ value: number, color: string, label?: string, style: 'solid' | 'dashed' }>
+    vertical?: Array<{ value: number, color: string, label?: string, style: 'solid' | 'dashed' }>
+    average?: { enabled: boolean, color: string }
+    median?: { enabled: boolean, color: string }
+  }
 }
 
 interface ColorPaletteProps {
@@ -76,6 +83,32 @@ const colorPalettes: ColorPalette[] = [
     id: 'cool-gray',
     name: 'Cool Gray',
     colors: ['#4C5C68', '#5F7682', '#7A8B94', '#9EAAB2'],
+    type: 'monochrome'
+  },
+  
+  // New monochrome color palettes
+  {
+    id: 'blues-mono',
+    name: 'Blues',
+    colors: ['#1E3A8A', '#2563EB', '#3B82F6', '#60A5FA', '#93C5FD'],
+    type: 'monochrome'
+  },
+  {
+    id: 'reds-mono', 
+    name: 'Reds',
+    colors: ['#991B1B', '#DC2626', '#EF4444', '#F87171', '#FCA5A5'],
+    type: 'monochrome'
+  },
+  {
+    id: 'oranges-mono',
+    name: 'Oranges', 
+    colors: ['#C2410C', '#EA580C', '#F97316', '#FB923C', '#FCD34D'],
+    type: 'monochrome'
+  },
+  {
+    id: 'purples-mono',
+    name: 'Purples',
+    colors: ['#581C87', '#7C3AED', '#8B5CF6', '#A78BFA', '#C4B5FD'],
     type: 'monochrome'
   },
   

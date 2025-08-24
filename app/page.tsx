@@ -21,6 +21,12 @@ export interface ChartData {
   displayValue?: string
 }
 
+export interface ChartDataSeries {
+  name: string
+  data: ChartData[]
+  color?: string
+}
+
 export interface ChartDimensions {
   width: number
   height: number
@@ -33,6 +39,8 @@ export interface ChartConfig {
   subtitle: string
   type: "horizontal-bar" | "vertical-bar" | "pie" | "donut" | "line" | "combo"
   data: ChartData[]
+  series?: ChartDataSeries[]  // Multi-series support
+  multiSeries?: boolean       // Toggle for multi-series mode
   dimensions?: ChartDimensions
   theme?: ColorTheme
   isModalContext?: boolean
