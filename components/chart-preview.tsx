@@ -719,17 +719,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           ))}
           
           {/* Series Legend */}
-          <div className="flex justify-center gap-4 mt-6 pt-4 border-t border-border/30">
+          <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} ${layoutState.isMobile ? 'mt-4 pt-2' : 'mt-6 pt-4'} border-t border-border/30 flex-wrap`}>
             {series.map((seriesItem, index) => {
               const color = getUnifiedSeriesColor(seriesItem, series, colors)
               const isVisible = seriesItem.visible !== false
               return (
-                <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
+                <div key={index} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
                   <div 
-                    className="w-3 h-3 rounded" 
+                    className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
                     style={{ backgroundColor: color }} 
                   />
-                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
+                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate ${layoutState.isMobile ? 'max-w-16' : 'max-w-20'} sm:max-w-none`}>
                     {seriesItem.name}
                   </span>
                 </div>
@@ -917,17 +917,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           ))}
         </div>
         
-        <div className="flex justify-center gap-4 mt-3">
+        <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} ${layoutState.isMobile ? 'mt-2' : 'mt-3'} flex-wrap`}>
           {series.map((seriesItem, index) => {
             const color = getUnifiedSeriesColor(seriesItem, series, colors)
             const isVisible = seriesItem.visible !== false
             return (
-              <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
+              <div key={index} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
                 <div 
-                  className="w-3 h-3 rounded" 
+                  className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
                   style={{ backgroundColor: color }} 
                 />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
+                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate ${layoutState.isMobile ? 'max-w-16' : 'max-w-20'} sm:max-w-none`}>
                   {seriesItem.name}
                 </span>
               </div>
@@ -1196,17 +1196,17 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-4 py-1 px-2 min-h-0 flex-wrap">
+        <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} py-1 px-2 min-h-0 flex-wrap`}>
           {series.map((seriesItem, index) => {
             const color = getUnifiedSeriesColor(seriesItem, series, colors)
             const isVisible = seriesItem.visible !== false
             return (
-              <div key={index} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
+              <div key={index} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
                 <div 
-                  className="w-3 h-3 rounded" 
+                  className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
                   style={{ backgroundColor: color }} 
                 />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
+                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate ${layoutState.isMobile ? 'max-w-16' : 'max-w-20'} sm:max-w-none`}>
                   {seriesItem.name}
                 </span>
               </div>
@@ -2522,18 +2522,18 @@ export function ChartPreview({ config }: ChartPreviewProps) {
         </div>
 
         {/* Enhanced Legend - Shows all series with visibility and type indicators */}
-        <div className="flex justify-center gap-4 py-1 px-2 min-h-0 flex-wrap">
+        <div className={`flex justify-center ${layoutState.isMobile ? 'gap-2' : layoutState.isTablet ? 'gap-3' : 'gap-4'} py-1 px-2 min-h-0 flex-wrap`}>
           {allSeries.map((seriesItem, index) => {
             const color = getSeriesColor(seriesItem, allSeries)
             const isVisible = seriesItem.visible !== false
             
             return (
-              <div key={`legend-${index}`} className={`flex items-center gap-2 ${!isVisible ? 'opacity-50' : ''}`}>
+              <div key={`legend-${index}`} className={`flex items-center ${layoutState.isMobile ? 'gap-1' : 'gap-2'} ${!isVisible ? 'opacity-50' : ''}`}>
                 <div 
-                  className="w-3 h-3 rounded"
+                  className={`${layoutState.isMobile ? 'w-2.5 h-2.5' : 'w-3 h-3'} rounded`}
                   style={{ backgroundColor: color }} 
                 />
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''}`}>
+                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} ${!isVisible ? 'line-through' : ''} truncate ${layoutState.isMobile ? 'max-w-16' : 'max-w-20'} sm:max-w-none`}>
                   {seriesItem.name}
                 </span>
               </div>
