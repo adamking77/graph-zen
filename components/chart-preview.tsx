@@ -192,46 +192,36 @@ export function ChartPreview({ config }: ChartPreviewProps) {
     
     const contentAdjustments = getContentAwareAdjustments()
     
-    // Enhanced responsive max dimensions based on breakpoint and content
+    // Simplified responsive limits - height is now handled by viewport constraints
     const getResponsiveLimits = () => {
       if (layoutState.breakpoint === 'mobile-sm') {
         return {
           utilization: 0.95,
           minWidth: aspectRatio < 0.8 ? 280 : 320,
-          maxWidth: aspectRatio < 0.8 ? 360 : 420,
-          minHeight: aspectRatio < 0.8 ? 320 : 240,
-          maxHeight: aspectRatio < 0.8 ? 450 : 400  // Reduced max height for portrait
+          maxWidth: aspectRatio < 0.8 ? 360 : 420
         }
       } else if (layoutState.isMobile) {
         return {
           utilization: 0.96,
           minWidth: aspectRatio < 0.8 ? 320 : 400,
-          maxWidth: aspectRatio < 0.8 ? 480 : 600,
-          minHeight: aspectRatio < 0.8 ? 400 : 300,
-          maxHeight: aspectRatio < 0.8 ? 550 : 500  // Reduced max height for portrait
+          maxWidth: aspectRatio < 0.8 ? 480 : 600
         }
       } else if (layoutState.isTablet) {
         return {
           utilization: 0.97,
           minWidth: aspectRatio < 0.8 ? 400 : 500,
-          maxWidth: aspectRatio < 0.8 ? 550 : 800,
-          minHeight: aspectRatio < 0.8 ? 500 : 400,
-          maxHeight: aspectRatio < 0.8 ? 650 : 600  // Reduced max height for portrait
+          maxWidth: aspectRatio < 0.8 ? 550 : 800
         }
       } else {
         // Desktop sizing with content-aware adjustments
         const baseMinWidth = aspectRatio < 0.8 ? 450 : 700
         const baseMaxWidth = aspectRatio < 0.8 ? 600 : 1200
-        const baseMinHeight = aspectRatio < 0.8 ? 550 : 550
-        const baseMaxHeight = aspectRatio < 0.8 ? 700 : 800
         
         return {
           utilization: 0.98,
           minWidth: Math.max(baseMinWidth * contentAdjustments.sizeMultiplier, 
                             contentAdjustments.minSpacePerItem * contentAdjustments.dataCount + 200),
-          maxWidth: baseMaxWidth * Math.min(contentAdjustments.sizeMultiplier, 1.3),
-          minHeight: baseMinHeight * contentAdjustments.sizeMultiplier,
-          maxHeight: baseMaxHeight * Math.min(contentAdjustments.sizeMultiplier, 1.2)
+          maxWidth: baseMaxWidth * Math.min(contentAdjustments.sizeMultiplier, 1.3)
         }
       }
     }
@@ -242,26 +232,25 @@ export function ChartPreview({ config }: ChartPreviewProps) {
       limits.maxWidth
     )
     
-    const maxContainerHeight = Math.min(
-      Math.max(availableViewportHeight * limits.utilization, limits.minHeight),
-      limits.maxHeight
+    // Simple viewport-constrained height - prevents overflow on all screens
+    const maxAllowedHeight = Math.min(
+      availableViewportHeight * 0.75,  // Never exceed 75% of viewport height
+      600  // Hard cap at 600px for any chart
     )
-    
-    const availableHeight = maxContainerHeight - reservedHeight
     
     // Calculate dimensions maintaining aspect ratio within bounds
     let containerWidth = maxContainerWidth
     let containerHeight = maxContainerWidth / aspectRatio
     
-    // If height would exceed available space, scale based on height
-    if (containerHeight > availableHeight) {
-      containerHeight = availableHeight
-      containerWidth = availableHeight * aspectRatio
+    // If height would exceed viewport constraints, scale based on height
+    if (containerHeight > maxAllowedHeight) {
+      containerHeight = maxAllowedHeight
+      containerWidth = maxAllowedHeight * aspectRatio
     }
     
-    // Ensure minimum sizes for usability with breakpoint-aware minimums
+    // Ensure minimum sizes for usability
     containerWidth = Math.max(containerWidth, limits.minWidth)
-    containerHeight = Math.max(containerHeight, limits.minHeight)
+    containerHeight = Math.max(containerHeight, 200)  // Simple 200px minimum
     
     return {
       width: `${containerWidth}px`,
