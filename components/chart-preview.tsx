@@ -129,12 +129,16 @@ export function ChartPreview({ config }: ChartPreviewProps) {
   
   // Calculate container dimensions with enhanced responsive sizing
   const getContainerDimensions = () => {
-    const aspectRatio = dimensions.width / dimensions.height
+    const originalAspectRatio = dimensions.width / dimensions.height
+    
+    // Smart preview mode: Cap extreme aspect ratios for better UX in preview contexts
+    // Mobile (9:16 = 0.56) and Story (9:16 = 0.56) presets become 3:4 (0.75) for reasonable preview
+    const aspectRatio = originalAspectRatio < 0.75 ? 0.75 : originalAspectRatio
     
     // Modal context: use flexible dimensions that work with container
     if (config.isModalContext) {
-      const modalWidth = layoutState.isMobile ? 320 : 480
-      const modalHeight = layoutState.isMobile ? 240 : 360
+      const modalWidth = layoutState.isMobile ? 280 : 400
+      const modalHeight = layoutState.isMobile ? 200 : 300
       return {
         width: '100%',
         height: 'auto',
@@ -196,7 +200,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           minWidth: aspectRatio < 0.8 ? 280 : 320,
           maxWidth: aspectRatio < 0.8 ? 360 : 420,
           minHeight: aspectRatio < 0.8 ? 320 : 240,
-          maxHeight: aspectRatio < 0.8 ? 500 : 400
+          maxHeight: aspectRatio < 0.8 ? 450 : 400  // Reduced max height for portrait
         }
       } else if (layoutState.isMobile) {
         return {
@@ -204,7 +208,7 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           minWidth: aspectRatio < 0.8 ? 320 : 400,
           maxWidth: aspectRatio < 0.8 ? 480 : 600,
           minHeight: aspectRatio < 0.8 ? 400 : 300,
-          maxHeight: aspectRatio < 0.8 ? 700 : 500
+          maxHeight: aspectRatio < 0.8 ? 550 : 500  // Reduced max height for portrait
         }
       } else if (layoutState.isTablet) {
         return {
@@ -212,14 +216,14 @@ export function ChartPreview({ config }: ChartPreviewProps) {
           minWidth: aspectRatio < 0.8 ? 400 : 500,
           maxWidth: aspectRatio < 0.8 ? 550 : 800,
           minHeight: aspectRatio < 0.8 ? 500 : 400,
-          maxHeight: aspectRatio < 0.8 ? 800 : 600
+          maxHeight: aspectRatio < 0.8 ? 650 : 600  // Reduced max height for portrait
         }
       } else {
         // Desktop sizing with content-aware adjustments
         const baseMinWidth = aspectRatio < 0.8 ? 450 : 700
         const baseMaxWidth = aspectRatio < 0.8 ? 600 : 1200
-        const baseMinHeight = aspectRatio < 0.8 ? 650 : 550
-        const baseMaxHeight = aspectRatio < 0.8 ? 1000 : 800
+        const baseMinHeight = aspectRatio < 0.8 ? 550 : 550
+        const baseMaxHeight = aspectRatio < 0.8 ? 700 : 800
         
         return {
           utilization: 0.98,
