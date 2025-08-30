@@ -1192,8 +1192,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                           animation: `bounceIn 0.6s ease-out ${(seriesIndex * 200 + pointIndex * 100)}ms backwards`
                         }}
                         onMouseEnter={(e) => {
+                          const tooltipWidth = 200 // Approximate tooltip width
+                          const screenWidth = window.innerWidth
+                          
+                          // Smart positioning: if tooltip would go off screen, position it to the left
+                          const wouldOverflow = e.clientX + tooltipWidth > screenWidth - 20
+                          const xPosition = wouldOverflow ? e.clientX - tooltipWidth - 10 : e.clientX + 10
+                          
                           setTooltip({
-                            x: e.clientX,
+                            x: xPosition,
                             y: e.clientY,
                             label: `${seriesItem.name}: ${dataPoint.scenario}`,
                             value: dataPoint.value,
@@ -2202,8 +2209,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     animation: `bounceIn 0.6s ease-out ${index * 0.1}s backwards`
                   }}
                   onMouseEnter={(e) => {
+                    const tooltipWidth = 200 // Approximate tooltip width
+                    const screenWidth = window.innerWidth
+                    
+                    // Smart positioning: if tooltip would go off screen, position it to the left
+                    const wouldOverflow = e.clientX + tooltipWidth > screenWidth - 20
+                    const xPosition = wouldOverflow ? e.clientX - tooltipWidth - 10 : e.clientX + 10
+                    
                     setTooltip({
-                      x: e.clientX,
+                      x: xPosition,
                       y: e.clientY,
                       label: item.scenario,
                       value: item.value,
@@ -2848,8 +2862,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     animation: `slideUp 0.8s ease-out ${index * 0.15}s backwards`
                   }}
                   onMouseEnter={(e) => {
+                    const tooltipWidth = 200 // Approximate tooltip width
+                    const screenWidth = window.innerWidth
+                    
+                    // Smart positioning: if tooltip would go off screen, position it to the left
+                    const wouldOverflow = e.clientX + tooltipWidth > screenWidth - 20
+                    const xPosition = wouldOverflow ? e.clientX - tooltipWidth - 10 : e.clientX + 10
+                    
                     setTooltip({
-                      x: e.clientX,
+                      x: xPosition,
                       y: e.clientY,
                       label: `${item.scenario} (Bar)`,
                       value: item.value,
@@ -2921,8 +2942,15 @@ export function ChartPreview({ config }: ChartPreviewProps) {
                     animation: `bounceIn 0.6s ease-out ${0.5 + index * 0.1}s backwards`
                   }}
                   onMouseEnter={(e) => {
+                    const tooltipWidth = 200 // Approximate tooltip width
+                    const screenWidth = window.innerWidth
+                    
+                    // Smart positioning: if tooltip would go off screen, position it to the left
+                    const wouldOverflow = e.clientX + tooltipWidth > screenWidth - 20
+                    const xPosition = wouldOverflow ? e.clientX - tooltipWidth - 10 : e.clientX + 10
+                    
                     setTooltip({
-                      x: e.clientX,
+                      x: xPosition,
                       y: e.clientY,
                       label: `${item.scenario} (Line)`,
                       value: item.value,
