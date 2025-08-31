@@ -28,7 +28,7 @@ export function Hero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium bg-primary/10 text-primary border border-primary/20 mb-8"
+              className="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium bg-primary/10 text-primary border border-primary/20 mb-6"
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               Simple, Secure, Sophisticated Data Visualization
@@ -38,7 +38,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl font-medium tracking-tight text-foreground sm:text-6xl mb-6"
+              className="text-4xl font-medium tracking-tight text-foreground sm:text-6xl mb-8"
             >
               Find Your Chart{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">
@@ -50,7 +50,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-muted-foreground mb-8 max-w-2xl"
+              className="text-xl text-muted-foreground mb-8 lg:mb-10 max-w-2xl"
             >
               Create stunning charts and visualizations in minutes, not hours. Import from CSV, Excel, or paste data directly. Professional results, complete privacy, zero complexity.
             </motion.p>
@@ -59,7 +59,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex justify-center lg:justify-start"
+              className="flex justify-center lg:justify-start mb-8 lg:mb-10"
             >
               <Button asChild size="lg" className="text-lg px-8 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300">
                 <Link href="/" className="group">
@@ -73,7 +73,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-8 flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-muted-foreground"
+              className="mt-10 lg:mt-12 flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-muted-foreground"
             >
               <div className="flex items-center hover:text-foreground transition-colors duration-200 cursor-default">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
