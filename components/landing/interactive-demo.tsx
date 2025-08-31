@@ -4,7 +4,6 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { BarChart3, PieChart, TrendingUp, Activity, Palette, Download } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -20,8 +19,8 @@ const demoSteps = [
           src="/landing/ui/ui-data-panel.png" 
           alt="Data Import Interface"
           width={300}
-          height={250}
-          className="w-full h-full object-cover object-top"
+          height={500}
+          className="w-full h-[500px] object-cover object-top"
         />
       </div>
     )
@@ -99,7 +98,7 @@ export function InteractiveDemo() {
   return (
     <section className="px-6 lg:px-8 py-24">
       <div className="mx-auto max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left Column - Interactive Steps */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -122,36 +121,29 @@ export function InteractiveDemo() {
                   key={index}
                   initial={{ opacity: 0.5 }}
                   animate={{ 
-                    opacity: currentStep >= index ? 1 : 0.5,
-                    scale: currentStep === index ? 1.02 : 1
+                    opacity: currentStep >= index ? 1 : 0.5
                   }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.2 }}
                   onClick={() => setCurrentStep(index)}
-                  className={`flex items-start space-x-4 p-4 rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 ${
+                  className={`flex items-start space-x-4 p-4 rounded-lg transition-all duration-200 cursor-pointer ${
                     currentStep >= index 
-                      ? 'bg-primary/5 border border-primary/20 hover:bg-primary/10' 
-                      : 'bg-secondary/20 hover:bg-secondary/30'
+                      ? 'bg-primary/5 border border-primary/20 hover:bg-primary/10 hover:border-primary/30' 
+                      : 'bg-secondary/20 hover:bg-secondary/30 hover:border-border/50'
                   }`}
                 >
-                  <div className={`p-2 rounded-full ${
-                    currentStep >= index ? 'bg-primary text-primary-foreground' : 'bg-secondary'
+                  <div className={`p-2 rounded-full transition-all duration-200 ${
+                    currentStep === index 
+                      ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25' 
+                      : currentStep > index 
+                      ? 'bg-secondary text-primary' 
+                      : 'bg-secondary text-muted-foreground'
                   }`}>
                     <step.icon className="w-4 h-4" />
                   </div>
                   
                   <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
+                    <div className="mb-1">
                       <h3 className="font-medium">{step.title}</h3>
-                      {currentStep > index && (
-                        <Badge variant="secondary" className="text-xs">
-                          Complete
-                        </Badge>
-                      )}
-                      {currentStep === index && (
-                        <Badge className="text-xs animate-pulse">
-                          Active
-                        </Badge>
-                      )}
                     </div>
                     <p className="text-sm text-muted-foreground">{step.description}</p>
                   </div>
@@ -166,27 +158,18 @@ export function InteractiveDemo() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="relative"
+            className="relative lg:sticky lg:top-24"
           >
             <Card className="bg-card border-border/30 shadow-2xl">
-              <CardContent className="p-8">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg font-medium">Live Preview</h3>
-                  <div className="flex space-x-1">
-                    <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                  </div>
-                </div>
-
+              <CardContent className="p-6">
                 <div className="min-h-[300px] flex items-center justify-center">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={currentStep}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.4 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="w-full"
                     >
                       {demoSteps[currentStep].preview}
