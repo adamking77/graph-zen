@@ -1,26 +1,15 @@
 "use client"
 
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion } from "framer-motion"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, BarChart3, PieChart, TrendingUp, Activity } from "lucide-react"
 import Image from "next/image"
-import { useRef } from "react"
 
 export function Hero() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  })
-
-  // Smoother parallax transforms for gentle movement
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -15])
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -25])
-  const y4 = useTransform(scrollYProgress, [0, 1], [0, -35])
 
   return (
-    <section ref={ref} className="relative px-6 lg:px-8 py-32 sm:py-40 overflow-hidden">
+    <section className="relative px-6 lg:px-8 py-32 sm:py-40 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/10" />
       <div className="absolute top-0 right-1/4 w-72 h-72 bg-primary/20 rounded-full blur-3xl opacity-20" />
@@ -135,7 +124,6 @@ export function Hero() {
 
             {/* Bottom Left - Market Share Chart */}
             <motion.div
-              style={{ y: y2 }}
               animate={{
                 y: [0, 4, 0],
                 rotate: [0, -0.5, 0]
@@ -147,6 +135,7 @@ export function Hero() {
                 delay: 0
               }}
               className="absolute -bottom-8 -left-8 shadow-lg rounded-lg overflow-hidden hidden sm:block"
+              style={{ willChange: "transform" }}
             >
               <Image 
                 src="/landing/charts/market-share-donut.png" 
@@ -159,7 +148,6 @@ export function Hero() {
 
             {/* Top Left - Sales Vertical Bar */}
             <motion.div
-              style={{ y: y3 }}
               animate={{
                 y: [0, -6, 0],
                 rotate: [0, 0.3, 0]
@@ -171,6 +159,7 @@ export function Hero() {
                 delay: 1.5
               }}
               className="absolute -top-4 -left-12 shadow-lg rounded-lg overflow-hidden hidden lg:block"
+              style={{ willChange: "transform" }}
             >
               <Image 
                 src="/landing/charts/sales-vertical-bar.png" 
@@ -184,7 +173,6 @@ export function Hero() {
 
             {/* Bottom Right - Line Chart */}
             <motion.div
-              style={{ y: y4 }}
               animate={{
                 y: [0, 8, 0],
                 rotate: [0, -0.4, 0]
@@ -196,6 +184,7 @@ export function Hero() {
                 delay: 3
               }}
               className="absolute -bottom-4 -right-12 shadow-lg rounded-lg overflow-hidden hidden lg:block"
+              style={{ willChange: "transform" }}
             >
               <Image 
                 src="/landing/charts/revenue-growth-line.png" 
