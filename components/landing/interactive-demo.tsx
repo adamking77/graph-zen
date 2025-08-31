@@ -5,22 +5,24 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Play, BarChart3, PieChart, TrendingUp, Palette, Download } from "lucide-react"
+import { BarChart3, PieChart, TrendingUp, Activity, Palette, Download } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 const demoSteps = [
   {
     title: "Import Your Data",
-    description: "Paste data, upload CSV, or connect to Excel files",
+    description: "Paste data, upload CSV, or connect to Excel files - all processed locally in your browser",
     icon: Download,
     preview: (
-      <div className="space-y-2 text-left">
-        <div className="text-xs text-muted-foreground font-mono bg-secondary/50 p-2 rounded">
-          Product,Sales,Growth<br/>
-          Widget A,25000,12%<br/>
-          Widget B,18000,8%<br/>
-          Widget C,32000,15%
-        </div>
+      <div className="relative bg-card/20 rounded-lg border border-border/30 overflow-hidden max-w-sm mx-auto">
+        <Image 
+          src="/landing/ui/ui-data-panel.png" 
+          alt="Data Import Interface"
+          width={300}
+          height={250}
+          className="w-full h-full object-cover object-top"
+        />
       </div>
     )
   },
@@ -29,15 +31,24 @@ const demoSteps = [
     description: "Select chart type and customize colors",
     icon: Palette,
     preview: (
-      <div className="flex space-x-2 justify-center">
-        <div className="p-2 bg-blue-500 rounded text-white">
-          <BarChart3 className="w-4 h-4" />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="relative bg-card/20 rounded-lg border border-border/30 overflow-hidden">
+          <Image 
+            src="/landing/ui/ui-essentials-panel.png" 
+            alt="Chart Type Selection Interface"
+            width={280}
+            height={200}
+            className="w-full h-full object-cover object-top"
+          />
         </div>
-        <div className="p-2 bg-secondary rounded">
-          <PieChart className="w-4 h-4" />
-        </div>
-        <div className="p-2 bg-secondary rounded">
-          <TrendingUp className="w-4 h-4" />
+        <div className="relative bg-card/20 rounded-lg border border-border/30 overflow-hidden">
+          <Image 
+            src="/landing/ui/ui-appearance-panel.png" 
+            alt="Color Palette Selection Interface"
+            width={280}
+            height={200}
+            className="w-full h-full object-cover object-top"
+          />
         </div>
       </div>
     )
@@ -45,28 +56,38 @@ const demoSteps = [
   {
     title: "Get Perfect Results",
     description: "Professional charts ready for any presentation",
-    icon: BarChart3,
+    icon: Activity,
     preview: (
-      <div className="space-y-1">
-        {["Widget A", "Widget B", "Widget C"].map((label, index) => {
-          const values = [78, 56, 100]
-          return (
-            <div key={label} className="flex items-center space-x-2">
-              <span className="text-xs w-16 text-left">{label}</span>
-              <div className="flex-1 bg-secondary/30 rounded-full h-3 overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${values[index]}%` }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                  className={`h-full rounded-full ${
-                    index === 0 ? 'bg-blue-500' : 
-                    index === 1 ? 'bg-green-500' : 'bg-purple-500'
-                  }`}
-                />
-              </div>
-            </div>
-          )
-        })}
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="relative bg-card/30 rounded-lg border border-border/20 shadow-sm overflow-hidden p-2">
+            <Image 
+              src="/landing/charts/sales-vertical-bar.png" 
+              alt="Sales Performance Chart"
+              width={280}
+              height={180}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="relative bg-card/30 rounded-lg border border-border/20 shadow-sm overflow-hidden p-2">
+            <Image 
+              src="/landing/charts/performance-horizontal-bar.png" 
+              alt="Performance Metrics Chart"
+              width={280}
+              height={180}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+        <div className="relative bg-card/30 rounded-lg border border-border/20 shadow-sm overflow-hidden max-w-sm mx-auto p-2">
+          <Image 
+            src="/landing/charts/market-share-donut.png" 
+            alt="Market Share Chart"
+            width={280}
+            height={180}
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
     )
   }
@@ -74,23 +95,6 @@ const demoSteps = [
 
 export function InteractiveDemo() {
   const [currentStep, setCurrentStep] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
-
-  const playDemo = () => {
-    setIsPlaying(true)
-    setCurrentStep(0)
-    
-    const interval = setInterval(() => {
-      setCurrentStep((prev) => {
-        if (prev >= demoSteps.length - 1) {
-          clearInterval(interval)
-          setIsPlaying(false)
-          return 0
-        }
-        return prev + 1
-      })
-    }, 2000)
-  }
 
   return (
     <section className="px-6 lg:px-8 py-24">
@@ -105,21 +109,11 @@ export function InteractiveDemo() {
           >
             <div className="text-center lg:text-left mb-8">
               <h2 className="text-3xl font-medium tracking-tight text-foreground sm:text-4xl mb-4">
-                See It In Action
+                How It Works
               </h2>
               <p className="text-xl text-muted-foreground mb-6">
-                Watch how easy it is to create professional charts in just three simple steps.
+                Create professional charts in just three simple steps.
               </p>
-              
-              <Button 
-                onClick={playDemo}
-                disabled={isPlaying}
-                size="lg"
-                className="group"
-              >
-                <Play className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                {isPlaying ? "Playing Demo..." : "Play Demo"}
-              </Button>
             </div>
 
             <div className="space-y-6">
@@ -132,10 +126,7 @@ export function InteractiveDemo() {
                     scale: currentStep === index ? 1.02 : 1
                   }}
                   transition={{ duration: 0.3 }}
-                  onClick={() => {
-                    setCurrentStep(index)
-                    setIsPlaying(false) // Stop auto-play when user clicks
-                  }}
+                  onClick={() => setCurrentStep(index)}
                   className={`flex items-start space-x-4 p-4 rounded-lg transition-all duration-300 cursor-pointer hover:scale-105 ${
                     currentStep >= index 
                       ? 'bg-primary/5 border border-primary/20 hover:bg-primary/10' 
@@ -177,7 +168,7 @@ export function InteractiveDemo() {
             viewport={{ once: true }}
             className="relative"
           >
-            <Card className="bg-card border-border/50 shadow-2xl">
+            <Card className="bg-card border-border/30 shadow-2xl">
               <CardContent className="p-8">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-medium">Live Preview</h3>
@@ -231,12 +222,13 @@ export function InteractiveDemo() {
               viewport={{ once: true }}
               className="text-center mt-8"
             >
-              <p className="text-muted-foreground mb-4">
+              <p className="text-lg font-medium text-foreground mb-4">
                 Ready to create your own charts?
               </p>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/">
-                  Try It Now - It's Free
+              <Button asChild size="lg" className="text-lg px-8 py-6 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 group">
+                <Link href="/" className="flex items-center">
+                  Start Creating Now
+                  <BarChart3 className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </motion.div>

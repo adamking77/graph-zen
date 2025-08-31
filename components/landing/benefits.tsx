@@ -59,26 +59,6 @@ const useCases = [
   }
 ]
 
-const testimonials = [
-  {
-    text: "Finally, a chart tool that just works. I've saved hours every week since switching.",
-    author: "Sarah Chen",
-    role: "Data Analyst at TechCorp",
-    rating: 5
-  },
-  {
-    text: "The best part? My data never leaves my computer. Perfect for sensitive business information.",
-    author: "Michael Rodriguez", 
-    role: "CFO at StartupXYZ",
-    rating: 5
-  },
-  {
-    text: "I can create presentation-ready charts in under 2 minutes. Game changer for client meetings.",
-    author: "Emily Johnson",
-    role: "Marketing Director",
-    rating: 5
-  }
-]
 
 export function Benefits() {
   return (
@@ -93,10 +73,10 @@ export function Benefits() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl font-medium tracking-tight text-foreground sm:text-4xl mb-4">
-            Why Teams Choose GraphZen
+            Why Choose GraphZen
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Join thousands of professionals who've transformed their data visualization workflow.
+            Simplicity. Sophistication. Safety.
           </p>
         </motion.div>
 
@@ -110,10 +90,10 @@ export function Benefits() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border-border/50 hover:shadow-lg transition-all duration-300">
+              <Card className="h-full border-border/30 hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] hover:border-primary/30 transition-all duration-300 group cursor-pointer">
                 <CardContent className="p-8">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="p-3 rounded-lg bg-primary/10 text-primary">
+                    <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:scale-110 transition-transform duration-300">
                       <benefit.icon className="w-6 h-6" />
                     </div>
                     <div className="text-right">
@@ -165,43 +145,6 @@ export function Benefits() {
           </div>
         </motion.div>
 
-        {/* Testimonials */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-2xl font-medium text-center mb-12">What Users Are Saying</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="h-full border-border/50">
-                  <CardContent className="p-6">
-                    <div className="flex mb-4">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <span key={i} className="text-yellow-400 text-lg">★</span>
-                      ))}
-                    </div>
-                    <blockquote className="text-foreground mb-4 italic">
-                      "{testimonial.text}"
-                    </blockquote>
-                    <div className="border-t border-border pt-4">
-                      <div className="font-medium text-sm">{testimonial.author}</div>
-                      <div className="text-xs text-muted-foreground">{testimonial.role}</div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
 
         {/* Feature Checkmarks */}
         <motion.div

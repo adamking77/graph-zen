@@ -1,8 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { BarChart3, PieChart, TrendingUp, BarChart, Download, Palette } from "lucide-react"
+import { BarChart3, PieChart, TrendingUp, Activity, Download, Palette, AlignLeft, CircleDot, Shield } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import Image from "next/image"
 
 const chartTypes = [
   {
@@ -10,20 +11,14 @@ const chartTypes = [
     title: "Bar Charts",
     description: "Perfect for comparing categories and showing data relationships clearly.",
     preview: (
-      <div className="space-y-2">
-        {[60, 80, 45, 90].map((height, index) => (
-          <div key={index} className="flex items-center space-x-2">
-            <div className="w-8 text-xs text-muted-foreground">Q{index + 1}</div>
-            <div className="flex-1 bg-secondary/30 rounded-sm h-4 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${height}%` }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-sm"
-              />
-            </div>
-          </div>
-        ))}
+      <div className="flex justify-center bg-card/30 rounded-md border border-border/20 overflow-hidden p-2 h-full">
+        <Image 
+          src="/landing/charts/sales-vertical-bar.png" 
+          alt="Sales Performance Chart"
+          width={200}
+          height={120}
+          className="w-full h-full object-contain"
+        />
       </div>
     ),
     color: "from-blue-500 to-blue-400"
@@ -33,43 +28,14 @@ const chartTypes = [
     title: "Pie & Donut Charts",
     description: "Visualize proportions and percentages with elegant circular charts.",
     preview: (
-      <div className="flex justify-center">
-        <div className="relative w-24 h-24">
-          <motion.svg
-            className="w-24 h-24 transform -rotate-90"
-            viewBox="0 0 36 36"
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeDasharray="40, 100"
-              className="text-green-500"
-            />
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeDasharray="30, 100"
-              strokeDashoffset="-40"
-              className="text-purple-500"
-            />
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeDasharray="30, 100"
-              strokeDashoffset="-70"
-              className="text-orange-500"
-            />
-          </motion.svg>
-        </div>
+      <div className="flex justify-center bg-card/30 rounded-md border border-border/20 overflow-hidden p-2 h-full">
+        <Image 
+          src="/landing/charts/market-share-donut.png" 
+          alt="Market Share Chart"
+          width={200}
+          height={120}
+          className="w-full h-full object-contain"
+        />
       </div>
     ),
     color: "from-green-500 to-green-400"
@@ -79,58 +45,31 @@ const chartTypes = [
     title: "Line Charts",
     description: "Track trends and changes over time with smooth, professional lines.",
     preview: (
-      <div className="h-16 flex items-end justify-between space-x-1">
-        {[20, 35, 25, 45, 40, 60, 55, 70].map((height, index) => (
-          <motion.div
-            key={index}
-            initial={{ height: 0 }}
-            whileInView={{ height: `${height}%` }}
-            transition={{ duration: 0.6, delay: index * 0.05 }}
-            className="w-2 bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-sm"
-          />
-        ))}
+      <div className="flex justify-center bg-card/30 rounded-md border border-border/20 overflow-hidden p-2 h-full">
+        <Image 
+          src="/landing/charts/revenue-growth-line.png" 
+          alt="Revenue Growth Line Chart"
+          width={200}
+          height={120}
+          className="w-full h-full object-contain"
+        />
       </div>
     ),
     color: "from-purple-500 to-purple-400"
   },
   {
-    icon: BarChart,
+    icon: Activity,
     title: "Combo Charts",
     description: "Combine multiple chart types for comprehensive data storytelling.",
     preview: (
-      <div className="space-y-2">
-        <div className="flex justify-between items-end h-12 space-x-1">
-          {[40, 60, 35, 80].map((height, index) => (
-            <motion.div
-              key={index}
-              initial={{ height: 0 }}
-              whileInView={{ height: `${height}%` }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="w-4 bg-gradient-to-t from-red-500 to-red-400 rounded-t-sm"
-            />
-          ))}
-        </div>
-        <div className="flex items-center justify-center">
-          <motion.div
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            transition={{ duration: 1.2, delay: 0.4 }}
-            className="w-full h-8 flex items-center"
-          >
-            <svg viewBox="0 0 100 20" className="w-full h-4">
-              <motion.path
-                d="M 0,15 Q 25,5 50,10 T 100,8"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="text-yellow-500"
-                initial={{ pathLength: 0 }}
-                whileInView={{ pathLength: 1 }}
-                transition={{ duration: 1, delay: 0.6 }}
-              />
-            </svg>
-          </motion.div>
-        </div>
+      <div className="flex justify-center bg-card/30 rounded-md border border-border/20 overflow-hidden p-2 h-full">
+        <Image 
+          src="/landing/charts/sales-satisfaction-combo.png" 
+          alt="Sales & Satisfaction Combo Chart"
+          width={200}
+          height={120}
+          className="w-full h-full object-contain"
+        />
       </div>
     ),
     color: "from-red-500 to-red-400"
@@ -151,7 +90,12 @@ const features = [
   {
     icon: BarChart3,
     title: "Export Ready",
-    description: "Download as PNG, SVG, or PDF. Perfect for reports and presentations."
+    description: "Download as PNG, SVG, or embed anywhere. Perfect for reports, presentations, and websites."
+  },
+  {
+    icon: Shield,
+    title: "Private & Secure",
+    description: "Your data never leaves your browser. No uploads, no servers, no privacy concerns."
   }
 ]
 
@@ -180,25 +124,25 @@ export function Features() {
           {chartTypes.map((chart, index) => (
             <motion.div
               key={chart.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.8, delay: index * 0.15, ease: "easeOut" }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border-border/50 hover:shadow-lg transition-all duration-300 group cursor-pointer">
-                <CardContent className="p-6">
+              <Card className="h-full border-border/30 hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] hover:border-primary/30 transition-all duration-300 group cursor-pointer">
+                <CardContent className="p-6 flex flex-col h-full">
                   <div className="flex items-center space-x-3 mb-4">
-                    <div className={`p-2 rounded-lg bg-gradient-to-r ${chart.color} text-white`}>
+                    <div className={`p-2 rounded-lg bg-gradient-to-r ${chart.color} text-white group-hover:scale-110 transition-transform duration-300`}>
                       <chart.icon className="w-5 h-5" />
                     </div>
                     <h3 className="font-medium text-lg">{chart.title}</h3>
                   </div>
                   
-                  <div className="mb-4 h-20">
+                  <div className="flex-1 mb-6 h-40 flex items-center">
                     {chart.preview}
                   </div>
                   
-                  <p className="text-sm text-muted-foreground">{chart.description}</p>
+                  <p className="text-sm text-muted-foreground mt-auto">{chart.description}</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -206,13 +150,13 @@ export function Features() {
         </div>
 
         {/* Additional Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.7, delay: index * 0.2, ease: "easeOut" }}
               viewport={{ once: true }}
               className="text-center"
             >

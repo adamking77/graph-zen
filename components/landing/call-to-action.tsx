@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles, BarChart3 } from "lucide-react"
+import { ArrowRight, Sparkles, BarChart3, Shield } from "lucide-react"
 
 export function CallToAction() {
   return (
@@ -54,7 +54,7 @@ export function CallToAction() {
             viewport={{ once: true }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Button asChild size="lg" className="text-lg px-8 py-6 group">
+            <Button asChild size="lg" className="text-lg px-8 py-6 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 group">
               <Link href="/" className="flex items-center">
                 <BarChart3 className="w-5 h-5 mr-2" />
                 Open Chart Maker
@@ -62,7 +62,7 @@ export function CallToAction() {
               </Link>
             </Button>
             
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6" asChild>
+            <Button variant="outline" size="lg" className="text-lg px-8 py-6 hover:scale-105 hover:shadow-md transition-all duration-300" asChild>
               <Link href="#features">
                 See All Features
               </Link>
@@ -77,19 +77,19 @@ export function CallToAction() {
             viewport={{ once: true }}
             className="flex flex-wrap gap-8 justify-center items-center pt-8 text-sm text-muted-foreground"
           >
-            <div className="flex items-center">
+            <div className="flex items-center hover:text-foreground hover:scale-105 transition-all duration-200 cursor-default">
+              <Shield className="w-4 h-4 mr-2 text-green-500" />
+              Data Never Uploaded
+            </div>
+            <div className="flex items-center hover:text-foreground hover:scale-105 transition-all duration-200 cursor-default">
               <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
               100% Free Forever
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center hover:text-foreground hover:scale-105 transition-all duration-200 cursor-default">
               <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
               No Registration
             </div>
-            <div className="flex items-center">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
-              Data Never Uploaded
-            </div>
-            <div className="flex items-center">
+            <div className="flex items-center hover:text-foreground hover:scale-105 transition-all duration-200 cursor-default">
               <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
               Works Offline
             </div>
@@ -136,7 +136,7 @@ export function CallToAction() {
                 <li>Bar, Line & Pie Charts</li>
                 <li>CSV & Excel Import</li>
                 <li>Professional Themes</li>
-                <li>PNG, SVG & PDF Export</li>
+                <li>PNG, SVG & Embed Export</li>
               </ul>
             </div>
 
