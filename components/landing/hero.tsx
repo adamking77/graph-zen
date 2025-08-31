@@ -125,8 +125,8 @@ export function Hero() {
             {/* Bottom Left - Market Share Chart */}
             <motion.div
               animate={{
-                y: [0, 4, 0],
-                rotate: [0, -0.5, 0]
+                y: [0, 12, 0],
+                rotate: [0, -1.5, 0]
               }}
               transition={{
                 duration: 6,
@@ -149,8 +149,8 @@ export function Hero() {
             {/* Top Left - Sales Vertical Bar */}
             <motion.div
               animate={{
-                y: [0, -6, 0],
-                rotate: [0, 0.3, 0]
+                y: [0, -15, 0],
+                rotate: [0, 1, 0]
               }}
               transition={{
                 duration: 7,
@@ -174,8 +174,8 @@ export function Hero() {
             {/* Bottom Right - Line Chart */}
             <motion.div
               animate={{
-                y: [0, 8, 0],
-                rotate: [0, -0.4, 0]
+                y: [0, 18, 0],
+                rotate: [0, -1.2, 0]
               }}
               transition={{
                 duration: 8,
