@@ -9,7 +9,7 @@ import Image from "next/image"
 export function Hero() {
 
   return (
-    <section className="relative px-6 lg:px-8 py-32 sm:py-40 overflow-hidden">
+    <section className="relative px-8 sm:px-12 lg:px-16 py-32 sm:py-40 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/10" />
       <div className="absolute top-0 right-1/4 w-72 h-72 bg-primary/20 rounded-full blur-3xl opacity-20" />
@@ -134,7 +134,7 @@ export function Hero() {
                 ease: "easeInOut",
                 delay: 0
               }}
-              className="absolute -bottom-8 -left-8 shadow-lg rounded-lg overflow-hidden hidden sm:block"
+              className="absolute -bottom-28 left-[20px] lg:left-[40px] xl:left-[60px] shadow-lg rounded-lg overflow-hidden hidden sm:block"
               style={{ willChange: "transform" }}
             >
               <Image 
@@ -158,7 +158,7 @@ export function Hero() {
                 ease: "easeInOut",
                 delay: 1.5
               }}
-              className="absolute -top-4 -left-12 shadow-lg rounded-lg overflow-hidden hidden lg:block"
+              className="absolute -top-24 left-[120px] lg:left-[150px] xl:left-[180px] shadow-lg rounded-lg overflow-hidden hidden lg:block"
               style={{ willChange: "transform" }}
             >
               <Image 
@@ -183,7 +183,7 @@ export function Hero() {
                 ease: "easeInOut",
                 delay: 3
               }}
-              className="absolute -bottom-4 -right-12 shadow-lg rounded-lg overflow-hidden hidden lg:block"
+              className="absolute -bottom-12 -right-8 xl:-right-12 shadow-lg rounded-lg overflow-hidden hidden lg:block"
               style={{ willChange: "transform" }}
             >
               <Image 
