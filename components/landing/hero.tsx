@@ -40,7 +40,7 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl font-medium tracking-tight text-foreground sm:text-6xl mb-8"
             >
-              Find Your Chart{" "}
+              Find Your Graph{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">
                 Zen
               </span>
