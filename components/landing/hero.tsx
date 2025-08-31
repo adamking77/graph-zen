@@ -63,7 +63,7 @@ export function Hero() {
             >
               <Button asChild size="lg" className="text-lg px-8 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300">
                 <Link href="/" className="group">
-                  Start Creating Charts
+                  Start Creating
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>

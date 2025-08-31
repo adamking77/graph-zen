@@ -57,14 +57,8 @@ export function CallToAction() {
             <Button asChild size="lg" className="text-lg px-8 py-6 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 group">
               <Link href="/" className="flex items-center">
                 <BarChart3 className="w-5 h-5 mr-2" />
-                Open Chart Maker
+                Open GraphZen
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-            
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6 hover:scale-105 hover:shadow-md transition-all duration-300" asChild>
-              <Link href="#features">
-                See All Features
               </Link>
             </Button>
           </motion.div>
