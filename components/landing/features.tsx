@@ -11,7 +11,7 @@ const chartTypes = [
     title: "Bar Charts",
     description: "Perfect for comparing categories and showing data relationships clearly.",
     preview: (
-      <div className="flex justify-center bg-card/30 rounded-md border border-border/20 overflow-hidden p-2 h-full">
+      <div className="flex justify-center h-full">
         <Image 
           src="/landing/charts/sales-vertical-bar.png" 
           alt="Sales Performance Chart"
@@ -20,15 +20,14 @@ const chartTypes = [
           className="w-full h-full object-contain"
         />
       </div>
-    ),
-    color: "from-blue-500 to-blue-400"
+    )
   },
   {
     icon: PieChart,
     title: "Pie & Donut Charts",
     description: "Visualize proportions and percentages with elegant circular charts.",
     preview: (
-      <div className="flex justify-center bg-card/30 rounded-md border border-border/20 overflow-hidden p-2 h-full">
+      <div className="flex justify-center h-full">
         <Image 
           src="/landing/charts/market-share-donut.png" 
           alt="Market Share Chart"
@@ -37,15 +36,14 @@ const chartTypes = [
           className="w-full h-full object-contain"
         />
       </div>
-    ),
-    color: "from-green-500 to-green-400"
+    )
   },
   {
     icon: TrendingUp,
     title: "Line Charts",
     description: "Track trends and changes over time with smooth, professional lines.",
     preview: (
-      <div className="flex justify-center bg-card/30 rounded-md border border-border/20 overflow-hidden p-2 h-full">
+      <div className="flex justify-center h-full">
         <Image 
           src="/landing/charts/revenue-growth-line.png" 
           alt="Revenue Growth Line Chart"
@@ -54,15 +52,14 @@ const chartTypes = [
           className="w-full h-full object-contain"
         />
       </div>
-    ),
-    color: "from-purple-500 to-purple-400"
+    )
   },
   {
     icon: Activity,
     title: "Combo Charts",
     description: "Combine multiple chart types for comprehensive data storytelling.",
     preview: (
-      <div className="flex justify-center bg-card/30 rounded-md border border-border/20 overflow-hidden p-2 h-full">
+      <div className="flex justify-center h-full">
         <Image 
           src="/landing/charts/sales-satisfaction-combo.png" 
           alt="Sales & Satisfaction Combo Chart"
@@ -71,8 +68,7 @@ const chartTypes = [
           className="w-full h-full object-contain"
         />
       </div>
-    ),
-    color: "from-red-500 to-red-400"
+    )
   }
 ]
 
@@ -129,12 +125,10 @@ export function Features() {
               transition={{ duration: 0.8, delay: index * 0.15, ease: "easeOut" }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border-border/30 hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] hover:border-primary/30 transition-all duration-300 group cursor-pointer">
+              <Card className="h-full border-none hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02] transition-all duration-300 group cursor-pointer">
                 <CardContent className="p-6 flex flex-col h-full">
                   <div className="flex items-center space-x-3 mb-4">
-                    <div className={`p-2 rounded-lg bg-gradient-to-r ${chart.color} text-white group-hover:scale-110 transition-transform duration-300`}>
-                      <chart.icon className="w-5 h-5" />
-                    </div>
+                    <chart.icon className="w-5 h-5 text-primary group-hover:scale-110 transition-transform duration-300" />
                     <h3 className="font-medium text-lg">{chart.title}</h3>
                   </div>
                   

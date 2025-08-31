@@ -129,7 +129,7 @@ export function Hero() {
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              className="absolute -top-6 -right-6 bg-card/40 rounded-xl border border-border/20 shadow-lg overflow-hidden p-2"
+              className="absolute -top-6 -right-6"
             >
               <Image 
                 src="/landing/charts/performance-horizontal-bar.png" 
@@ -151,7 +151,7 @@ export function Hero() {
                 ease: "easeInOut",
                 delay: 1.2
               }}
-              className="absolute -bottom-6 -left-6 bg-card/40 rounded-xl border border-border/20 shadow-lg overflow-hidden p-2"
+              className="absolute -bottom-6 -left-6"
             >
               <Image 
                 src="/landing/charts/market-share-donut.png" 

@@ -59,7 +59,7 @@ const demoSteps = [
     preview: (
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <div className="relative bg-card/30 rounded-lg border border-border/20 shadow-sm overflow-hidden p-2">
+          <div className="relative">
             <Image 
               src="/landing/charts/sales-vertical-bar.png" 
               alt="Sales Performance Chart"
@@ -68,7 +68,7 @@ const demoSteps = [
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="relative bg-card/30 rounded-lg border border-border/20 shadow-sm overflow-hidden p-2">
+          <div className="relative">
             <Image 
               src="/landing/charts/performance-horizontal-bar.png" 
               alt="Performance Metrics Chart"
@@ -78,7 +78,7 @@ const demoSteps = [
             />
           </div>
         </div>
-        <div className="relative bg-card/30 rounded-lg border border-border/20 shadow-sm overflow-hidden max-w-sm mx-auto p-2">
+        <div className="relative max-w-sm mx-auto">
           <Image 
             src="/landing/charts/market-share-donut.png" 
             alt="Market Share Chart"
@@ -160,7 +160,7 @@ export function InteractiveDemo() {
             viewport={{ once: true }}
             className="relative lg:sticky lg:top-24"
           >
-            <Card className="bg-card border-border/30 shadow-2xl">
+            <Card className="bg-card border-none shadow-2xl">
               <CardContent className="p-6">
                 <div className="min-h-[300px] flex items-center justify-center">
                   <AnimatePresence mode="wait">
