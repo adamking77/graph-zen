@@ -91,59 +91,6 @@ export function CallToAction() {
         </motion.div>
       </div>
 
-      {/* Bottom Section - Additional Links */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-        viewport={{ once: true }}
-        className="relative mt-20 border-t border-border/50 pt-12"
-      >
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-            {/* Quick Start */}
-            <div>
-              <h3 className="font-medium mb-3">Quick Start</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="/" className="hover:text-foreground transition-colors">
-                    Create Your First Chart
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/landing#features" className="hover:text-foreground transition-colors">
-                    Explore Chart Types
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/landing#demo" className="hover:text-foreground transition-colors">
-                    Watch Demo
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Features */}
-            <div>
-              <h3 className="font-medium mb-3">Features</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Bar, Line & Pie Charts</li>
-                <li>CSV & Excel Import</li>
-                <li>Professional Themes</li>
-                <li>PNG, SVG & Embed Export</li>
-              </ul>
-            </div>
-
-            {/* About */}
-            <div>
-              <h3 className="font-medium mb-3">GraphZen</h3>
-              <p className="text-sm text-muted-foreground">
-                Professional data visualization made simple. Create stunning charts without the complexity.
-              </p>
-            </div>
-          </div>
-        </div>
-      </motion.div>
     </section>
   )
 }

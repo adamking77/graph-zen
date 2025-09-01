@@ -5,6 +5,7 @@ import { Features } from "@/components/landing/features"
 import { InteractiveDemo } from "@/components/landing/interactive-demo"
 import { Benefits } from "@/components/landing/benefits"
 import { CallToAction } from "@/components/landing/call-to-action"
+import { Footer } from "@/components/landing/footer"
 
 export default function LandingPage() {
   return (
@@ -19,6 +20,7 @@ export default function LandingPage() {
         <InteractiveDemo />
         <Benefits />
         <CallToAction />
+        <Footer />
       </div>
     </div>
   )
