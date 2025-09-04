@@ -1,0 +1,113 @@
+/* Chart Component Utility Classes */
+
+/* Common flex patterns */
+.flex-center {
+  @apply flex items-center justify-center;
+}
+
+.flex-between {
+  @apply flex items-center justify-between;
+}
+
+.flex-start {
+  @apply flex items-center justify-start;
+}
+
+.flex-end {
+  @apply flex items-center justify-end;
+}
+
+.flex-col-center {
+  @apply flex flex-col items-center justify-center;
+}
+
+/* Chart container utilities */
+.chart-container {
+  @apply relative w-full h-full;
+}
+
+.chart-content {
+  @apply p-4 h-full w-full;
+}
+
+.chart-title {
+  @apply text-xl font-semibold text-center mb-4;
+}
+
+.chart-subtitle {
+  @apply text-base text-center mt-1 opacity-70;
+}
+
+/* Interactive elements */
+.chart-bar {
+  @apply cursor-pointer transition-all duration-200 ease-out;
+}
+
+.chart-bar:hover {
+  @apply opacity-80;
+}
+
+.chart-segment {
+  @apply cursor-pointer transition-all duration-200;
+}
+
+.chart-segment:hover {
+  @apply opacity-80;
+}
+
+/* Label utilities */
+.chart-label-inside {
+  @apply text-xs font-medium text-white;
+}
+
+.chart-label-outside-dark {
+  @apply text-xs font-medium text-gray-300;
+}
+
+.chart-label-outside-light {
+  @apply text-xs font-medium text-gray-700;
+}
+
+/* Spacing utilities for different chart densities */
+.chart-spacing-tight {
+  @apply space-y-2;
+}
+
+.chart-spacing-normal {
+  @apply space-y-3;
+}
+
+.chart-spacing-loose {
+  @apply space-y-4;
+}
+
+/* Background utilities */
+.chart-bg-dark {
+  @apply bg-gray-800/30;
+}
+
+.chart-bg-light {
+  @apply bg-gray-200/40;
+}
+
+/* Animation utilities */
+.chart-animate-in {
+  @apply animate-in;
+}
+
+.chart-fade-in {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Responsive chart utilities */
+.chart-responsive-mobile {
+  @apply w-full h-64 sm:h-80;
+}
+
+.chart-responsive-tablet {
+  @apply w-full h-80 md:h-96;
+}
+
+.chart-responsive-desktop {
+  @apply w-full h-96 lg:h-[500px];
+}

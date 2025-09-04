@@ -1,6 +1,7 @@
 {
-  "name": "my-v0-project",
+  "name": "graphzen-chart-maker",
   "version": "0.1.1",
+  "description": "A modern, responsive chart creation application built with Next.js. Create beautiful, interactive charts with professional styling.",
   "private": true,
   "scripts": {
     "build": "next build",
