@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import type { ChartConfig, ChartData } from "@/app/page"
+import type { ChartConfig, ChartData } from "@/types/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2, BarChart3, TrendingUp, PieChart, Upload, FileText, X, AlertTriangle, CheckCircle, Minus, Target } from "lucide-react"

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import type { ChartConfig } from '@/app/page'
+import type { ChartConfig } from '@/types/chart'
 import { SIZE_PRESETS } from '@/lib/chart-constants'
 
 interface UseChartConfigReturn {

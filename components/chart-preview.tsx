@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState, useEffect } from "react"
-import type { ChartConfig, ChartData } from "@/app/page"
+import type { ChartConfig, ChartData } from "@/types/chart"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLayoutState, useSpaceAwareLayoutState } from "@/hooks/use-mobile"
 

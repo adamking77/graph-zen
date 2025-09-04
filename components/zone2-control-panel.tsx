@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import type { ChartConfig, ChartData } from "@/app/page"
+import type { ChartConfig, ChartData } from "@/types/chart"
 import { Button } from "@/components/ui/button"
 import { Plus, Upload, FileText, BarChart3, AlignLeft, TrendingUp, PieChart, CircleDot, Activity, X } from "lucide-react"
 import { ColorPalette, type ColorTheme } from "@/components/color-palette"

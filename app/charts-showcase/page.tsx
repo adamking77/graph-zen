@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { ChartPreview } from "@/components/chart-preview"
-import type { ChartConfig } from "@/app/page"
+import type { ChartConfig } from "@/types/chart"
 import { Button } from "@/components/ui/button"
 
 // Professional chart examples for landing page screenshots

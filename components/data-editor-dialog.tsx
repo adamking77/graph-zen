@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus, Trash2, Save, X, Eye, Table } from "lucide-react"
-import type { ChartData, ChartConfig } from "@/app/page"
+import type { ChartData, ChartConfig } from "@/types/chart"
 import { ChartPreview } from "@/components/chart-preview"
 import { useLayoutState } from "@/hooks/use-mobile"
 

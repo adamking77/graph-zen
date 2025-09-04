@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { ChartConfig } from "@/app/page"
+import type { ChartConfig } from "@/types/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
