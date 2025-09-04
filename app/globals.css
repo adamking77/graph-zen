@@ -41,6 +41,9 @@
 /* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind utilities;
 
+/* Import chart utility classes */
+@import '../styles/chart-utilities.css';
+
 @layer base {
   :root {
     /* Original GraphZen Guidelines - Navy + Purple */
