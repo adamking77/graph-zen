@@ -37,15 +37,27 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
   }
 
   const getBaseUrl = () => {
-    // Use environment variable in production, localhost in development
+    // Use environment variable in production, current origin in development
     return process.env.NEXT_PUBLIC_BASE_URL || 
-           (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
+           (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:8080')
   }
 
   const generateEmbedLink = () => {
     try {
       const encodedConfig = btoa(unescape(encodeURIComponent(JSON.stringify(config))))
-      return `${getBaseUrl()}?embed=true&config=${encodedConfig}`
+      const embedUrl = `${getBaseUrl()}?embed=true&config=${encodedConfig}`
+      
+      // Debug logging in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔗 Generated embed URL:', {
+          baseUrl: getBaseUrl(),
+          encodedLength: encodedConfig.length,
+          fullUrl: embedUrl,
+          urlLength: embedUrl.length
+        })
+      }
+      
+      return embedUrl
     } catch (error) {
       console.warn('Failed to encode config for embed link:', error)
       return `${getBaseUrl()}?embed=true&error=encoding`
@@ -55,7 +67,19 @@ export function ExportPanel({ config, onClose }: ExportPanelProps) {
   const generateShareableLink = () => {
     try {
       const encodedConfig = btoa(unescape(encodeURIComponent(JSON.stringify(config))))
-      return `${getBaseUrl()}?config=${encodedConfig}`
+      const shareUrl = `${getBaseUrl()}?config=${encodedConfig}`
+      
+      // Debug logging in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📤 Generated share URL:', {
+          baseUrl: getBaseUrl(),
+          encodedLength: encodedConfig.length,
+          fullUrl: shareUrl,
+          urlLength: shareUrl.length
+        })
+      }
+      
+      return shareUrl
     } catch (error) {
       console.warn('Failed to encode config for shareable link:', error)
       return `${getBaseUrl()}?error=encoding`
