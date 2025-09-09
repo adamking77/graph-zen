@@ -1,12 +1,123 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { BarChart3, PieChart, TrendingUp, Activity, Palette, Download } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+
+// Chart pool for the interactive grid - using colorful GraphZen screenshots
+const chartPool = [
+  {
+    src: "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_33_PM.png",
+    alt: "Colorful Analytics Dashboard", 
+    type: "Analytics Dashboard"
+  },
+  {
+    src: "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_27_PM.png",
+    alt: "Business Performance Chart",
+    type: "Performance Chart"
+  },
+  {
+    src: "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_35_PM.png", 
+    alt: "Data Visualization Chart",
+    type: "Data Visualization"
+  },
+  {
+    src: "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_31_PM.png",
+    alt: "Sales Metrics Chart",
+    type: "Sales Metrics"
+  },
+  {
+    src: "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_36_PM.png",
+    alt: "Marketing Analytics Chart", 
+    type: "Marketing Analytics"
+  },
+  {
+    src: "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_28_PM.png",
+    alt: "Financial Report Chart", 
+    type: "Financial Report"
+  },
+  {
+    src: "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_38_PM.png",
+    alt: "KPI Dashboard Chart", 
+    type: "KPI Dashboard"
+  },
+  {
+    src: "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_32_PM.png",
+    alt: "Growth Analysis Chart", 
+    type: "Growth Analysis"
+  }
+]
+
+// Interactive Chart Grid Component
+function InteractiveChartGrid() {
+  const [displayedCharts, setDisplayedCharts] = useState([0, 1, 2, 3]) // Initial 4 charts
+  const [isHovered, setIsHovered] = useState(false)
+  
+  useEffect(() => {
+    if (isHovered) return // Pause rotation when hovered
+    
+    const interval = setInterval(() => {
+      setDisplayedCharts(prev => {
+        const newCharts = [...prev]
+        const randomPosition = Math.floor(Math.random() * 4) // Random grid position
+        const availableCharts = chartPool.map((_, idx) => idx).filter(idx => !prev.includes(idx))
+        
+        if (availableCharts.length > 0) {
+          const randomChart = availableCharts[Math.floor(Math.random() * availableCharts.length)]
+          newCharts[randomPosition] = randomChart
+        }
+        
+        return newCharts
+      })
+    }, 4500) // Rotate every 4.5 seconds
+    
+    return () => clearInterval(interval)
+  }, [isHovered])
+  
+  return (
+    <div 
+      className="grid grid-cols-2 sm:grid-cols-2 gap-3"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {displayedCharts.map((chartIndex, position) => (
+        <motion.div
+          key={`${position}-${chartIndex}`}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="relative group cursor-pointer overflow-hidden rounded-lg bg-card/20 border border-border/30"
+          whileHover={{ 
+            scale: 1.12, 
+            y: -8,
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)",
+            transition: { duration: 0.3, ease: "easeOut" }
+          }}
+          whileTap={{ scale: 1.08 }}
+        >
+          <Image
+            src={chartPool[chartIndex].src}
+            alt={chartPool[chartIndex].alt}
+            width={140}
+            height={120}
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Chart Type Badge on Hover */}
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 transform translate-y-2 group-hover:translate-y-0">
+            <span className="text-xs text-white font-semibold tracking-wide">
+              {chartPool[chartIndex].type}
+            </span>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
 
 const demoSteps = [
   {
@@ -56,39 +167,7 @@ const demoSteps = [
     title: "Get Perfect Results",
     description: "Professional charts ready for any presentation",
     icon: Activity,
-    preview: (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="relative">
-            <Image 
-              src="/landing/charts/sales-vertical-bar.png" 
-              alt="Sales Performance Chart"
-              width={280}
-              height={180}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="relative">
-            <Image 
-              src="/landing/charts/performance-horizontal-bar.png" 
-              alt="Performance Metrics Chart"
-              width={280}
-              height={180}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
-        <div className="relative max-w-sm mx-auto">
-          <Image 
-            src="/landing/charts/market-share-donut.png" 
-            alt="Market Share Chart"
-            width={280}
-            height={180}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-    )
+    preview: <InteractiveChartGrid />
   }
 ]
 
