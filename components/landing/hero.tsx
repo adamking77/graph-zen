@@ -115,26 +115,60 @@ export function Hero() {
           >
             {/* Mosaic Grid - Desktop/Tablet Only */}
             <div className="hidden lg:grid grid-cols-3 gap-3 p-4">
-              {mosaicCharts.map((chart, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                  className="relative rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group"
-                  whileHover={{ y: -5 }}
-                >
-                  <Image
-                    src={chart}
-                    alt={`Chart example ${index + 1}`}
-                    width={250}
-                    height={200}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Subtle overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </motion.div>
-              ))}
+              {mosaicCharts.map((chart, index) => {
+                // Create random delays between 0.5s and 1.5s for organic feel
+                const randomDelay = 0.5 + Math.random() * 1
+                // Random slight rotation for initial state
+                const randomRotation = (Math.random() - 0.5) * 10
+
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{
+                      opacity: 0,
+                      scale: 0.7,
+                      rotate: randomRotation,
+                      y: 20
+                    }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      rotate: 0,
+                      y: [20, 0, -8, 0]
+                    }}
+                    transition={{
+                      opacity: { duration: 0.8, delay: randomDelay, ease: "easeOut" },
+                      scale: { duration: 0.8, delay: randomDelay, ease: [0.34, 1.56, 0.64, 1] },
+                      rotate: { duration: 0.8, delay: randomDelay, ease: "easeOut" },
+                      y: {
+                        duration: 6 + (index * 0.4),
+                        delay: randomDelay,
+                        times: [0, 0.2, 0.5, 1],
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }
+                    }}
+                    className="relative rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 ease-out group"
+                    whileHover={{
+                      y: -10,
+                      scale: 1.08,
+                      rotate: (index % 2 === 0 ? 2 : -2),
+                      transition: { duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }
+                    }}
+                  >
+                    <Image
+                      src={chart}
+                      alt={`Chart example ${index + 1}`}
+                      width={250}
+                      height={200}
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Subtle overlay on hover with enhanced glow */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 ring-0 group-hover:ring-2 group-hover:ring-primary/30 rounded-lg transition-all duration-300" />
+                  </motion.div>
+                )
+              })}
             </div>
 
             {/* Mobile: Interface Image */}
