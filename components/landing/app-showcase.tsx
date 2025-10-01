@@ -24,38 +24,39 @@ export function AppShowcase() {
         </motion.div>
 
         {/* App Interface Screenshot with Scroll Reveal */}
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 60,
-            scale: 0.9,
-            rotateX: 15,
-            rotateY: -8
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotateX: 0,
-            rotateY: 0
-          }}
-          transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="relative rounded-2xl shadow-2xl overflow-hidden border border-border/50"
-          style={{
-            perspective: "1200px",
-            transformStyle: "preserve-3d"
-          }}
-        >
-          <Image
-            src="/landing/ui/ui-full-interface.png"
-            alt="GraphZen Complete Interface - Full Application View"
-            width={1200}
-            height={800}
-            className="w-full h-auto object-contain"
-            priority
-          />
-        </motion.div>
+        <div style={{ perspective: "1500px" }}>
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 80,
+              scale: 0.85,
+              rotateX: 25,
+              rotateY: -12
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              rotateX: 0,
+              rotateY: 0
+            }}
+            transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="relative rounded-2xl shadow-2xl overflow-hidden border border-border/50"
+            style={{
+              transformStyle: "preserve-3d"
+            }}
+          >
+            <Image
+              src="/landing/ui/ui-full-interface.png"
+              alt="GraphZen Complete Interface - Full Application View"
+              width={1200}
+              height={800}
+              className="w-full h-auto object-contain"
+              priority
+            />
+          </motion.div>
+        </div>
       </div>
     </section>
   )
