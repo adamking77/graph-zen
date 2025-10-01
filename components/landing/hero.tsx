@@ -3,11 +3,23 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, BarChart3, PieChart, TrendingUp, Activity } from "lucide-react"
+import { ArrowRight, TrendingUp } from "lucide-react"
 import Image from "next/image"
 
-export function Hero() {
+// Chart images for mosaic grid
+const mosaicCharts = [
+  "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_33_PM.png",
+  "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_27_PM.png",
+  "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_35_PM.png",
+  "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_31_PM.png",
+  "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_36_PM.png",
+  "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_28_PM.png",
+  "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_38_PM.png",
+  "/landing/charts/GraphZen-Find-Your-Chart-Zen-09-08-2025_09_32_PM.png",
+  "/landing/charts/market-share-donut.png",
+]
 
+export function Hero() {
   return (
     <section className="relative px-8 sm:px-12 lg:px-16 py-32 sm:py-40 overflow-hidden">
       {/* Background Elements */}
@@ -101,101 +113,41 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="relative"
           >
-            {/* Main Interface Display */}
-            <div className="relative">
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="relative rounded-2xl shadow-2xl overflow-hidden"
-              >
-                <Image 
-                  src="/landing/ui/ui-full-interface.png" 
-                  alt="GraphZen Complete Interface"
-                  width={800}
-                  height={550}
-                  className="w-full h-auto object-contain"
-                  priority
-                />
-              </motion.div>
+            {/* Mosaic Grid - Desktop/Tablet Only */}
+            <div className="hidden lg:grid grid-cols-3 gap-3 p-4">
+              {mosaicCharts.map((chart, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                  className="relative rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 group"
+                  whileHover={{ y: -5 }}
+                >
+                  <Image
+                    src={chart}
+                    alt={`Chart example ${index + 1}`}
+                    width={250}
+                    height={200}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Subtle overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </motion.div>
+              ))}
             </div>
 
-            {/* Floating Chart Previews with Scroll Parallax */}
-
-            {/* Bottom Left - Market Share Chart */}
-            <motion.div
-              animate={{
-                y: [0, 12, 0],
-                rotate: [0, -1.5, 0]
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0
-              }}
-              className="absolute -bottom-28 left-[20px] lg:left-[40px] xl:left-[60px] shadow-lg rounded-lg overflow-hidden hidden sm:block"
-              style={{ willChange: "transform" }}
-            >
-              <Image 
-                src="/landing/charts/market-share-donut.png" 
-                alt="Market Share Chart Preview"
-                width={140}
-                height={95}
-                className="w-35 h-24 object-cover"
+            {/* Mobile: Interface Image */}
+            <div className="lg:hidden rounded-2xl shadow-2xl overflow-hidden">
+              <Image
+                src="/landing/ui/ui-full-interface.png"
+                alt="GraphZen Complete Interface"
+                width={800}
+                height={550}
+                className="w-full h-auto object-contain"
+                priority
               />
-            </motion.div>
-
-            {/* Top Left - Sales Vertical Bar */}
-            <motion.div
-              animate={{
-                y: [0, -15, 0],
-                rotate: [0, 1, 0]
-              }}
-              transition={{
-                duration: 7,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1.5
-              }}
-              className="absolute -top-24 left-[120px] lg:left-[150px] xl:left-[180px] shadow-lg rounded-lg overflow-hidden hidden lg:block"
-              style={{ willChange: "transform" }}
-            >
-              <Image 
-                src="/landing/charts/sales-vertical-bar.png" 
-                alt="Sales Chart Preview"
-                width={120}
-                height={80}
-                className="w-30 h-20 object-cover"
-              />
-            </motion.div>
-
-
-            {/* Bottom Right - Line Chart */}
-            <motion.div
-              animate={{
-                y: [0, 18, 0],
-                rotate: [0, -1.2, 0]
-              }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 3
-              }}
-              className="absolute -bottom-12 -right-8 xl:-right-12 shadow-lg rounded-lg overflow-hidden hidden lg:block"
-              style={{ willChange: "transform" }}
-            >
-              <Image 
-                src="/landing/charts/revenue-growth-line.png" 
-                alt="Revenue Growth Chart Preview"
-                width={120}
-                height={80}
-                className="w-30 h-20 object-cover"
-              />
-            </motion.div>
-
-
+            </div>
           </motion.div>
         </div>
       </div>
