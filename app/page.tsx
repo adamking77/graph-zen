@@ -8,27 +8,24 @@ export default async function RootPage() {
   // Extract hostname without port
   const hostname = host.split(':')[0].toLowerCase()
 
-  // Localhost → app
+  // This page should only handle localhost and Vercel preview deployments
+  // Production domains are handled by middleware rewrites
+
+  // Localhost → redirect to /app for convenience
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     redirect('/app')
   }
 
-  // Charts subdomain → app
-  if (hostname === 'charts.graph-zen.app') {
-    redirect('/app')
-  }
-
-  // Main domain (with or without www) → landing
-  if (hostname === 'graph-zen.app' || hostname === 'www.graph-zen.app') {
-    redirect('/landing')
-  }
-
-  // Vercel preview deployments containing the domain name → landing
+  // Vercel preview deployments → redirect to /landing
   // Handles: graph-zen-git-main-username.vercel.app
-  if (hostname.includes('graph-zen') && !hostname.includes('charts')) {
-    redirect('/landing')
+  if (hostname.includes('vercel.app')) {
+    if (hostname.includes('charts')) {
+      redirect('/app')
+    } else {
+      redirect('/landing')
+    }
   }
 
-  // All other cases (Vercel previews, unknown domains) → app as safe fallback
+  // Fallback for unknown domains → redirect to /app
   redirect('/app')
 }
