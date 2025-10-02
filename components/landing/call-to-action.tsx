@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles, BarChart3, Shield } from "lucide-react"
+import { getAppUrl } from "@/lib/utils"
 
 export function CallToAction() {
   return (
@@ -55,7 +56,7 @@ export function CallToAction() {
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <Button asChild size="lg" className="text-lg px-8 py-6 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 group">
-              <Link href="/" className="flex items-center">
+              <Link href={getAppUrl()} className="flex items-center">
                 <BarChart3 className="w-5 h-5 mr-2" />
                 Open GraphZen
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />

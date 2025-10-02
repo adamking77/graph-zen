@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { BarChart3, PieChart, TrendingUp, Activity, Palette, Download } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { getAppUrl } from "@/lib/utils"
 
 // Chart pool for the interactive grid - using colorful GraphZen screenshots
 const chartPool = [
@@ -288,7 +289,7 @@ export function InteractiveDemo() {
                 Ready to create your own charts?
               </p>
               <Button asChild size="lg" className="text-lg px-8 py-6 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 group">
-                <Link href="/" className="flex items-center">
+                <Link href={getAppUrl()} className="flex items-center">
                   Start Creating Now
                   <BarChart3 className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>

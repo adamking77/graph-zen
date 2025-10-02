@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, TrendingUp } from "lucide-react"
 import Image from "next/image"
+import { getAppUrl } from "@/lib/utils"
 
 // Chart images for mosaic grid
 const mosaicCharts = [
@@ -74,7 +75,7 @@ export function Hero() {
               className="flex justify-center lg:justify-start mb-8 lg:mb-10"
             >
               <Button asChild size="lg" className="text-lg px-8 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 transition-all duration-300">
-                <Link href="/" className="group">
+                <Link href={getAppUrl()} className="group">
                   Start Creating
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -116,10 +117,10 @@ export function Hero() {
             {/* Mosaic Grid - Desktop/Tablet Only */}
             <div className="hidden lg:grid grid-cols-3 gap-3 p-4">
               {mosaicCharts.map((chart, index) => {
-                // Create random delays between 0.5s and 1.5s for organic feel
-                const randomDelay = 0.5 + Math.random() * 1
-                // Random slight rotation for initial state
-                const randomRotation = (Math.random() - 0.5) * 10
+                // Create stable "random-looking" delays and rotation based on index
+                // Using a deterministic pattern that looks organic but is consistent
+                const stableDelay = 0.5 + ((index * 7) % 10) / 10 // 0.5-1.4s pattern
+                const stableRotation = ((index * 3 - 4.5) % 9) - 4.5 // -4.5 to +4.5 deg pattern
 
                 return (
                   <motion.div
@@ -127,7 +128,7 @@ export function Hero() {
                     initial={{
                       opacity: 0,
                       scale: 0.7,
-                      rotate: randomRotation,
+                      rotate: stableRotation,
                       y: 20
                     }}
                     animate={{
@@ -137,12 +138,12 @@ export function Hero() {
                       y: [20, 0, -8, 0]
                     }}
                     transition={{
-                      opacity: { duration: 0.8, delay: randomDelay, ease: "easeOut" },
-                      scale: { duration: 0.8, delay: randomDelay, ease: [0.34, 1.56, 0.64, 1] },
-                      rotate: { duration: 0.8, delay: randomDelay, ease: "easeOut" },
+                      opacity: { duration: 0.8, delay: stableDelay, ease: "easeOut" },
+                      scale: { duration: 0.8, delay: stableDelay, ease: [0.34, 1.56, 0.64, 1] },
+                      rotate: { duration: 0.8, delay: stableDelay, ease: "easeOut" },
                       y: {
                         duration: 6 + (index * 0.4),
-                        delay: randomDelay,
+                        delay: stableDelay,
                         times: [0, 0.2, 0.5, 1],
                         repeat: Infinity,
                         ease: "easeInOut"
