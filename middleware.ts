@@ -18,9 +18,14 @@ export function middleware(request: NextRequest) {
   // Handle subdomain routing
   let response: NextResponse
 
-  // Localhost: Direct path access, no rewrites needed
+  // Localhost: Rewrite root to /app for convenience, allow direct path access for others
   if (isLocalhost) {
-    response = NextResponse.next()
+    if (url.pathname === '/' && !url.pathname.startsWith('/_next') && !url.pathname.startsWith('/api')) {
+      url.pathname = '/app'
+      response = NextResponse.rewrite(url)
+    } else {
+      response = NextResponse.next()
+    }
   }
   // Production: charts.graph-zen.app → serve chart maker app
   else if (hostname === chartsDomain) {
