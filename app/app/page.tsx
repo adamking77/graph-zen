@@ -15,6 +15,7 @@ import { useSpaceAwareLayoutState } from "@/hooks/use-mobile"
 import { ModernBottomSheet } from "@/components/modern-bottom-sheet"
 import { type ChartConfig } from "@/types/chart"
 
+export const dynamic = 'force-dynamic'
 
 export default function ChartGeneratorPage() {
   const isEmbedMode = useEmbedMode()

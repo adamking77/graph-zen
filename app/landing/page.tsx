@@ -8,6 +8,8 @@ import { Benefits } from "@/components/landing/benefits"
 import { CallToAction } from "@/components/landing/call-to-action"
 import { Footer } from "@/components/landing/footer"
 
+export const dynamic = 'force-dynamic'
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background relative">
