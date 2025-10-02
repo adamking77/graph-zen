@@ -15,40 +15,9 @@ export function middleware(request: NextRequest) {
   // Check if this is an embed request
   const isEmbed = url.searchParams.get('embed') === 'true'
 
-  // Handle subdomain routing
-  let response: NextResponse
-
-  // Localhost: Rewrite root to /app for convenience, allow direct path access for others
-  if (isLocalhost) {
-    if (url.pathname === '/' && !url.pathname.startsWith('/_next') && !url.pathname.startsWith('/api')) {
-      url.pathname = '/app'
-      response = NextResponse.rewrite(url)
-    } else {
-      response = NextResponse.next()
-    }
-  }
-  // Production: charts.graph-zen.app → serve chart maker app
-  else if (hostname === chartsDomain) {
-    if (!url.pathname.startsWith('/app') && !url.pathname.startsWith('/_next') && !url.pathname.startsWith('/api')) {
-      url.pathname = `/app${url.pathname === '/' ? '' : url.pathname}`
-      response = NextResponse.rewrite(url)
-    } else {
-      response = NextResponse.next()
-    }
-  }
-  // Production: graph-zen.app → serve landing page
-  else if (hostname === mainDomain) {
-    if (!url.pathname.startsWith('/landing') && !url.pathname.startsWith('/app') && !url.pathname.startsWith('/_next') && !url.pathname.startsWith('/api')) {
-      url.pathname = `/landing${url.pathname === '/' ? '' : url.pathname}`
-      response = NextResponse.rewrite(url)
-    } else {
-      response = NextResponse.next()
-    }
-  }
-  // Unknown domain
-  else {
-    response = NextResponse.next()
-  }
+  // No rewrites - let the root page handle routing
+  // Middleware only manages headers
+  const response = NextResponse.next()
 
   // Add embed-specific headers
   if (isEmbed) {
