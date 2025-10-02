@@ -1,6 +1,15 @@
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 
-export default function RootPage() {
-  // Redirect to app by default for localhost convenience
+export default async function RootPage() {
+  const headersList = await headers()
+  const hostname = headersList.get('host') || ''
+
+  // On production main domain, redirect to landing page
+  if (hostname === 'graph-zen.app') {
+    redirect('/landing')
+  }
+
+  // On localhost or charts subdomain, redirect to app
   redirect('/app')
 }
